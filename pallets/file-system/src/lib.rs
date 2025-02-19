@@ -923,11 +923,18 @@ pub mod pallet {
             name: BucketNameFor<T>,
             private: bool,
             value_prop_id: ValuePropId<T>,
+            collection_config: Option<BucketCollectionConfig<T>>,
         ) -> DispatchResult {
             let who = ensure_signed(origin)?;
 
-            let (bucket_id, maybe_collection_id) =
-                Self::do_create_bucket(who.clone(), msp_id, name.clone(), private, value_prop_id)?;
+            let (bucket_id, collection_id) = Self::do_create_bucket(
+                who.clone(),
+                msp_id,
+                name.clone(),
+                private,
+                value_prop_id,
+                collection_config,
+            )?;
 
             Self::deposit_event(Event::NewBucket {
                 who,
@@ -935,7 +942,7 @@ pub mod pallet {
                 bucket_id,
                 name,
                 root: <T::ProofDealer as shp_traits::ProofsDealerInterface>::MerkleHash::default(),
-                collection_id: maybe_collection_id,
+                collection_id,
                 private,
                 value_prop_id,
             });
@@ -1021,11 +1028,15 @@ pub mod pallet {
         pub fn create_and_associate_collection_with_bucket(
             origin: OriginFor<T>,
             bucket_id: BucketIdFor<T>,
+            collection_config: Option<BucketCollectionConfig<T>>,
         ) -> DispatchResult {
             let who = ensure_signed(origin)?;
 
-            let collection_id =
-                Self::do_create_and_associate_collection_with_bucket(who.clone(), bucket_id)?;
+            let collection_id = Self::do_create_and_associate_collection_with_bucket(
+                who.clone(),
+                bucket_id,
+                collection_config,
+            )?;
 
             Self::deposit_event(Event::NewCollectionAndAssociation {
                 who,

@@ -6,7 +6,7 @@ use frame_support::{
     BoundedVec,
 };
 use frame_system::pallet_prelude::BlockNumberFor;
-use pallet_nfts::CollectionConfig;
+use pallet_nfts::{CollectionConfig, CollectionSettings, ItemSettings, MintSettings, MintType};
 use scale_info::TypeInfo;
 use shp_file_metadata::FileMetadata;
 use shp_traits::{MutateBucketsInterface, ReadProvidersInterface};
@@ -492,6 +492,44 @@ pub(super) type CollectionIdFor<T> = <<T as crate::Config>::Nfts as NonFungibles
 /// Alias for the `CollectionConfig` type used in the FileSystem pallet.
 pub(super) type CollectionConfigFor<T> =
     CollectionConfig<BalanceOf<T>, BlockNumberFor<T>, CollectionIdFor<T>>;
+
+/// Configuration for creating a collection associated with a bucket.
+#[derive(Clone, Encode, Decode, MaxEncodedLen, TypeInfo, PartialEq, Eq)]
+#[scale_info(skip_type_params(T))]
+pub struct BucketCollectionConfig<T: Config> {
+    /// Collection settings that control various features
+    pub settings: CollectionSettings,
+    /// Maximum number of items that can be minted in this collection
+    pub max_supply: Option<u32>,
+    /// Settings that control how items can be minted
+    pub mint_settings: MintSettings<BalanceOf<T>, BlockNumberFor<T>, CollectionIdFor<T>>,
+}
+
+impl<T: Config> Debug for BucketCollectionConfig<T> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f,
+            "BucketCollectionConfig(settings: {:?}, max_supply: {:?}, mint_settings: {:?})",
+            self.settings, self.max_supply, self.mint_settings
+        )
+    }
+}
+
+impl<T: Config> Default for BucketCollectionConfig<T> {
+    fn default() -> Self {
+        Self {
+            settings: CollectionSettings::all_enabled(),
+            max_supply: None,
+            mint_settings: MintSettings {
+                mint_type: MintType::Issuer,
+                price: None,
+                start_block: None,
+                end_block: None,
+                default_item_settings: ItemSettings::all_enabled(),
+            },
+        }
+    }
+}
 
 /// Alias for the `BucketNameLimit` type used in the ReadProvidersInterface.
 pub(super) type BucketNameLimitFor<T> =

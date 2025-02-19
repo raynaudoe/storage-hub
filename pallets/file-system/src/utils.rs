@@ -25,7 +25,7 @@ use pallet_file_system_runtime_api::{
     QueryConfirmChunksToProveForFileError, QueryFileEarliestVolunteerTickError,
     QueryMspConfirmChunksToProveForFileError,
 };
-use pallet_nfts::{CollectionConfig, CollectionSettings, ItemSettings, MintSettings, MintType};
+use pallet_nfts::CollectionConfig;
 use shp_constants::GIGAUNIT;
 use shp_file_metadata::ChunkId;
 use shp_traits::{
@@ -38,7 +38,7 @@ use shp_traits::{
 use crate::{
     pallet,
     types::{
-        BucketIdFor, BucketMoveRequestResponse, BucketNameFor, CollectionConfigFor,
+        BucketCollectionConfig, BucketIdFor, BucketMoveRequestResponse, BucketNameFor,
         CollectionIdFor, EitherAccountIdOrMspId, ExpirationItem, FileKeyHasher, FileKeyWithProof,
         FileLocation, Fingerprint, ForestProof, MerkleHash, MoveBucketRequestMetadata,
         MultiAddresses, PeerIds, PendingFileDeletionRequest, PendingStopStoringRequest,
@@ -400,6 +400,7 @@ where
         name: BucketNameFor<T>,
         private: bool,
         value_prop_id: ValuePropId<T>,
+        collection_config: Option<BucketCollectionConfig<T>>,
     ) -> Result<(BucketIdFor<T>, Option<CollectionIdFor<T>>), DispatchError> {
         // Check if the MSP is indeed an MSP.
         ensure!(
@@ -431,7 +432,10 @@ where
         // Create collection only if bucket is private
         let maybe_collection_id = if private {
             // The `owner` of the collection is also the admin of the collection since most operations require the sender to be the admin.
-            Some(Self::create_collection(sender.clone())?)
+            Some(Self::create_collection(
+                sender.clone(),
+                collection_config.unwrap_or_default(),
+            )?)
         } else {
             None
         };
@@ -641,13 +645,13 @@ where
         let collection_id = match (private, maybe_collection_id) {
             // Create a new collection if the bucket will be private and no collection exists.
             (true, None) => {
-                Some(Self::do_create_and_associate_collection_with_bucket(sender.clone(), bucket_id)?)
+                Some(Self::do_create_and_associate_collection_with_bucket(sender.clone(), bucket_id, None)?)
             }
             // Handle case where the bucket has an existing collection, but the collection is not in storage.
             (true, Some(current_collection_id))
             if !<T::CollectionInspector as shp_traits::InspectCollections>::collection_exists(&current_collection_id) =>
                 {
-                    Some(Self::do_create_and_associate_collection_with_bucket(sender.clone(), bucket_id)?)
+                    Some(Self::do_create_and_associate_collection_with_bucket(sender.clone(), bucket_id, None)?)
                 }
             // Use the existing collection ID if it exists.
             (_, Some(current_collection_id)) => Some(current_collection_id),
@@ -672,6 +676,7 @@ where
     pub(crate) fn do_create_and_associate_collection_with_bucket(
         sender: T::AccountId,
         bucket_id: BucketIdFor<T>,
+        collection_config: Option<BucketCollectionConfig<T>>,
     ) -> Result<CollectionIdFor<T>, DispatchError> {
         // Check that the user is not currently insolvent.
         ensure!(
@@ -685,7 +690,8 @@ where
             Error::<T>::NotBucketOwner
         );
 
-        let collection_id = Self::create_collection(sender)?;
+        let collection_id =
+            Self::create_collection(sender.clone(), collection_config.unwrap_or_default())?;
 
         <T::Providers as MutateBucketsInterface>::update_bucket_read_access_group_id(
             bucket_id,
@@ -2745,21 +2751,17 @@ where
     }
 
     /// Create a collection.
-    fn create_collection(owner: T::AccountId) -> Result<CollectionIdFor<T>, DispatchError> {
-        // TODO: Parametrize the collection settings.
-        let config: CollectionConfigFor<T> = CollectionConfig {
-            settings: CollectionSettings::all_enabled(),
-            max_supply: None,
-            mint_settings: MintSettings {
-                mint_type: MintType::Issuer,
-                price: None,
-                start_block: None,
-                end_block: None,
-                default_item_settings: ItemSettings::all_enabled(),
-            },
+    fn create_collection(
+        owner: T::AccountId,
+        config: BucketCollectionConfig<T>,
+    ) -> Result<CollectionIdFor<T>, DispatchError> {
+        let collection_config = CollectionConfig {
+            settings: config.settings,
+            max_supply: config.max_supply,
+            mint_settings: config.mint_settings,
         };
 
-        T::Nfts::create_collection(&owner, &owner, &config)
+        T::Nfts::create_collection(&owner, &owner, &collection_config)
     }
 
     /// Compute the next tick number to insert an expiring item, and insert it in the corresponding expiration queue.

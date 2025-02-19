@@ -1244,6 +1244,7 @@ mod users {
                     name: bucket_name.clone(),
                     private: false,
                     value_prop_id,
+                    collection_config: None,
                 });
             let estimated_weight = bucket_creation_call.get_dispatch_info().weight;
             // Remember, this message will be executed from the context of StorageHub
@@ -1616,6 +1617,7 @@ mod users {
                     name: bucket_name.clone(),
                     private: false,
                     value_prop_id,
+                    collection_config: None,
                 });
             let estimated_weight = bucket_creation_call.get_dispatch_info().weight;
             // Remember, this message will be executed from the context of StorageHub

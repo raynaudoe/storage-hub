@@ -63,7 +63,8 @@ mod create_bucket_tests {
                         H256::from_slice(&msp.as_slice()),
                         name,
                         true,
-                        ValuePropId::<Test>::default()
+                        ValuePropId::<Test>::default(),
+                        None
                     ),
                     Error::<Test>::NotAMsp
                 );
@@ -82,7 +83,14 @@ mod create_bucket_tests {
                 let (msp_id, value_prop_id) = add_msp_to_provider_storage(&msp);
 
                 assert_noop!(
-                    FileSystem::create_bucket(origin, msp_id, name.clone(), private, value_prop_id),
+                    FileSystem::create_bucket(
+                        origin,
+                        msp_id,
+                        name.clone(),
+                        private,
+                        value_prop_id,
+                        None
+                    ),
                     pallet_storage_providers::Error::<Test>::NotEnoughBalance
                 );
             });
@@ -107,7 +115,14 @@ mod create_bucket_tests {
 
                 // Dispatch a signed extrinsic.
                 assert_noop!(
-                    FileSystem::create_bucket(origin, msp_id, name.clone(), private, value_prop_id),
+                    FileSystem::create_bucket(
+                        origin,
+                        msp_id,
+                        name.clone(),
+                        private,
+                        value_prop_id,
+                        None
+                    ),
                     Error::<Test>::OperationNotAllowedForInsolventProvider
                 );
             });
@@ -144,7 +159,8 @@ mod create_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Check if collection was created
@@ -216,7 +232,8 @@ mod create_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Check that the bucket does not have a corresponding collection
@@ -298,7 +315,8 @@ mod delete_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 assert_noop!(
@@ -330,7 +348,8 @@ mod delete_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Dispatch a signed extrinsic of a storage request.
@@ -410,7 +429,8 @@ mod delete_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Dispatch a signed extrinsic of a storage request.
@@ -488,7 +508,8 @@ mod delete_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Dispatch a signed extrinsic.
@@ -535,7 +556,8 @@ mod delete_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Get the bucket's collection ID.
@@ -593,7 +615,8 @@ mod delete_bucket_tests {
 					msp_id,
 					name.clone(),
 					private,
-					value_prop_id
+					value_prop_id,
+                    None
 				));
 
 				// Dispatch a signed extrinsic of a storage request.
@@ -1431,7 +1454,8 @@ mod update_bucket_privacy_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Check if collection was created
@@ -1505,7 +1529,8 @@ mod update_bucket_privacy_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Check if collection was created
@@ -1606,7 +1631,8 @@ mod update_bucket_privacy_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Check that the bucket does not have a corresponding collection
@@ -1710,7 +1736,9 @@ mod create_and_associate_collection_with_bucket_tests {
                 );
 
                 assert_noop!(
-                    FileSystem::create_and_associate_collection_with_bucket(origin, bucket_id),
+                    FileSystem::create_and_associate_collection_with_bucket(
+                        origin, bucket_id, None
+                    ),
                     pallet_storage_providers::Error::<Test>::BucketNotFound
                 );
             });
@@ -1742,7 +1770,8 @@ mod create_and_associate_collection_with_bucket_tests {
                     msp_id,
                     name.clone(),
                     private,
-                    value_prop_id
+                    value_prop_id,
+                    None
                 ));
 
                 // Check if collection was created
@@ -1762,7 +1791,7 @@ mod create_and_associate_collection_with_bucket_tests {
                     .expect("Collection ID should exist");
 
                 assert_ok!(FileSystem::create_and_associate_collection_with_bucket(
-                    origin, bucket_id
+                    origin, bucket_id, None
                 ));
 
                 // Check if collection was associated with the bucket
@@ -12588,7 +12617,8 @@ fn create_bucket(
         msp_id,
         name.clone(),
         private,
-        value_prop_id
+        value_prop_id,
+        None
     ));
 
     // Get the collection ID of the bucket.

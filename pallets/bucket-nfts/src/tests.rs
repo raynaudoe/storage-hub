@@ -32,7 +32,8 @@ mod share_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 true,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
@@ -83,7 +84,8 @@ mod share_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 true,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
@@ -154,7 +156,8 @@ mod share_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 false,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
@@ -193,7 +196,8 @@ mod share_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 true,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
@@ -243,7 +247,8 @@ mod update_read_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 true,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
@@ -304,7 +309,8 @@ mod update_read_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 true,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
@@ -379,7 +385,8 @@ mod update_read_access_tests {
                 msp_id,
                 bucket_name.clone(),
                 true,
-                value_prop_id
+                value_prop_id,
+                None
             ));
 
             let bucket_id =
