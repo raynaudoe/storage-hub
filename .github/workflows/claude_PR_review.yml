@@ -28,4 +28,6 @@ jobs:
             Use inline comments to highlight specific areas of concern.
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
           
