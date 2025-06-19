@@ -29,7 +29,14 @@ jobs:
           timeout_minutes: "60"
           allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
           direct_prompt: |
-            You are an automated code reviewer.
+            Please review this pull request and provide comprehensive feedback.
+
+            Focus on:
+            - Code quality and best practices
+            - Potential bugs or issues
+            - Performance considerations
+            - Security implications
+
             Review ONLY these files:
             ${{ steps.changed-files.outputs.all_changed_files }}
 
@@ -39,7 +46,19 @@ jobs:
               pullNumber: ${{ github.event.pull_request.number }}
 
             • For every issue you find, immediately call `mcp__github__add_pull_request_review_comment_to_pending_review` (same owner/repo/pullNumber) with:
-              path, line, side="RIGHT", body (prefixed with // BUG:, // SECURITY:, // PERF:, // TODO:, // SUGGESTION:, or // EXPLAIN: as appropriate).
+              path, line, side="RIGHT", body starting with one of these emoji-label prefixes:
+                🐞 *BUG*: <text>
+                🔒 *SECURITY*: <text>
+                🚀 *PERF*: <text>
+                💡 *SUGGESTION*: <text>
+                📝 *EXPLAIN*: <text>
+
+            • For 🐞 *BUG* items:
+                – If (and only if) you are 100 % certain of the fix, include a GitHub code suggestion in the body using the markdown syntax:
+                  ```suggestion
+                  // replacement code here
+                  ```
+                – If not completely sure, just describe the bug without a suggestion block.
 
             • After all comments, call `mcp__github__submit_pending_pull_request_review` with event="COMMENT" and a high-level summary in body (include overall quality score, counts, etc.).
 
