@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: write
       id-token: write
     steps:
       - name: Checkout repository
@@ -17,56 +17,34 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Identify the files and lines changed in this PR
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+
       - name: Claude PR Review
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          timeout_minutes: "60" 
+          timeout_minutes: "60"
+          allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
           direct_prompt: |
-            Perform an exhaustive code review of the changed files in this pull request.
-            
-            Changed files: ${{ steps.changed-files.outputs.all_changed_files }}
-            
-            For each file:
-            
-            1. Add inline comments explaining:
-               - What each function/method does
-               - Complex logic or algorithms
-               - Potential issues or improvements
-               - Best practice violations
-               - Security concerns
-               - Performance optimizations
-            
-            2. Use these comment prefixes:
-               // BUG: [Critical issues that must be fixed]
-               // SECURITY: [Security vulnerabilities]
-               // PERF: [Performance issues]
-               // TODO: [Required changes]
-               // SUGGESTION: [Optional improvements]
-               // EXPLAIN: [Code explanations]
-            
-            3. Check for:
-               - Input validation issues
-               - SQL injection vulnerabilities
-               - XSS prevention gaps
-               - Error handling
-               - Memory leaks
-               - Race conditions
-               - Test coverage gaps
-               - Code duplication
-               - SOLID principle violations
-            
-            4. Provide a summary with:
-               - Overall code quality score (1-10)
-               - Critical issues count
-               - Security issues count
-               - Performance concerns
-               - Test coverage assessment
-               - Recommended actions prioritized by severity
-            
-            Format the output as GitHub-compatible markdown.
+            You are an automated code reviewer.
+            Review ONLY these files:
+            ${{ steps.changed-files.outputs.all_changed_files }}
+
+            • Start by calling `mcp__github__create_pending_pull_request_review` with:
+              owner: "${{ github.repository_owner }}"
+              repo: "${{ github.event.repository.name }}"
+              pullNumber: ${{ github.event.pull_request.number }}
+
+            • For every issue you find, immediately call `mcp__github__add_pull_request_review_comment_to_pending_review` (same owner/repo/pullNumber) with:
+              path, line, side="RIGHT", body (prefixed with // BUG:, // SECURITY:, // PERF:, // TODO:, // SUGGESTION:, or // EXPLAIN: as appropriate).
+
+            • After all comments, call `mcp__github__submit_pending_pull_request_review` with event="COMMENT" and a high-level summary in body (include overall quality score, counts, etc.).
+
+            Do NOT output raw JSON or markdown. Use the provided MCP tools to leave inline comments directly on the PR.
           
-          files: ${{ steps.changed-files.outputs.all_changed_files }}
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
