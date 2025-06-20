@@ -157,3 +157,11 @@ The project uses automated Claude PR reviews that check for:
 - **Pallet Documentation**: See `/pallets/file-system/README.md` and `/pallets/proofs-dealer/README.md` for detailed pallet designs
 - **Testing Guide**: Comprehensive testing documentation in `/test/README.md`
 - **Rust Linting**: The project uses relaxed Clippy rules (see workspace Cargo.toml) to allow pragmatic code patterns
+
+### Mandatory Review Checklist
+
+Always add these checklist items to every review (after all diff-derived tasks):
+
+- **Sleep detection** – Verify whether the PR introduces any new blocking sleep calls (e.g. `sleep`, `std::thread::sleep`, `tokio::time::sleep`, `setTimeout`, shell `sleep`).
+  - If an event-driven or async alternative exists, propose it using a 🐞 *BUG* comment with a code suggestion block.
+  - If no practical replacement is available, leave a 🐞 *BUG* comment that clearly warns about the risks (flaky timing, wasted CPU) following the standard review format.
