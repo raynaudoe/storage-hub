@@ -43,6 +43,8 @@ jobs:
             Unclear behavior arising from problems such as integer overflows, underflows, truncation during division, ignored return values must be handled clearly or documented.
             Favor code clarity and maintainability over minor optimizations.
 
+            Additionally, always consult the repository guide `CLAUDE.md`. After producing the diff-based tasks, append every item listed in its **Mandatory Review Checklist** to the review so they appear as obligatory steps.
+
             Your feedback should be clear, concise, and unambiguous. Enough context should be given that your exact intentions are obvious.
 
             Giving Feedback
