@@ -7,6 +7,9 @@ on:
 jobs:
   claude-code-action:
     runs-on: ubuntu-latest
+    concurrency:
+      group: pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     permissions:
       contents: read
       pull-requests: write
@@ -15,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       # Identify the files and lines changed in this PR
       - name: Get changed files
