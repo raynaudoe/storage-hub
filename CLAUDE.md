@@ -475,3 +475,381 @@ pub fn force_delete_file(origin: OriginFor<T>, file_key: FileKey) -> DispatchRes
 
 **Why this matters:** Anyone could delete files without authorization.
 ```
+
+## StorageHub Code Review Patterns Reference
+
+This section contains concrete examples of patterns to detect during PR reviews. Each example shows the problematic code and the suggested fix.
+
+### 🐞 BUG Patterns
+
+#### BLOCKING_SLEEP
+**Problem**: Synchronous sleep operations block actors and cause test flakiness
+```rust
+// ❌ BAD
+std::thread::sleep(Duration::from_secs(5));
+tokio::time::sleep(Duration::from_secs(1)).await;
+
+// ✅ GOOD  
+// Use event-driven waiting
+while !condition_met {
+    if let Ok(event) = receiver.recv_timeout(Duration::from_secs(1)) {
+        // Process event
+    }
+}
+
+// In tests, use proper test utilities
+wait_for_block_finalization(&node).await;
+```
+
+#### UNBOUNDED_STORAGE
+**Problem**: Unbounded collections in pallets can halt the chain
+```rust
+// ❌ BAD
+#[pallet::storage]
+pub type Files<T> = StorageMap<_, Blake2_128Concat, T::AccountId, Vec<FileMetadata>>;
+
+// ✅ GOOD
+#[pallet::storage]
+pub type Files<T> = StorageMap<_, Blake2_128Concat, T::AccountId, BoundedVec<FileMetadata, ConstU32<1000>>>;
+```
+
+#### MISSING_ERROR_HANDLING
+**Problem**: Unwrap/expect can panic in production
+```rust
+// ❌ BAD
+let account = accounts.get(0).unwrap();
+let result = some_operation().expect("This should work");
+
+// ✅ GOOD
+let account = accounts.get(0).ok_or(Error::<T>::AccountNotFound)?;
+let result = some_operation().map_err(|e| {
+    log::error!("Operation failed: {:?}", e);
+    Error::<T>::OperationFailed
+})?;
+```
+
+#### UNBOUNDED_CHANNEL
+**Problem**: Unbounded channels can cause memory exhaustion
+```rust
+// ❌ BAD
+let (tx, rx) = mpsc::channel();
+let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
+
+// ✅ GOOD
+let (tx, rx) = mpsc::channel(100);  // Bounded
+let (tx, rx) = tokio::sync::mpsc::channel(1000);  // Bounded
+```
+
+#### PANIC_POSSIBLE
+**Problem**: Operations that can panic in production code
+```rust
+// ❌ BAD
+let value = u32::from_str(&input).unwrap();
+let slice = &data[start..end];  // Can panic if indices invalid
+
+// ✅ GOOD
+let value = u32::from_str(&input).map_err(|_| Error::<T>::InvalidInput)?;
+let slice = data.get(start..end).ok_or(Error::<T>::InvalidRange)?;
+```
+
+### 🔒 SECURITY Patterns
+
+#### MISSING_ORIGIN_CHECK
+**Problem**: Extrinsics without proper authorization
+```rust
+// ❌ BAD
+#[pallet::weight(T::WeightInfo::admin_function())]
+pub fn admin_function(origin: OriginFor<T>) -> DispatchResult {
+    // No origin check!
+    Self::do_admin_thing()
+}
+
+// ✅ GOOD
+#[pallet::weight(T::WeightInfo::admin_function())]
+pub fn admin_function(origin: OriginFor<T>) -> DispatchResult {
+    ensure_root(origin)?;  // Or ensure_signed, T::AdminOrigin::ensure_origin
+    Self::do_admin_thing()
+}
+```
+
+#### PATH_TRAVERSAL
+**Problem**: User input in file paths without validation
+```rust
+// ❌ BAD
+let path = format!("./storage/{}", user_input);
+let file = File::open(&path)?;
+
+// ✅ GOOD
+let sanitized = user_input.replace("..", "").replace("/", "_");
+ensure!(sanitized.chars().all(|c| c.is_alphanumeric() || c == '_'), Error::InvalidPath);
+let path = storage_root.join(&sanitized);
+```
+
+#### EXPOSED_SECRET
+**Problem**: Hardcoded secrets in code
+```rust
+// ❌ BAD
+const API_KEY: &str = "sk_live_abcd1234";
+const DATABASE_URL: &str = "postgres://user:password@host/db";
+
+// ✅ GOOD
+let api_key = env::var("API_KEY").expect("API_KEY must be set");
+let database_url = config.database.url.clone();
+```
+
+#### SQL_INJECTION
+**Problem**: String concatenation in SQL queries
+```rust
+// ❌ BAD
+let query = format!("SELECT * FROM users WHERE id = {}", user_id);
+db.execute(&query)?;
+
+// ✅ GOOD
+let query = "SELECT * FROM users WHERE id = $1";
+db.execute(query, &[&user_id])?;
+```
+
+#### MISSING_VALIDATION
+**Problem**: User input used without bounds checking
+```rust
+// ❌ BAD
+pub fn set_price(origin: OriginFor<T>, price: Balance) -> DispatchResult {
+    Prices::<T>::insert(&item, price);  // No validation
+}
+
+// ✅ GOOD
+pub fn set_price(origin: OriginFor<T>, price: Balance) -> DispatchResult {
+    ensure!(price >= T::MinPrice::get(), Error::<T>::PriceTooLow);
+    ensure!(price <= T::MaxPrice::get(), Error::<T>::PriceTooHigh);
+    Prices::<T>::insert(&item, price);
+}
+```
+
+### 🚀 PERFORMANCE Patterns
+
+#### N_PLUS_ONE_QUERY
+**Problem**: Database queries in loops
+```rust
+// ❌ BAD
+for user_id in user_ids {
+    let files = db.get_files_for_user(user_id).await?;
+    process_files(files);
+}
+
+// ✅ GOOD
+let all_files = db.get_files_for_users(&user_ids).await?;
+let files_by_user = all_files.into_iter().group_by(|f| f.user_id);
+```
+
+#### QUADRATIC_ALGORITHM
+**Problem**: Nested loops with unbounded collections
+```rust
+// ❌ BAD
+for item in &large_collection {
+    for other in &large_collection {
+        if item.id == other.parent_id {
+            // O(n²) operation
+        }
+    }
+}
+
+// ✅ GOOD
+let parent_map: HashMap<_, _> = large_collection
+    .iter()
+    .map(|item| (item.id, item))
+    .collect();
+// Now O(n) lookup
+```
+
+#### MISSING_INDEX
+**Problem**: Queries without proper database indexes
+```sql
+-- ❌ BAD
+-- Frequently queried without index
+SELECT * FROM payment_streams WHERE provider_id = $1 AND status = 'active';
+
+-- ✅ GOOD
+CREATE INDEX idx_payment_streams_provider_status 
+ON payment_streams(provider_id, status) 
+WHERE status = 'active';
+```
+
+#### SYNC_IN_ASYNC
+**Problem**: Blocking operations in async context
+```rust
+// ❌ BAD
+async fn process_file(path: &Path) {
+    let contents = std::fs::read_to_string(path).unwrap();  // Blocks thread
+}
+
+// ✅ GOOD
+async fn process_file(path: &Path) {
+    let contents = tokio::fs::read_to_string(path).await?;
+}
+```
+
+#### INEFFICIENT_WEIGHT
+**Problem**: Incorrect weight calculations in pallets
+```rust
+// ❌ BAD
+#[pallet::weight(10_000)]  // Hardcoded weight
+pub fn complex_operation(origin: OriginFor<T>, items: Vec<Item>) -> DispatchResult {
+    // O(n) operation with fixed weight
+}
+
+// ✅ GOOD
+#[pallet::weight(T::WeightInfo::complex_operation(items.len() as u32))]
+pub fn complex_operation(origin: OriginFor<T>, items: Vec<Item>) -> DispatchResult {
+    ensure!(items.len() <= T::MaxItems::get() as usize, Error::<T>::TooManyItems);
+}
+```
+
+### 💡 SUGGESTION Patterns
+
+#### NON_IDIOMATIC
+**Problem**: Code that doesn't follow Rust idioms
+```rust
+// ❌ LESS IDIOMATIC
+if condition == true { }
+match option {
+    Some(x) => x,
+    None => return Err(error),
+}
+
+// ✅ IDIOMATIC
+if condition { }
+option.ok_or(error)?
+```
+
+#### MISSING_DOCS
+**Problem**: Public APIs without documentation
+```rust
+// ❌ BAD
+pub fn calculate_merkle_root(leaves: &[Hash]) -> Hash {
+    // Complex implementation
+}
+
+// ✅ GOOD
+/// Calculates the Merkle root from a list of leaf hashes.
+/// 
+/// # Arguments
+/// * `leaves` - Slice of hash values representing the leaves
+/// 
+/// # Returns
+/// The computed Merkle root hash
+pub fn calculate_merkle_root(leaves: &[Hash]) -> Hash {
+```
+
+#### CODE_DUPLICATION
+**Problem**: Repeated code blocks
+```rust
+// ❌ BAD
+let user_storage = match get_storage("user") {
+    Ok(s) => s,
+    Err(e) => {
+        log::error!("Failed to get user storage: {:?}", e);
+        return Err(Error::StorageError);
+    }
+};
+
+let system_storage = match get_storage("system") {
+    Ok(s) => s,
+    Err(e) => {
+        log::error!("Failed to get system storage: {:?}", e);
+        return Err(Error::StorageError);
+    }
+};
+
+// ✅ GOOD
+fn get_storage_or_error(name: &str) -> Result<Storage, Error> {
+    get_storage(name).map_err(|e| {
+        log::error!("Failed to get {} storage: {:?}", name, e);
+        Error::StorageError
+    })
+}
+
+let user_storage = get_storage_or_error("user")?;
+let system_storage = get_storage_or_error("system")?;
+```
+
+#### COMPLEX_FUNCTION
+**Problem**: Functions doing too many things
+```rust
+// ❌ BAD
+pub fn process_and_store_and_notify(data: Data) -> Result<()> {
+    // 200 lines doing validation, processing, storage, and notification
+}
+
+// ✅ GOOD
+pub fn process_data(data: Data) -> Result<ProcessedData> { }
+pub fn store_data(data: &ProcessedData) -> Result<()> { }
+pub fn notify_users(data: &ProcessedData) -> Result<()> { }
+```
+
+#### MAGIC_NUMBER
+**Problem**: Unexplained numeric constants
+```rust
+// ❌ BAD
+if retries > 3 {
+    return Err(Error::TooManyRetries);
+}
+let timeout = Duration::from_secs(30);
+
+// ✅ GOOD
+const MAX_RETRIES: u32 = 3;
+const REQUEST_TIMEOUT_SECS: u64 = 30;
+
+if retries > MAX_RETRIES {
+    return Err(Error::TooManyRetries);
+}
+let timeout = Duration::from_secs(REQUEST_TIMEOUT_SECS);
+```
+
+### ℹ️ INFO Patterns
+
+#### NEEDS_VERIFICATION
+Use when you detect a potential issue but need human verification:
+```rust
+// Example finding:
+"NEEDS_VERIFICATION: This looks like it might cause a race condition 
+between actors, but I cannot determine the full execution context. 
+Code: `shared_state.lock().unwrap().value += 1;`"
+```
+
+#### DESIGN_QUESTION
+For architectural concerns that need discussion:
+```rust
+// Example finding:
+"DESIGN_QUESTION: This module has 15 public functions. 
+Consider splitting into smaller, focused modules for better maintainability."
+```
+
+#### POTENTIAL_ISSUE
+For patterns that might be problematic depending on usage:
+```rust
+// Example finding:
+"POTENTIAL_ISSUE: Using `.clone()` on large data structure. 
+If this is in a hot path, consider using Arc or borrowing instead."
+```
+
+### Context-Specific Exceptions
+
+#### Test Code
+- Unwrap/expect generally acceptable in tests
+- Hardcoded values and sleeps often necessary
+- Less stringent performance requirements
+
+#### Benchmark Code
+- May use unwrap for setup
+- Performance patterns may differ
+- Focus on measuring, not optimizing
+
+#### Migration Code
+- One-time execution allows different patterns
+- May have relaxed performance requirements
+- Still needs security checks
+
+#### Example/Demo Code
+- Clarity over performance
+- May include intentional anti-patterns for education
+- Should be clearly marked as non-production

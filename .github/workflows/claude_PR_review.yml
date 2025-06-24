@@ -1,43 +1,43 @@
-name: Claude PR Review
+# name: Claude PR Review
 
-on:
-  pull_request:
-    types: [opened, synchronize]
+# on:
+#   pull_request:
+#     types: [opened, synchronize]
 
-jobs:
-  claude-code-action:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: pr-${{ github.event.pull_request.number }}
-      cancel-in-progress: true
-    permissions:
-      contents: read
-      pull-requests: write
-      id-token: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+# jobs:
+#   claude-code-action:
+#     runs-on: ubuntu-latest
+#     concurrency:
+#       group: pr-${{ github.event.pull_request.number }}
+#       cancel-in-progress: true
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#       id-token: write
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
 
-      # Identify the files and lines changed in this PR
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-        with:
-          since_last_remote_commit: "true"
+#       # Identify the files and lines changed in this PR
+#       - name: Get changed files
+#         id: changed-files
+#         uses: tj-actions/changed-files@v44
+#         with:
+#           since_last_remote_commit: "true"
 
-      - name: Claude PR Review
-        uses: anthropics/claude-code-action@beta
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: "claude-opus-4-20250514"  
-          timeout_minutes: "60"
-          allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh repo view:*),mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
-          direct_prompt: |
-            /project:pr_review_enhanced ${{ github.event.pull_request.number }}
+#       - name: Claude PR Review
+#         uses: anthropics/claude-code-action@beta
+#         with:
+#           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+#           model: "claude-opus-4-20250514"  
+#           timeout_minutes: "60"
+#           allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh repo view:*),mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
+#           direct_prompt: |
+#             /project:pr_review_enhanced ${{ github.event.pull_request.number }}
 
-        env:
-          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
-          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
-          DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
+#         env:
+#           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+#           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+#           DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
