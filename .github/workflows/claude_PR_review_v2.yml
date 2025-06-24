@@ -1,0 +1,192 @@
+name: Multi-Stage PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  generate-findings:
+    name: 1. Generate Findings
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.rs
+            **/*.ts
+
+      - name: Early Exit if No Relevant Files Changed
+        if: steps.changed-files.outputs.any_changed != 'true'
+        run: echo "No relevant files changed. Skipping review."
+
+      - name: Create Raw Findings Directory
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: mkdir -p raw-findings
+
+      - name: Run Generation Agent
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Bash(gh pr diff:*),View,GrepTool"
+          direct_prompt: |
+            /project:generate_findings
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
+
+      - name: Upload Raw Findings
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          retention-days: 1
+
+  verify-findings:
+    name: 2. Verify Findings
+    needs: generate-findings
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Raw Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+
+      - name: Create Verified Findings Directory
+        run: mkdir -p verified-findings
+
+      - name: Run Verification Agent
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "View,GrepTool"
+          direct_prompt: |
+            /project:verify_findings
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
+
+      - name: Upload Verified Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          retention-days: 1
+
+  publish-review:
+    name: 3. Publish Review
+    needs: [generate-findings, verify-findings]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Verified Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+
+      - name: Publish Review Comments
+        run: |
+          # Initialize counters
+          TOTAL_COMMENTS=0
+          FILES_WITH_FINDINGS=0
+          
+          # Process each JSON file
+          for file in verified-findings/*.json; do
+            if [ -f "$file" ]; then
+              # Check if file has findings
+              FINDING_COUNT=$(jq '.findings | length' "$file")
+              
+              if [ "$FINDING_COUNT" -gt 0 ]; then
+                FILES_WITH_FINDINGS=$((FILES_WITH_FINDINGS + 1))
+                TOTAL_COMMENTS=$((TOTAL_COMMENTS + FINDING_COUNT))
+                
+                # Extract commit ID if available
+                COMMIT_ID=$(jq -r '.commit_id // empty' "$file")
+                
+                # Create review with line comments
+                if [ -n "$COMMIT_ID" ]; then
+                  # Post each finding as a review comment
+                  jq -c '.findings[]' "$file" | while read -r finding; do
+                    PATH=$(echo "$finding" | jq -r '.path // empty')
+                    LINE=$(echo "$finding" | jq -r '.line')
+                    BODY=$(echo "$finding" | jq -r '.body')
+                    
+                    # Use gh pr review to post line comment
+                    echo "$BODY" | gh pr review ${{ needs.generate-findings.outputs.pr_number }} \
+                      --comment \
+                      --body-file - 
+                  done
+                else
+                  # Fallback: Post as regular PR comments if no commit ID
+                  jq -r '.findings[] | .body' "$file" | while read -r body; do
+                    echo "$body" | gh pr comment ${{ needs.generate-findings.outputs.pr_number }} \
+                      --body-file -
+                  done
+                fi
+              fi
+            fi
+          done
+          
+          echo "Published $TOTAL_COMMENTS comments across $FILES_WITH_FINDINGS files"
+          
+          # If no findings, post a summary
+          if [ "$TOTAL_COMMENTS" -eq 0 ]; then
+            gh pr comment ${{ needs.generate-findings.outputs.pr_number }} \
+              --body "## ✅ Automated Review Complete\n\nNo issues found. The code looks good!"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  summarize-review:
+    name: 4. Summarize Review
+    needs: [publish-review]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Verified Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+
+      - name: Run Summarizer Agent
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "View"
+          direct_prompt: |
+            /project:summarize_findings
+        env:
+          PR_NUMBER: ${{ needs.generate-findings.outputs.pr_number }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1 
