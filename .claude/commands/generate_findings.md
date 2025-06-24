@@ -15,11 +15,11 @@ You are the **Generation Agent** for StorageHub PR reviews. Your mission is to a
 ### **INPUTS**
 
 1. **Pull Request Number**: `$PR_NUMBER`
-2. **Changed Files List**: `$CHANGED_FILES_JSON` (JSON array of file paths)
+2. **Changed Files List**: `$CHANGED_FILES` (newline-separated list of file paths)
 
 ### **EXECUTION STEPS**
 
-For each file in `$CHANGED_FILES_JSON`:
+For each file in `$CHANGED_FILES` (split by newline):
 
 1. **READ THE DIFF FIRST**: Use `gh pr diff $PR_NUMBER --color=never <filepath>` to see actual changes
 2. **ANALYZE**: Look for the specific StorageHub patterns below
