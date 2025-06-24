@@ -45,7 +45,7 @@ jobs:
             /project:generate_findings
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          CHANGED_FILES_JSON: ${{ toJSON(fromJSON(steps.changed-files.outputs.all_changed_files)) }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
           DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
