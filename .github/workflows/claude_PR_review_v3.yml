@@ -1,0 +1,165 @@
+name: Multi-Stage PR Review v3
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  # Stage 0: Setup and file filtering
+  setup:
+    name: Setup Review
+    runs-on: ubuntu-latest
+    outputs:
+      files_changed: ${{ steps.changed-files.outputs.any_changed }}
+      pr_number: ${{ github.event.pull_request.number }}
+      commit_sha: ${{ github.event.pull_request.head.sha }}
+      changed_files_list: ${{ steps.format-files.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.rs
+            **/*.ts
+            **/*.tsx
+            
+      - name: Format Files List
+        id: format-files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  # Stage 1: Check for StorageHub-specific issues
+  analyze:
+    name: Run PR Checks
+    needs: setup
+    if: needs.setup.outputs.files_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Analysis
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Bash,Read,Grep"
+          direct_prompt: |
+            /project:pr_checks
+        env:
+          CHANGED_FILES: ${{ needs.setup.outputs.changed_files_list }}
+          COMMIT_SHA: ${{ needs.setup.outputs.commit_sha }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          
+      - name: Upload Raw Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          if-no-files-found: error
+
+  # Stage 2: Verify findings to filter false positives
+  verify:
+    name: Verify Findings
+    needs: [setup, analyze]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.files_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Raw Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          
+      - name: Run Verification
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Read,Bash"
+          direct_prompt: |
+            /project:verify_findings raw-findings/ verified-findings/
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          
+      - name: Upload Verified Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          if-no-files-found: error
+
+  # Stage 3: Post review comments
+  post-comments:
+    name: Post Review Comments
+    needs: [setup, verify]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.files_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Verified Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          
+      - name: Post Comments with Claude
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-sonnet-4-20250514"
+          allowed_tools: "Read,Bash,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
+          direct_prompt: |
+            Your task: Create a GitHub PR review from verified findings.
+
+            ## Step 1: Read findings
+            Read all JSON files in verified-findings/ directory to get the list of issues.
+
+            ## Step 2: Create review  
+            1. Use mcp__github__create_pending_pull_request_review to start a review
+            2. For each finding:
+               - If the file path is in CHANGED_FILES env var, try adding inline comment with mcp__github__add_pull_request_review_comment_to_pending_review
+               - If that fails (e.g. line not in diff), retry as file-level comment (subjectType: "FILE", no line number)
+               - If both fail, skip and count it
+            3. Use mcp__github__submit_pending_pull_request_review to submit
+
+            ## Step 3: Summary
+            CRITICAL: Before creating the summary, verify the actual number of comments posted:
+            - Keep a precise count of successful vs failed comment attempts during Step 2
+            - If a tool call returns success but you suspect it might have failed silently, note this
+            - The summary MUST reflect the actual reality of what was posted, not optimistic counts
+            
+            Include in the review summary:
+            - Total findings processed
+            - **Actual** successfully posted comments (verified count, not attempted count)
+            - Comments that failed/were skipped (with brief reason)
+            - Breakdown by severity (BUG, SECURITY, PERFORMANCE, SUGGESTION)
+            
+            Format: "Posted X of Y findings as comments (Z skipped due to diff context)"
+
+            If no findings exist, still submit a review saying "✅ Automated review found no issues."
+
+            Context:
+            - PR number: ${{ needs.setup.outputs.pr_number }}
+            - Repository: ${{ github.repository }}
+            - Changed files are in CHANGED_FILES environment variable
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          # Pass the list of changed files so the prompt logic can validate comment locations
+          CHANGED_FILES: ${{ needs.setup.outputs.changed_files_list }}
