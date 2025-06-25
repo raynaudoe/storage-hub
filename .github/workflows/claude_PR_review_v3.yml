@@ -119,8 +119,33 @@ jobs:
           name: verified-findings
           path: verified-findings/
           
-      - name: Post Comments
-        run: |
-          .github/scripts/post-review-comments.sh "${{ needs.setup.outputs.pr_number }}" "verified-findings"
+      - name: Post Comments with Claude
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Read,Bash,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
+          direct_prompt: |
+            Read all JSON files in the verified-findings/ directory.
+            
+            Create a PR review using the GitHub MCP tools:
+            1. First, use mcp__github__create_pending_pull_request_review to create a pending review
+            2. For each finding in the JSON files:
+               - Use mcp__github__add_pull_request_review_comment_to_pending_review to add the finding as a review comment
+               - The comment body should be the 'body' field from the finding
+               - Include the file path and line number from the finding
+            3. After adding all comments, use mcp__github__submit_pending_pull_request_review to submit the review
+            
+            The review summary should include:
+            - Total number of issues found (categorized by severity: BUG, SECURITY, PERFORMANCE, SUGGESTION)
+            - Number of files reviewed
+            - Brief overview of the types of issues found
+            
+            If no findings exist (empty findings arrays), still create and submit a review with a comment saying "✅ Automated review found no issues."
+            
+            IMPORTANT: You MUST use the GitHub MCP tools for creating the review. Do not use gh CLI or any other method.
+            The PR number is: ${{ needs.setup.outputs.pr_number }}
+            Repository: ${{ github.repository }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
