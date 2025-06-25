@@ -73,7 +73,7 @@ jobs:
     name: Verify Findings
     needs: [setup, analyze]
     runs-on: ubuntu-latest
-    if: always() && needs.setup.outputs.files_changed == 'true'
+    if: needs.setup.outputs.files_changed == 'true'
     steps:
       - uses: actions/checkout@v4
       
@@ -108,7 +108,7 @@ jobs:
     name: Post Review Comments
     needs: [setup, verify]
     runs-on: ubuntu-latest
-    if: always() && needs.setup.outputs.files_changed == 'true'
+    if: needs.setup.outputs.files_changed == 'true'
     steps:
       - uses: actions/checkout@v4
       
