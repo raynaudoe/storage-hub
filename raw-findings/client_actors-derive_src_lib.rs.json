@@ -1,0 +1,50 @@
+{
+  "id": "CHK-20250625-120000",
+  "agent_name": "pr-checker",
+  "agent_type": "checks",
+  "source_file": "client/actors-derive/src/lib.rs",
+  "commit_id": "5d3dfe4619270b5eab67cfd1ebecddfc1a0d56db",
+  "timestamp": "2025-06-25T12:00:00Z",
+  "findings": [
+    {
+      "path": "client/actors-derive/src/lib.rs",
+      "line": 313,
+      "severity": "BUG",
+      "category": "panic_possible",
+      "rule_id": "PANIC_UNWRAP",
+      "summary": "Unwrap on mutex lock can panic in production",
+      "body": "**🐞 BUG: Unwrap on mutex lock can panic in production**\n\nThe code calls `.unwrap()` on a mutex lock operation at line 313. If the mutex is poisoned (due to a panic while holding the lock), this will cause a panic in the calling thread.\n\n**Suggestion:**\n```rust\nfn get_registry() -> std::sync::MutexGuard<'static, ActorRegistry> {\n    ACTOR_REGISTRY.lock().unwrap_or_else(|poisoned| {\n        // Log the error but continue with the poisoned data\n        eprintln!(\"Warning: Actor registry mutex was poisoned, continuing anyway\");\n        poisoned.into_inner()\n    })\n}\n```\n\n**Why this matters:** In a production environment, a panic in one thread while holding the mutex lock will poison it, causing all subsequent attempts to acquire the lock to panic, potentially bringing down the entire application.",
+      "confidence": 0.9
+    },
+    {
+      "path": "client/actors-derive/src/lib.rs",
+      "line": 342,
+      "severity": "BUG",
+      "category": "panic_possible",
+      "rule_id": "PANIC_STRING_INDEX",
+      "summary": "Multiple unwrap calls when parsing attribute strings can panic",
+      "body": "**🐞 BUG: Multiple unwrap calls when parsing attribute strings can panic**\n\nThe `get_actor_id_from_attr` function contains multiple `.unwrap()` calls on string operations (lines 332, 333, 342, 343) that could panic if the expected characters are not found.\n\n**Suggestion:**\n```rust\nfn get_actor_id_from_attr(attr: &Attribute) -> Option<String> {\n    let meta_str = attr.meta.to_token_stream().to_string();\n    \n    if !meta_str.starts_with(\"actor\") {\n        return None;\n    }\n    \n    let start_idx = meta_str.find('(')?;\n    let end_idx = meta_str.rfind(')')?;\n    \n    if start_idx >= end_idx {\n        return None;\n    }\n    \n    let params = &meta_str[start_idx + 1..end_idx];\n    \n    if !params.contains(\"actor\") || !params.contains('=') {\n        return None;\n    }\n    \n    let quote_start = params.find('\"')?;\n    let quote_end = params.rfind('\"')?;\n    \n    if quote_start >= quote_end {\n        return None;\n    }\n    \n    let actor_id = &params[quote_start + 1..quote_end];\n    Some(actor_id.to_string())\n}\n```\n\n**Why this matters:** Malformed attributes or unexpected input could cause panics in the procedural macro, leading to compilation failures that are difficult to debug.",
+      "confidence": 0.95
+    },
+    {
+      "path": "client/actors-derive/src/lib.rs",
+      "line": 825,
+      "severity": "BUG",
+      "category": "panic_possible",
+      "rule_id": "PANIC_CHAR_CONVERSION",
+      "summary": "Unwrap on character conversion can theoretically panic",
+      "body": "**🐞 BUG: Unwrap on character conversion can theoretically panic**\n\nIn the `to_snake_case` function at line 825, there's an `.unwrap()` call on `c.to_lowercase().next()`. While unlikely with valid UTF-8, this could theoretically panic.\n\n**Suggestion:**\n```rust\nfn to_snake_case(s: &str) -> String {\n    let mut result = String::new();\n    for (i, c) in s.chars().enumerate() {\n        if c.is_uppercase() {\n            if i > 0 {\n                result.push('_');\n            }\n            // Use extend instead of unwrap on next()\n            result.extend(c.to_lowercase());\n        } else {\n            result.push(c);\n        }\n    }\n    result\n}\n```\n\n**Why this matters:** While extremely unlikely with valid Rust identifiers, defensive programming prevents edge cases from causing compilation failures.",
+      "confidence": 0.7
+    },
+    {
+      "path": "client/actors-derive/src/lib.rs",
+      "line": 308,
+      "severity": "SUGGESTION",
+      "category": "thread_safety",
+      "rule_id": "GLOBAL_MUTABLE_STATE",
+      "summary": "Global mutable state may cause issues in parallel compilation",
+      "body": "**💡 SUGGESTION: Global mutable state may cause issues in parallel compilation**\n\nThe code uses a global mutable registry (`ACTOR_REGISTRY`) to track events across compilation units. This design has inherent limitations mentioned in the documentation (line 90) and could cause issues with parallel compilation or incremental builds.\n\n**Suggestion:**\nConsider documenting these limitations more prominently and potentially exploring alternative designs such as:\n- Using a build script to generate the registry\n- Requiring explicit registration in a central location\n- Using const evaluation or other compile-time techniques\n\n**Why this matters:** The current design may lead to non-deterministic behavior in certain build configurations, especially with cargo's parallel compilation features.",
+      "confidence": 0.8
+    }
+  ]
+}
