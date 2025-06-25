@@ -19,10 +19,18 @@ You are the **Generation Agent** for StorageHub PR reviews. Your mission is to a
 
 ### **EXECUTION STEPS**
 
-First, get the commit SHA:
+First, verify your working directory and get the commit SHA:
 ```bash
+# Verify we're in the right directory
+pwd
+ls -la
+
+# Ensure raw-findings directory exists
+mkdir -p raw-findings
+
 # Get the head commit SHA for the PR
-gh pr view $PR_NUMBER --json headRefOid -q .headRefOid
+COMMIT_SHA=$(gh pr view $PR_NUMBER --json headRefOid -q .headRefOid)
+echo "Commit SHA: $COMMIT_SHA"
 ```
 
 Parse the changed files and iterate:
@@ -42,6 +50,14 @@ For each file:
 3. **CREATE JSON**: Write findings to `raw-findings/<sanitized_filepath>.json`
    - Replace `/` with `_` in filename
    - Example: `pallets/file-system/src/lib.rs` → `raw-findings/pallets_file_system_src_lib.rs.json`
+   - **CRITICAL**: Use absolute path or ensure you're in the right directory:
+     ```bash
+     # Ensure directory exists
+     mkdir -p raw-findings
+     
+     # Write the JSON file
+     echo '{"source_file": "...", "findings": [...]}' > raw-findings/filename.json
+     ```
 
 ### **STORAGEHUB-SPECIFIC PATTERNS TO DETECT**
 
@@ -165,4 +181,16 @@ Extract the commit ID from the PR diff header:
 gh pr view $PR_NUMBER --json headRefOid -q .headRefOid
 ```
 
-**Begin execution.** Read diffs first, extract commit ID, then create JSON files in `raw-findings/`. 
+**Begin execution.** Read diffs first, extract commit ID, then create JSON files in `raw-findings/`.
+
+### **CRITICAL OUTPUT REQUIREMENT**
+
+You MUST write at least one file to the `raw-findings/` directory, even if no issues are found:
+
+```bash
+# If no findings for any files
+mkdir -p raw-findings
+echo '{"source_file": "no_issues", "commit_id": "'$(gh pr view $PR_NUMBER --json headRefOid -q .headRefOid)'", "findings": []}' > raw-findings/no_issues.json
+```
+
+This ensures the artifact is created and subsequent stages can proceed. 

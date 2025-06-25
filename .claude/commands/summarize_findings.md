@@ -97,4 +97,35 @@ Write:
 ✅ DO write specific, actionable summaries:
 > "🐞 **Panic risk** from unwrap() in payment processing - Handle errors properly"
 
-**Begin execution.** Read findings, identify patterns, create actionable summary. 
+**Begin execution.** Read findings, identify patterns, create actionable summary.
+
+### **CRITICAL OUTPUT REQUIREMENT**
+
+You MUST post the summary as a GitHub PR comment:
+
+```bash
+# Read all verified findings
+TOTAL_FINDINGS=0
+CRITICAL_COUNT=0
+# ... analyze findings ...
+
+# Post the summary comment
+gh pr comment $PR_NUMBER --body "## PR Review Summary
+
+**⚠️ Critical Issues:** X security, Y bugs
+
+### Required Actions
+- ...
+
+**Files reviewed:** X | **Total findings:** Y"
+```
+
+If the `verified-findings/` directory is empty or only contains empty findings, still post a summary:
+
+```bash
+gh pr comment $PR_NUMBER --body "## PR Review Summary
+
+**✅ No critical issues found**
+
+**Files reviewed:** 0 | **Total findings:** 0"
+``` 

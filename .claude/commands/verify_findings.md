@@ -19,12 +19,31 @@ You are the **Verification Agent**. Your mission is to eliminate false positives
 
 ### **VERIFICATION PROCESS**
 
+First, verify your working directory:
+```bash
+# Check current directory and contents
+pwd
+ls -la
+ls -la raw-findings/ || echo "No raw-findings directory found"
+
+# Ensure verified-findings directory exists
+mkdir -p verified-findings
+```
+
 For each `.json` file in `raw-findings/`:
 
 1. **READ THE FULL CONTEXT**: Use `Read` to see the complete file around the reported line
 2. **CHECK AGAINST FALSE POSITIVE PATTERNS** (see below)
 3. **VERIFY OR REJECT** each finding
 4. **WRITE VERIFIED FILE** to `verified-findings/` (same filename)
+   - **CRITICAL**: Always write output files:
+     ```bash
+     # Ensure directory exists
+     mkdir -p verified-findings
+     
+     # Write the verified JSON (even if empty findings)
+     echo '{"source_file": "...", "findings": [...]}' > verified-findings/filename.json
+     ```
 
 ### **FALSE POSITIVE PATTERNS TO REJECT**
 
@@ -139,4 +158,28 @@ fn helper_function(x: u32) -> u32 {  // Private helper
 - Keep only findings that would genuinely help developers
 - When in doubt, check if similar code exists elsewhere in the codebase
 
-**Begin execution.** Read full context, verify critically, eliminate false positives. 
+**Begin execution.** Read full context, verify critically, eliminate false positives.
+
+### **CRITICAL OUTPUT REQUIREMENT**
+
+You MUST write files to the `verified-findings/` directory for EVERY file in `raw-findings/`:
+
+```bash
+# Process each raw finding file
+for file in raw-findings/*.json; do
+  if [ -f "$file" ]; then
+    # Read and verify the findings
+    # ...
+    
+    # Write to verified-findings (even if all findings were rejected)
+    basename=$(basename "$file")
+    echo '{"source_file": "...", "findings": [...]}' > "verified-findings/$basename"
+  fi
+done
+
+# If no raw findings exist, create a placeholder
+if [ ! "$(ls -A raw-findings 2>/dev/null)" ]; then
+  mkdir -p verified-findings
+  echo '{"source_file": "no_findings", "findings": []}' > verified-findings/no_findings.json
+fi
+``` 

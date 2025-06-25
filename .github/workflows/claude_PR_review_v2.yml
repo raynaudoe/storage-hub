@@ -33,7 +33,9 @@ jobs:
 
       - name: Create Raw Findings Directory
         if: steps.changed-files.outputs.any_changed == 'true'
-        run: mkdir -p raw-findings
+        run: |
+          mkdir -p raw-findings
+          echo "Created raw-findings directory at: $(pwd)/raw-findings"
 
       - name: Run Generation Agent
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -63,6 +65,7 @@ jobs:
     name: 2. Verify Findings
     needs: generate-findings
     runs-on: ubuntu-latest
+    if: success()
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -72,16 +75,22 @@ jobs:
         with:
           name: raw-findings
           path: raw-findings/
+        continue-on-error: true
 
       - name: Create Verified Findings Directory
-        run: mkdir -p verified-findings
+        run: |
+          mkdir -p verified-findings
+          echo "Created verified-findings directory at: $(pwd)/verified-findings"
+          # List raw findings for debugging
+          echo "Raw findings to verify:"
+          ls -la raw-findings/ || echo "No raw-findings directory"
 
       - name: Run Verification Agent
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: "claude-opus-4-20250514"
-          allowed_tools: "View,GrepTool"
+          allowed_tools: "Read,Grep"
           direct_prompt: |
             /project:verify_findings
         env:
@@ -89,7 +98,20 @@ jobs:
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
           DISABLE_NON_ESSENTIAL_MODEL_CALLS: 1
 
+      - name: Check for Verified Findings
+        id: check-findings
+        run: |
+          if [ -d "verified-findings" ] && [ "$(ls -A verified-findings 2>/dev/null)" ]; then
+            echo "has_findings=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_findings=false" >> $GITHUB_OUTPUT
+            # Create empty directory to avoid artifact error
+            mkdir -p verified-findings
+            echo '{"source_file": "none", "findings": []}' > verified-findings/empty.json
+          fi
+
       - name: Upload Verified Findings
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: verified-findings
@@ -100,6 +122,7 @@ jobs:
     name: 3. Publish Review
     needs: [generate-findings, verify-findings]
     runs-on: ubuntu-latest
+    if: always() && needs.verify-findings.result != 'failure'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -109,9 +132,16 @@ jobs:
         with:
           name: verified-findings
           path: verified-findings/
+        continue-on-error: true
 
       - name: Publish Review Comments
         run: |
+          # Check if verified-findings directory exists
+          if [ ! -d "verified-findings" ]; then
+            echo "No verified-findings directory found. Creating empty one."
+            mkdir -p verified-findings
+          fi
+          
           # Initialize counters
           TOTAL_COMMENTS=0
           FILES_WITH_FINDINGS=0
@@ -167,6 +197,7 @@ jobs:
     name: 4. Summarize Review
     needs: [generate-findings, publish-review]
     runs-on: ubuntu-latest
+    if: always() && needs.publish-review.result != 'failure'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -176,6 +207,7 @@ jobs:
         with:
           name: verified-findings
           path: verified-findings/
+        continue-on-error: true
 
       - name: Run Summarizer Agent
         uses: anthropics/claude-code-action@beta
