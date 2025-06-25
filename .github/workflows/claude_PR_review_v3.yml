@@ -1,0 +1,150 @@
+name: Multi-Stage PR Review v3
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  # Stage 0: Setup and file filtering
+  setup:
+    name: Setup Review
+    runs-on: ubuntu-latest
+    outputs:
+      files_changed: ${{ steps.changed-files.outputs.any_changed }}
+      pr_number: ${{ github.event.pull_request.number }}
+      commit_sha: ${{ github.event.pull_request.head.sha }}
+      changed_files_list: ${{ steps.format-files.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.rs
+            **/*.ts
+            **/*.tsx
+            
+      - name: Format Files List
+        id: format-files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  # Stage 1: Check for StorageHub-specific issues
+  analyze:
+    name: Run PR Checks
+    needs: setup
+    if: needs.setup.outputs.files_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Analysis
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Bash,Read,Grep"
+          direct_prompt: |
+            /project:pr_checks
+        env:
+          CHANGED_FILES: ${{ needs.setup.outputs.changed_files_list }}
+          COMMIT_SHA: ${{ needs.setup.outputs.commit_sha }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          
+      - name: Upload Raw Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          if-no-files-found: error
+
+  # Stage 2: Verify findings to filter false positives
+  verify:
+    name: Verify Findings
+    needs: [setup, analyze]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.files_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Raw Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          
+      - name: Run Verification
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Read,Bash"
+          direct_prompt: |
+            /project:verify_findings raw-findings/ verified-findings/
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          
+      - name: Upload Verified Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          if-no-files-found: error
+
+  # Stage 3: Post review comments
+  post-comments:
+    name: Post Review Comments
+    needs: [setup, verify]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.files_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Verified Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          
+      - name: Post Comments with Claude
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Read,Bash,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
+          direct_prompt: |
+            Read all JSON files in the verified-findings/ directory.
+            
+            Create a PR review using the GitHub MCP tools:
+            1. First, use mcp__github__create_pending_pull_request_review to create a pending review
+            2. For each finding in the JSON files:
+               - Use mcp__github__add_pull_request_review_comment_to_pending_review to add the finding as a review comment
+               - The comment body should be the 'body' field from the finding
+               - Include the file path and line number from the finding
+            3. After adding all comments, use mcp__github__submit_pending_pull_request_review to submit the review
+            
+            The review summary should include:
+            - Total number of issues found (categorized by severity: BUG, SECURITY, PERFORMANCE, SUGGESTION)
+            - Number of files reviewed
+            - Brief overview of the types of issues found
+            
+            If no findings exist (empty findings arrays), still create and submit a review with a comment saying "✅ Automated review found no issues."
+            
+            IMPORTANT: You MUST use the GitHub MCP tools for creating the review. Do not use gh CLI or any other method.
+            The PR number is: ${{ needs.setup.outputs.pr_number }}
+            Repository: ${{ github.repository }}
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
