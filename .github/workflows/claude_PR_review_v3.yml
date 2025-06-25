@@ -52,7 +52,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: "claude-4-0-sonnet-20250219"
+          model: "claude-opus-4-20250514"
           allowed_tools: "Bash,Read,Grep"
           direct_prompt: |
             /project:pr_checks
@@ -88,7 +88,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: "claude-4-0-sonnet-20250219"
+          model: "claude-opus-4-20250514"
           allowed_tools: "Read,Bash"
           direct_prompt: |
             /project:verify_findings raw-findings/ verified-findings/
@@ -122,45 +122,42 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: "claude-4-0-sonnet-20250219"
+          model: "claude-sonnet-4-20250514"
           allowed_tools: "Read,Bash,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
           direct_prompt: |
-            Read all JSON files in the verified-findings/ directory.
+            Your task: Create a GitHub PR review from verified findings.
+
+            ## Step 1: Read findings
+            Read all JSON files in verified-findings/ directory to get the list of issues.
+
+            ## Step 2: Create review  
+            1. Use mcp__github__create_pending_pull_request_review to start a review
+            2. For each finding:
+               - If the file path is in CHANGED_FILES env var, try adding inline comment with mcp__github__add_pull_request_review_comment_to_pending_review
+               - If that fails (e.g. line not in diff), retry as file-level comment (subjectType: "FILE", no line number)
+               - If both fail, skip and count it
+            3. Use mcp__github__submit_pending_pull_request_review to submit
+
+            ## Step 3: Summary
+            CRITICAL: Before creating the summary, verify the actual number of comments posted:
+            - Keep a precise count of successful vs failed comment attempts during Step 2
+            - If a tool call returns success but you suspect it might have failed silently, note this
+            - The summary MUST reflect the actual reality of what was posted, not optimistic counts
             
-            # NEW: Gather the list of files actually modified in this PR so we can validate that each
-            # finding maps to a line that GitHub will accept for an inline comment.  The newline-separated
-            # list is available in the environment variable `CHANGED_FILES`.
-
-            ## Comment-posting algorithm (robust-mode)
-            # 1. Create a pending review with mcp__github__create_pending_pull_request_review.
-            # 2. For each finding in the verified JSON files **whose `path` appears in CHANGED_FILES**:
-            #      a. Attempt to add an inline comment with mcp__github__add_pull_request_review_comment_to_pending_review
-            #         using the provided `path` and `line`.
-            #      b. Inspect the tool result.  If it contains an error (for example HTTP 422 because the
-            #         line is outside the diff hunk) **retry once** as a file-level comment by omitting
-            #         `line` and setting `subjectType` to `FILE`.
-            #      c. If the retry also fails, skip the finding and record it in an internal `skipped`
-            #         list so the summary can mention any dropped comments.
-            # 3. After processing all findings, submit the review with mcp__github__submit_pending_pull_request_review.
-
-            ## Review summary must include:
-            #  - Total number of findings processed
-            #  - Number of successfully attached comments
-            #  - Number of comments skipped because they were outside the diff context
-            #  - Breakdown by severity (BUG, SECURITY, PERFORMANCE, SUGGESTION)
-
-            If no findings exist (empty arrays) still create and submit a review comment saying
-            "✅ Automated review found no issues."  Ensure that at least one comment (summary) is posted.
-            
-            The review summary should include:
-            - Total number of findings processed
-            - Number of successfully attached comments
-            - Number of comments skipped because they were outside the diff context
+            Include in the review summary:
+            - Total findings processed
+            - **Actual** successfully posted comments (verified count, not attempted count)
+            - Comments that failed/were skipped (with brief reason)
             - Breakdown by severity (BUG, SECURITY, PERFORMANCE, SUGGESTION)
             
-            IMPORTANT: You MUST use the GitHub MCP tools for creating the review. Do not use gh CLI or any other method.
-            The PR number is: ${{ needs.setup.outputs.pr_number }}
-            Repository: ${{ github.repository }}
+            Format: "Posted X of Y findings as comments (Z skipped due to diff context)"
+
+            If no findings exist, still submit a review saying "✅ Automated review found no issues."
+
+            Context:
+            - PR number: ${{ needs.setup.outputs.pr_number }}
+            - Repository: ${{ github.repository }}
+            - Changed files are in CHANGED_FILES environment variable
         env:
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
