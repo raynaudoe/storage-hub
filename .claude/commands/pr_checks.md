@@ -11,7 +11,11 @@ Parse arguments:
 - Last argument if it ends with `/` or contains `output`: use as output directory
 - Default output: `raw-findings/`
 
-Analyze the files for StorageHub-specific issues. Create JSON findings in output directory.
+**REQUIRED STEPS:**
+1. Create output directory: `mkdir -p raw-findings/` (or custom output dir)
+2. Analyze the files for StorageHub-specific issues
+3. For EACH file analyzed, create a JSON file (even if no findings)
+4. If no files to analyze, create `raw-findings/summary.json` with empty findings array
 
 **MANDATORY: Check these in EVERY PR review:**
 
@@ -84,4 +88,19 @@ For each file, create `raw-findings/<sanitized_filename>.json`:
 }
 ```
 
-Process each file in `$CHANGED_FILES`. Skip test/benchmark files unless relevant. Empty findings array if clean.
+Process each file in `$CHANGED_FILES`. Skip test/benchmark files unless relevant. 
+
+**IMPORTANT:** Always create at least one JSON file:
+- If files analyzed: Create one JSON per file with findings (empty array if clean)
+- If no files to analyze: Create `raw-findings/summary.json` with:
+```json
+{
+  "id": "CHK-YYYYMMDD-HHMMSS",
+  "agent_name": "pr-checker",
+  "agent_type": "checks",
+  "source_file": "none",
+  "commit_id": "$COMMIT_SHA",
+  "timestamp": "ISO8601",
+  "findings": []
+}
+```

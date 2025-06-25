@@ -13,16 +13,18 @@ fi
 TOTAL_COMMENTS=0
 CRITICAL_COUNT=0
 FILES_REVIEWED=0
+HAS_FINDINGS=false
 
 # Process each verified JSON
+shopt -s nullglob  # Handle case where no files match
 for file in "$VERIFIED_DIR"/*.json; do
-  [ -f "$file" ] || continue
   FILES_REVIEWED=$((FILES_REVIEWED + 1))
   
-  # Count findings by severity
-  FINDINGS=$(jq -c '.findings[]' "$file" 2>/dev/null || echo "")
-  
-  if [ -n "$FINDINGS" ]; then
+  # Count findings by severity (handle both regular findings and empty findings arrays)
+  if jq -e '.findings | length > 0' "$file" >/dev/null 2>&1; then
+    HAS_FINDINGS=true
+    FINDINGS=$(jq -c '.findings[]' "$file")
+    
     while IFS= read -r finding; do
       TOTAL_COMMENTS=$((TOTAL_COMMENTS + 1))
       
@@ -39,7 +41,7 @@ for file in "$VERIFIED_DIR"/*.json; do
 done
 
 # Post summary
-if [ "$TOTAL_COMMENTS" -eq 0 ]; then
+if [ "$HAS_FINDINGS" = "false" ]; then
   if [ "$FILES_REVIEWED" -gt 0 ]; then
     gh pr comment "$PR_NUMBER" --body "## ✅ Automated Review Complete
 

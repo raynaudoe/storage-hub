@@ -67,7 +67,7 @@ jobs:
         with:
           name: raw-findings
           path: raw-findings/
-          if-no-files-found: warn
+          if-no-files-found: error
 
   # Stage 2: Verify findings to filter false positives
   verify:
@@ -102,7 +102,7 @@ jobs:
         with:
           name: verified-findings
           path: verified-findings/
-          if-no-files-found: warn
+          if-no-files-found: error
 
   # Stage 3: Post review comments
   post-comments:
