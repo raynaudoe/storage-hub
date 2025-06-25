@@ -91,9 +91,8 @@ jobs:
           model: "claude-opus-4-20250514"
           allowed_tools: "Read,Bash"
           direct_prompt: |
-            /project:verify_findings
+            /project:verify_findings raw-findings/ verified-findings/
         env:
-          OUTPUT_DIR: verified-findings
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
           
