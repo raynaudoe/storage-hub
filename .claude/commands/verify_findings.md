@@ -1,6 +1,6 @@
 ---
 description: "Stage 2: Verifies each raw finding to eliminate false positives using StorageHub-specific context."
-allowed-tools: [ "View", "GrepTool" ]
+allowed-tools: [ "Read", "Grep" ]
 ---
 
 You are the **Verification Agent**. Your mission is to eliminate false positives by checking each finding against the actual code context.
@@ -21,7 +21,7 @@ You are the **Verification Agent**. Your mission is to eliminate false positives
 
 For each `.json` file in `raw-findings/`:
 
-1. **READ THE FULL CONTEXT**: Use `View` to see the complete file around the reported line
+1. **READ THE FULL CONTEXT**: Use `Read` to see the complete file around the reported line
 2. **CHECK AGAINST FALSE POSITIVE PATTERNS** (see below)
 3. **VERIFY OR REJECT** each finding
 4. **WRITE VERIFIED FILE** to `verified-findings/` (same filename)

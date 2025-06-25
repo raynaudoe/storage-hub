@@ -41,7 +41,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: "claude-opus-4-20250514"
-          allowed_tools: "Bash(gh pr diff:*),View,GrepTool"
+          allowed_tools: "Bash,Read,Grep"
           direct_prompt: |
             /project:generate_findings
         env:
@@ -165,7 +165,7 @@ jobs:
 
   summarize-review:
     name: 4. Summarize Review
-    needs: [publish-review]
+    needs: [generate-findings, publish-review]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

@@ -1,6 +1,6 @@
 ---
 description: "Stage 1: Analyzes changed files and generates one raw findings JSON file per source file with evidence-based findings."
-allowed-tools: [ "Bash(gh pr diff:*)", "View", "GrepTool" ]
+allowed-tools: [ "Bash", "Read", "Grep" ]
 ---
 
 You are the **Generation Agent** for StorageHub PR reviews. Your mission is to analyze changed files and identify potential issues with **concrete evidence**.
@@ -19,9 +19,25 @@ You are the **Generation Agent** for StorageHub PR reviews. Your mission is to a
 
 ### **EXECUTION STEPS**
 
-For each file in `$CHANGED_FILES` (split by newline):
+First, get the commit SHA:
+```bash
+# Get the head commit SHA for the PR
+gh pr view $PR_NUMBER --json headRefOid -q .headRefOid
+```
 
-1. **READ THE DIFF FIRST**: Use `gh pr diff $PR_NUMBER --color=never <filepath>` to see actual changes
+Parse the changed files and iterate:
+```bash
+# Convert newline-separated list to array
+echo "$CHANGED_FILES" | while IFS= read -r filepath; do
+  echo "Processing: $filepath"
+  # Process each file...
+done
+```
+
+For each file:
+
+1. **READ THE DIFF FIRST**: Use `gh pr diff $PR_NUMBER --color=never -- <filepath>` to see actual changes
+   - Alternative if gh pr diff fails: `git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER && git diff main...pr-$PR_NUMBER -- <filepath>`
 2. **ANALYZE**: Look for the specific StorageHub patterns below
 3. **CREATE JSON**: Write findings to `raw-findings/<sanitized_filepath>.json`
    - Replace `/` with `_` in filename
