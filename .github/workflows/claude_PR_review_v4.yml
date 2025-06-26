@@ -1,0 +1,173 @@
+name: Multi-Stage PR Review v4
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  # Stage 0: Setup and file filtering
+  setup:
+    name: Setup Review
+    runs-on: ubuntu-latest
+    outputs:
+      files_changed: ${{ steps.changed-files.outputs.any_changed }}
+      pr_number: ${{ github.event.pull_request.number }}
+      commit_sha: ${{ github.event.pull_request.head.sha }}
+      changed_files_list: ${{ steps.format-files.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.rs
+            **/*.ts
+            **/*.tsx
+            
+      - name: Format Files List
+        id: format-files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  # Stage 1: Check for StorageHub-specific issues
+  analyze:
+    name: Run PR Checks
+    needs: setup
+    if: needs.setup.outputs.files_changed == 'true'
+    outputs:
+      progress_comment_id: ${{ steps.create-comment.outputs.comment_id }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create progress comment
+        id: create-comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const comment = await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.pull_request.number }},
+              body: "⏳ Claude automated review has started. Results will appear here shortly."
+            });
+            core.setOutput('comment_id', comment.data.id);
+
+      - name: Run Analysis
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Bash,Read,Grep"
+          prompt_file: ".claude/commands/pr_checks.md"
+        env:
+          CHANGED_FILES: ${{ needs.setup.outputs.changed_files_list }}
+          COMMIT_SHA: ${{ needs.setup.outputs.commit_sha }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          
+      - name: Upload Raw Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          if-no-files-found: error
+
+  # Stage 2: Verify findings to filter false positives
+  verify:
+    name: Verify Findings
+    needs: [setup, analyze]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.files_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Raw Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: raw-findings
+          path: raw-findings/
+          
+      - name: Run Verification
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-opus-4-20250514"
+          allowed_tools: "Read,Bash"
+          prompt_file: ".claude/commands/verify_findings.md"
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          
+      - name: Upload Verified Findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          if-no-files-found: error
+
+  # Stage 3: Post review comments
+  post-comments:
+    name: Post Review Comments
+    needs: [setup, analyze, verify]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.files_changed == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download Verified Findings
+        uses: actions/download-artifact@v4
+        with:
+          name: verified-findings
+          path: verified-findings/
+          
+      - name: Post Comments with Claude
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: "claude-sonnet-4-20250514"
+          allowed_tools: "Read,Bash,mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review"
+          prompt_file: ".claude/commands/post_comments.md"
+        env:
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          PR_NUMBER: ${{ needs.setup.outputs.pr_number }}
+          REPOSITORY: ${{ github.repository }}
+          CHANGED_FILES: ${{ needs.setup.outputs.changed_files_list }}
+
+      - name: Update progress comment with summary
+        if: needs.analyze.outputs.progress_comment_id != ''
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = ${{ github.event.pull_request.number }};
+            // Fetch latest reviews to get summary body from Claude review
+            const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              per_page: 1,
+            });
+            
+            // Find the most recent review (they come in chronological order)
+            const latestReview = reviews.data[reviews.data.length - 1];
+            const summaryBody = latestReview?.body || '⚠️ Unable to retrieve review summary.';
+            
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: Number('${{ needs.analyze.outputs.progress_comment_id }}'),
+              body: summaryBody
+            });
