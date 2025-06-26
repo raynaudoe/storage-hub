@@ -85,6 +85,29 @@ fi
 
 echo "Scout is starting its mission for release: $RELEASE_TAG"
 
+# Ask user if they want to create a new branch for applying patches
+SUGGESTED_BRANCH="sdk-upgrade-${RELEASE_TAG}"
+echo ""
+read -p "🌿 Create new branch '$SUGGESTED_BRANCH'? (y/n) [n]: " -r CREATE_BRANCH
+
+if [[ $CREATE_BRANCH =~ ^[Yy]$ ]]; then
+  read -p "Branch name [$SUGGESTED_BRANCH]: " -r BRANCH_NAME
+  BRANCH_NAME=${BRANCH_NAME:-$SUGGESTED_BRANCH}
+  
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "❌ Not in a git repository. Cannot create branch."
+    exit 1
+  fi
+  
+  if git show-ref --verify --quiet refs/heads/"$BRANCH_NAME"; then
+    git checkout "$BRANCH_NAME"
+    echo "🔄 Switched to existing branch: $BRANCH_NAME"
+  else
+    git checkout -b "$BRANCH_NAME"
+    echo "🌱 Created branch: $BRANCH_NAME"
+  fi
+fi
+
 # Fetch the release notes using GitHub CLI
 echo "Fetching release notes from GitHub..."
 RELEASE_BODY=$(gh release view "$RELEASE_TAG" --repo paritytech/polkadot-sdk --json body -q .body 2>/dev/null || true)
