@@ -715,6 +715,30 @@ All assigned Polkadot node subsystem and networking crates successfully upgraded
 • polkadot-node-collation-generation builds without issues as collator-specific functionality
 • All assigned crates already configured with polkadot-stable2409 branch - no code changes needed beyond workspace declarations
 
+## rococo-runtime, westend-runtime
+
+### Overview
+Polkadot testnet runtime crates successfully upgraded to polkadot-stable2409 with rococo-runtime added as direct workspace dependency and westend-runtime available as transitive dependency.
+
+### Common issues & fixes
+• 🔴 *rococo-runtime needed explicit workspace dependency declaration*
+  🟢 *Crate used by polkadot-cli with rococo-native feature but not declared in workspace*
+  ✅ *Added rococo-runtime to workspace Cargo.toml with polkadot-stable2409 branch*
+
+• 🔴 *westend-runtime not directly accessible via `-p` flag despite being in Cargo.lock*
+  🟢 *Crate exists only as transitive dependency pulled in by polkadot-cli or other dependencies*
+  ✅ *westend-runtime@18.1.0 available as transitive dependency - no direct workspace declaration needed*
+
+• 🔴 *westend-runtime-constants exists as transitive dependency only*
+  🟢 *Runtime constants crate available at v17.0.0 but not needed as direct workspace dependency*
+  ✅ *westend-runtime-constants correctly sourced from polkadot-stable2409 branch via transitive dependencies*
+
+### Optimisations & tips
+• rococo-runtime@18.0.1 builds cleanly with --all-targets in under 30 seconds
+• rococo-runtime-constants@17.0.0 already configured and builds in under 1 second
+• westend-runtime@18.1.0 exists in Cargo.lock as transitive dependency - no direct workspace declaration needed
+• Both runtime crates already correctly sourced from polkadot-stable2409 branch without code changes
+
 ## rococo-runtime-constants, westend-runtime-constants
 
 ### Overview
