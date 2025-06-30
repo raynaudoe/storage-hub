@@ -196,3 +196,27 @@ Core substrate executor crates already configured for polkadot-stable2409 as tra
 • Use versioned cargo check: sc-allocator@29.0.0, sc-executor-common@0.35.0, sc-executor-polkavm@0.32.0, sc-executor-wasmtime@0.35.0
 • sc-executor already configured in workspace dependencies with polkadot-stable2409 branch - no direct config needed
 • Focus on RPC compatibility issues rather than executor-specific problems when troubleshooting builds
+
+## sc-transaction-pool-api, sc-utils, sc-state-db, sc-client-api, sc-client-db, sc-keystore
+
+### Overview
+Substrate client service crates successfully upgraded to polkadot-stable2409 with workspace dependency additions and jsonrpsee version compatibility fixes.
+
+### Common issues & fixes
+• 🔴 *jsonrpsee version conflict between 0.23.1 and 0.24.9 causing RpcModule<()> vs RpcModule<_> mismatches*
+  🟢 *polkadot-stable2409 uses jsonrpsee 0.24.9 while workspace was using 0.23.1*
+  ✅ *Updated workspace jsonrpsee version from "0.23.1" to "0.24.9" with same features*
+
+• 🔴 *prometheus_registry moved value error in service.rs network configuration*
+  🟢 *FullNetworkConfiguration::new consumes the prometheus_registry parameter*
+  ✅ *Added .clone() to prometheus_registry usage: prometheus_registry.clone()*
+
+• 🔴 *sc-transaction-pool-api test compilation failures with --all-targets*
+  🟢 *Missing dev-dependencies for test features (serde_json not available in test context)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+### Optimisations & tips
+• Client service crates (sc-client-api, sc-utils, sc-transaction-pool-api) build cleanly without code changes
+• sc-state-db, sc-client-db, sc-keystore needed workspace dependency additions but compile without modification
+• jsonrpsee version compatibility is critical - ensure workspace version matches polkadot-stable2409 requirements
+• Prometheus registry parameters may need .clone() calls due to move semantics in network configuration

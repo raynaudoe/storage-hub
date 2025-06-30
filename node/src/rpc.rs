@@ -69,7 +69,7 @@ where
         pool,
         maybe_storage_hub_client_config,
         command_sink,
-        deny_unsafe,
+        deny_unsafe: _,
     } = deps;
 
     io.merge(System::new(client.clone(), pool).into_rpc())?;

@@ -36,7 +36,7 @@ futures-timer = "3.0.1"
 hash-db = "0.16.0"
 hex = "0.4.3"
 hex-literal = { version = "0.4.1" }
-jsonrpsee = { version = "0.23.1", features = ["server", "jsonrpsee-proc-macros", "tracing"] }
+jsonrpsee = { version = "0.24.9", features = ["server", "jsonrpsee-proc-macros", "tracing"] }
 kvdb = "0.13.0"
 kvdb-memorydb = "0.13.0"
 kvdb-rocksdb = "0.19.0"
@@ -115,6 +115,9 @@ sc-tracing = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = 
 sc-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sc-transaction-pool-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sc-utils = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+sc-state-db = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+sc-client-db = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+sc-keystore = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-weights = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 substrate-frame-rpc-system = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 substrate-prometheus-endpoint = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }

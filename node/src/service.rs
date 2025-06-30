@@ -354,7 +354,7 @@ where
 
     let prometheus_registry = config.prometheus_registry().cloned();
     let mut net_config =
-        sc_network::config::FullNetworkConfiguration::<_, _, Network>::new(&config.network, prometheus_registry);
+        sc_network::config::FullNetworkConfiguration::<_, _, Network>::new(&config.network, prometheus_registry.clone());
     let collator = config.role.is_authority();
     let select_chain = maybe_select_chain
         .expect("In `dev` mode, `new_partial` will return some `select_chain`; qed");
