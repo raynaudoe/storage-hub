@@ -123,3 +123,27 @@ Core substrate consensus and block building primitives successfully upgraded to 
 • Use versioned cargo check: sp-authority-discovery@34.0.0, sp-session@36.0.0, sp-consensus-grandpa@21.0.0
 • sp-consensus-beefy@22.1.0, sp-mmr-primitives@34.1.0 compile libs but tests fail due to array-bytes feature gating
 • sp-npos-elections@34.0.0 lib builds cleanly; tests fail due to missing substrate-test-utils dev dependency
+
+## frame-support-procedural-tools, frame-support-procedural, frame-support, frame-system, frame-metadata-hash-extension, frame-system-rpc-runtime-api, frame-try-runtime
+
+### Overview
+Core substrate frame crates already configured for polkadot-stable2409 in workspace dependencies and building successfully without modifications.
+
+### Common issues & fixes
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*  
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. frame-support@38.2.0, frame-system@38.0.0)*
+
+• 🔴 *frame-metadata-hash-extension test compilation failures with --all-targets*
+  🟢 *Missing dev-dependencies for test features (substrate-test-runtime-client, frame-metadata, merkleized-metadata, etc.)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *frame-support-procedural-tools cargo internal error with versioned check*
+  🟢 *Cargo feature resolution issue for procedural macro crate dependency*
+  ✅ *Crate builds successfully as dependency of frame-support-procedural@30.0.6*
+
+### Optimisations & tips
+• Frame core crates (frame-support@38.2.0, frame-system@38.0.0) build cleanly without code changes
+• frame-metadata-hash-extension@0.6.0, frame-system-rpc-runtime-api, frame-try-runtime all verify individually
+• frame-support-procedural@30.0.6 includes procedural-tools as working dependency
+• All frame crates already configured in workspace with polkadot-stable2409 branch - no Cargo.toml changes needed
