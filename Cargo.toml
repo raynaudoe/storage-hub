@@ -266,6 +266,8 @@ cumulus-client-service = { git = "https://github.com/paritytech/polkadot-sdk.git
 cumulus-primitives-parachain-inherent = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-relay-chain-interface = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-relay-chain-rpc-interface = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+cumulus-relay-chain-inprocess-interface = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+cumulus-relay-chain-minimal-node = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-pallet-aura-ext = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-pallet-parachain-system = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-pallet-session-benchmarking = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
