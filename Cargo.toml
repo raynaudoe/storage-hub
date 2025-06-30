@@ -195,6 +195,11 @@ polkadot-node-jaeger = { git = "https://github.com/paritytech/polkadot-sdk.git",
 polkadot-node-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-statement-table = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 tracing-gum = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-node-metrics = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-node-network-protocol = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-node-subsystem-types = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-overseer = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-node-subsystem = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 
 # Polkadot
 polkadot-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", features = [
