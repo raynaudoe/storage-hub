@@ -9,6 +9,7 @@
 • **jsonrpsee RPC Module Fixes**: Remove extra `.into()` calls in RPC module merges and adjust return types from `Ok(io.into())` to `Ok(io)` for compatibility.
 • **Most procedural macro crates compile without changes**: sp-api-proc-macro, sp-runtime-interface-proc-macro, cumulus-pallet-parachain-system-proc-macro, etc. work out of the box.
 • **XCM Crates Test Dependencies**: XCM staging crates (staging-xcm, staging-xcm-executor, staging-xcm-builder) may fail test compilation due to missing `hex_literal` dev-dependency, but libs compile cleanly.
+• **Cumulus Primitives**: All cumulus-primitives-* crates compile cleanly without code changes - just need workspace dependency declarations.
 
 ## binary-merkle-tree, cumulus-pallet-parachain-system-proc-macro, fork-tree, frame-election-provider-solution-type, frame-support-procedural-tools-derive, pallet-staking-reward-curve, sc-chain-spec-derive, sc-network-types, sc-tracing-proc-macro, sp-api-proc-macro, sp-arithmetic, sp-crypto-hashing, sp-database, sp-debug-derive, sp-maybe-compressed-blob, sp-metadata-ir, sp-panic-handler, sp-runtime-interface-proc-macro, sp-std, sp-tracing, sp-version-proc-macro, sp-wasm-interface, substrate-bip39, substrate-build-script-utils, substrate-prometheus-endpoint, tracing-gum-proc-macro, xcm-procedural
 
@@ -497,3 +498,23 @@ Election and consensus pallet crates successfully upgraded to polkadot-stable240
 • Consensus pallets (pallet-babe@38.0.0, pallet-beefy, pallet-grandpa) compile without issues
 • Use versioned cargo check for ambiguous packages: pallet-fast-unstake@37.0.0, pallet-broker@0.17.2
 • Several assigned pallets (bags-list, delegated-staking, im-online, nomination-pools variants) don't exist as standalone crates in stable2409
+
+## cumulus-primitives-core, cumulus-primitives-aura, cumulus-primitives-parachain-inherent, cumulus-primitives-proof-size-hostfunction, cumulus-test-relay-sproof-builder
+
+### Overview
+Cumulus primitive crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies - all crates already configured and building without any code changes.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for cumulus-primitives-proof-size-hostfunction, cumulus-test-relay-sproof-builder*
+  🟢 *Crates not explicitly declared in workspace but needed for individual crate checks*
+  ✅ *Added cumulus-primitives-proof-size-hostfunction, cumulus-test-relay-sproof-builder to workspace Cargo.toml*
+
+• 🔴 *Workspace builds with minor warning about unused field*
+  🟢 *Unused `deny_unsafe` field in RPC FullDeps struct leftover from jsonrpsee upgrade*
+  ✅ *Warning does not prevent compilation; workspace builds successfully*
+
+### Optimisations & tips
+• All cumulus primitive crates (cumulus-primitives-core, cumulus-primitives-aura, cumulus-primitives-parachain-inherent) build cleanly without code changes
+• cumulus-primitives-proof-size-hostfunction and cumulus-test-relay-sproof-builder compile in under 1 second each  
+• All cumulus primitives already configured with polkadot-stable2409 branch - workspace builds successfully with only dead code warnings
+• Cumulus primitives are fundamental parachain components and work out of the box with stable2409
