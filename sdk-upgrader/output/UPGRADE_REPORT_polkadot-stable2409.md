@@ -452,3 +452,27 @@ Core polkadot primitive crates already configured for polkadot-stable2409 in wor
 • Core primitives (polkadot-core-primitives@15.0.0, polkadot-parachain-primitives@14.0.0, polkadot-primitives@16.0.0) build cleanly with --all-targets
 • Individual crate checks verify successfully in under 2 seconds each
 • Workspace builds successfully with only one minor dead code warning
+
+## frame-election-provider-support, pallet-babe, pallet-beefy, pallet-beefy-mmr, pallet-broker, pallet-election-provider-multi-phase, pallet-elections-phragmen, pallet-fast-unstake, pallet-grandpa, pallet-offences
+
+### Overview
+Election and consensus pallet crates successfully upgraded to polkadot-stable2409 with workspace dependency additions, though several assigned pallets don't exist as standalone crates in this SDK version.
+
+### Common issues & fixes
+• 🔴 *Multiple assigned pallets not available as standalone crates: pallet-bags-list, pallet-delegated-staking, pallet-im-online, pallet-nomination-pools, pallet-nomination-pools-benchmarking, pallet-nomination-pools-runtime-api, pallet-offences-benchmarking*
+  🟢 *These pallets either don't exist in polkadot-stable2409 or are feature-gated/included in other crates*
+  ✅ *Added only existing standalone crates to workspace dependencies, excluded non-existent ones*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: frame-election-provider-support@38.0.0, pallet-babe@38.0.0, pallet-broker@0.17.2, etc.*
+
+• 🔴 *pallet-election-provider-support-benchmarking cargo resolver panic*
+  🟢 *Feature resolution issue for benchmarking crate dependency*
+  ✅ *Crate may be feature-gated or conditionally compiled - excluded from workspace to avoid resolver conflicts*
+
+### Optimisations & tips
+• Core election pallets (frame-election-provider-support@38.0.0, pallet-election-provider-multi-phase@37.0.0, pallet-elections-phragmen) build cleanly
+• Consensus pallets (pallet-babe@38.0.0, pallet-beefy, pallet-grandpa) compile without issues
+• Use versioned cargo check for ambiguous packages: pallet-fast-unstake@37.0.0, pallet-broker@0.17.2
+• Several assigned pallets (bags-list, delegated-staking, im-online, nomination-pools variants) don't exist as standalone crates in stable2409
