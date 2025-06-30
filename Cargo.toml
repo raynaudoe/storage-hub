@@ -190,6 +190,8 @@ pallet-elections-phragmen = { git = "https://github.com/paritytech/polkadot-sdk.
 pallet-fast-unstake = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 pallet-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 pallet-offences = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-runtime-metrics = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+slot-range-helper = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-erasure-coding = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-node-jaeger = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-node-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
