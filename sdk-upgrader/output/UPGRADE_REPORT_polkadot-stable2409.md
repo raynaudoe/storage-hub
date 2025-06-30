@@ -360,3 +360,27 @@ Substrate client service crates successfully upgraded to polkadot-stable2409 by 
 • RPC crates (sc-rpc, sc-rpc-api, sc-rpc-server, sc-rpc-spec-v2, sc-sync-state-rpc) compile without issues  
 • Service crates (sc-offchain, sc-informant, sc-sysinfo, sc-telemetry, sc-tracing, sc-transaction-pool) all compatible
 • All sc-* crates already configured with polkadot-stable2409 branch - workspace builds successfully with one minor warning only
+
+## pallet-aura, pallet-authority-discovery, pallet-balances, pallet-collective, pallet-conviction-voting, pallet-democracy, pallet-identity, pallet-message-queue, pallet-mmr, pallet-nis, pallet-ranked-collective, pallet-referenda, pallet-society, pallet-state-trie-migration
+
+### Overview
+Core substrate pallet crates successfully upgraded to polkadot-stable2409 with workspace dependency additions for completeness, though only a subset are actively used in this Storage Hub parachain runtime.
+
+### Common issues & fixes
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*  
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. pallet-balances@39.0.1, pallet-authority-discovery@38.0.0)*
+
+• 🔴 *Test compilation failures with --all-targets on pallet-aura due to missing sp_io*
+  🟢 *Missing dev-dependencies for test features (sp_io not available in test context)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Most assigned pallets not used in specialized Storage Hub parachain runtime*
+  🟢 *Storage Hub focuses on decentralized storage, not governance/staking/identity features*
+  ✅ *Only pallet-aura, pallet-balances, pallet-message-queue actively used; others added to workspace for completeness*
+
+### Optimisations & tips
+• Active pallets (pallet-aura, pallet-balances, pallet-message-queue) already configured and build cleanly in runtime context
+• Unused pallets (authority-discovery, collective, conviction-voting, democracy, identity, mmr, nis, ranked-collective, referenda, society, state-trie-migration) compile individually but not integrated in runtime
+• Use versioned cargo check for ambiguous packages: pallet-balances@39.0.1, pallet-message-queue@41.0.2, pallet-authority-discovery@38.0.0
+• All pallet crates configured with polkadot-stable2409 branch - workspace builds successfully with only dead code warnings
