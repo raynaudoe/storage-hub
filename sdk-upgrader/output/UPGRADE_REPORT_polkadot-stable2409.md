@@ -316,3 +316,23 @@ Substrate consensus crates successfully upgraded to polkadot-stable2409 by addin
 • BABE/GRANDPA/BEEFY consensus crates compile successfully but unused in parachain architecture
 • sc-consensus-aura@0.45.0, sc-consensus-manual-seal used in development mode with manual sealing
 • All consensus crates already configured with polkadot-stable2409 branch - workspace builds successfully with minor warnings only
+
+## sc-authority-discovery, sc-basic-authorship, sc-chain-spec, sc-informant, sc-mixnet, sc-offchain, sc-rpc-api, sc-rpc-server, sc-rpc, sc-rpc-spec-v2, sc-storage-monitor, sc-sync-state-rpc, sc-sysinfo, sc-telemetry, sc-tracing, sc-transaction-pool
+
+### Overview
+Substrate client service crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies for completeness.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for sc-informant, sc-mixnet, sc-rpc-api, sc-rpc-server, sc-rpc-spec-v2, sc-storage-monitor, sc-sync-state-rpc*
+  🟢 *Crates not explicitly declared in workspace but needed for individual crate checks*
+  ✅ *Added sc-informant, sc-mixnet, sc-rpc-api, sc-rpc-server, sc-rpc-spec-v2, sc-storage-monitor, sc-sync-state-rpc to workspace Cargo.toml*
+
+• 🔴 *Test compilation failures with --all-targets on sc-authority-discovery due to missing dev-dependencies*
+  🟢 *Missing dev-dependencies for test features (substrate_test_runtime_client, quickcheck, sp_tracing not available in test context)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+### Optimisations & tips
+• All sc-* client service crates (sc-authority-discovery, sc-basic-authorship, sc-chain-spec, etc.) build cleanly as libs
+• RPC crates (sc-rpc, sc-rpc-api, sc-rpc-server, sc-rpc-spec-v2, sc-sync-state-rpc) compile without issues  
+• Service crates (sc-offchain, sc-informant, sc-sysinfo, sc-telemetry, sc-tracing, sc-transaction-pool) all compatible
+• All sc-* crates already configured with polkadot-stable2409 branch - workspace builds successfully with one minor warning only

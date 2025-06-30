@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(mkdir:*)",
+      "Bash(grep:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(git apply:*)",
+      "Bash(chmod:*)",
+      "Bash(./sdk-upgrader/check-patch-applicability.sh:*)",
+      "Bash(./tools/planner.sh:*)",
+      "Bash(./sdk-upgrader/tools/planner.sh:*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo clean:*)"
+    ],
+    "deny": []
+  }
+}
