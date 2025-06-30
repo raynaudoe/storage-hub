@@ -361,6 +361,30 @@ Substrate client service crates successfully upgraded to polkadot-stable2409 by 
 • Service crates (sc-offchain, sc-informant, sc-sysinfo, sc-telemetry, sc-tracing, sc-transaction-pool) all compatible
 • All sc-* crates already configured with polkadot-stable2409 branch - workspace builds successfully with one minor warning only
 
+## pallet-session, pallet-staking, pallet-staking-reward-fn
+
+### Overview
+Core staking and session management pallets successfully configured for polkadot-stable2409 and building cleanly without code modifications.
+
+### Common issues & fixes
+• 🔴 *pallet-session-benchmarking and pallet-staking-runtime-api not available as standalone crates*
+  🟢 *These pallets exist in polkadot-sdk source but may be feature-gated or compiled conditionally*
+  ✅ *Added only standalone crates pallet-session, pallet-staking, pallet-staking-reward-fn to workspace dependencies*
+
+• 🔴 *Test compilation failures with --all-targets due to missing dev-dependencies*
+  🟢 *Missing dev-dependencies for test features (substrate-test-utils, rand_chacha, frame_benchmarking)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: pallet-session@38.0.0, pallet-staking@38.0.1, pallet-staking-reward-fn@22.0.0*
+
+### Optimisations & tips
+• Core session and staking pallets (pallet-session@38.0.0, pallet-staking@38.0.1, pallet-staking-reward-fn@22.0.0) build cleanly as libs
+• pallet-session-benchmarking and pallet-staking-runtime-api exist in polkadot-sdk source but not as workspace dependencies 
+• All assigned pallets already configured with polkadot-stable2409 branch - no additional Cargo.toml changes needed beyond workspace declarations
+• Individual crate checks verify successfully; workspace builds with only one minor warning about unused deny_unsafe field
+
 ## pallet-aura, pallet-authority-discovery, pallet-balances, pallet-collective, pallet-conviction-voting, pallet-democracy, pallet-identity, pallet-message-queue, pallet-mmr, pallet-nis, pallet-ranked-collective, pallet-referenda, pallet-society, pallet-state-trie-migration
 
 ### Overview
