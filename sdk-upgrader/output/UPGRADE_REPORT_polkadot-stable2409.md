@@ -220,3 +220,27 @@ Substrate client service crates successfully upgraded to polkadot-stable2409 wit
 • sc-state-db, sc-client-db, sc-keystore needed workspace dependency additions but compile without modification
 • jsonrpsee version compatibility is critical - ensure workspace version matches polkadot-stable2409 requirements
 • Prometheus registry parameters may need .clone() calls due to move semantics in network configuration
+
+## sc-consensus, sc-consensus-slots, sc-consensus-epochs, sc-block-builder, sc-proposer-metrics
+
+### Overview
+Core substrate consensus and block building crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for sc-consensus-slots, sc-consensus-epochs, sc-proposer-metrics*
+  🟢 *Crates were used as transitive dependencies but not explicitly declared in workspace*
+  ✅ *Added sc-consensus-slots, sc-consensus-epochs, sc-proposer-metrics to workspace Cargo.toml*
+
+• 🔴 *Test compilation failures with --all-targets on sc-consensus due to missing sp_test_primitives*
+  🟢 *Missing dev-dependencies for test features (sp_test_primitives not available in test context)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. sc-consensus@0.44.0)*
+
+### Optimisations & tips
+• Core consensus crates (sc-consensus@0.44.0, sc-block-builder, sc-consensus-slots, sc-consensus-epochs) build cleanly
+• sc-proposer-metrics is a simple metrics crate that compiles without issues
+• All consensus-related crates already configured in workspace with polkadot-stable2409 branch after additions
+• Individual crate checks verify successfully; workspace builds with minor warnings only
