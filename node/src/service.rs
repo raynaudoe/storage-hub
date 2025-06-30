@@ -17,6 +17,7 @@ use sc_consensus_manual_seal::consensus::aura::AuraConsensusDataProvider;
 use shc_actors_framework::actor::TaskSpawner;
 use shc_common::types::{BlockHash, OpaqueBlock, BCSV_KEY_TYPE};
 use shc_rpc::StorageHubClientRpcConfig;
+use crate::rpc::DenyUnsafe;
 use sp_consensus_aura::Slot;
 use sp_core::H256;
 // Local Runtime Types
@@ -115,17 +116,18 @@ pub fn new_partial(
         .transpose()?;
 
     let heap_pages = config
+        .executor
         .default_heap_pages
         .map_or(DEFAULT_HEAP_ALLOC_STRATEGY, |h| HeapAllocStrategy::Static {
             extra_pages: h as _,
         });
 
     let executor = ParachainExecutor::builder()
-        .with_execution_method(config.wasm_method)
+        .with_execution_method(config.executor.wasm_method)
         .with_onchain_heap_alloc_strategy(heap_pages)
         .with_offchain_heap_alloc_strategy(heap_pages)
-        .with_max_runtime_instances(config.max_runtime_instances)
-        .with_runtime_cache_size(config.runtime_cache_size)
+        .with_max_runtime_instances(config.executor.max_runtime_instances)
+        .with_runtime_cache_size(config.executor.runtime_cache_size)
         .build();
 
     let (client, backend, keystore_container, task_manager) =
@@ -350,10 +352,10 @@ where
         .sr25519_generate_new(BCSV_KEY_TYPE, Some(signing_dev_key.as_ref()))
         .expect("Invalid dev signing key provided.");
 
-    let mut net_config =
-        sc_network::config::FullNetworkConfiguration::<_, _, Network>::new(&config.network);
-    let collator = config.role.is_authority();
     let prometheus_registry = config.prometheus_registry().cloned();
+    let mut net_config =
+        sc_network::config::FullNetworkConfiguration::<_, _, Network>::new(&config.network, prometheus_registry);
+    let collator = config.role.is_authority();
     let select_chain = maybe_select_chain
         .expect("In `dev` mode, `new_partial` will return some `select_chain`; qed");
 
@@ -380,7 +382,7 @@ where
             spawn_handle: task_manager.spawn_handle(),
             import_queue,
             block_announce_validator_builder: None,
-            warp_sync_params: None,
+            warp_sync_config: None,
             block_relay: None,
             metrics,
         })?;
@@ -468,13 +470,13 @@ where
         let client = client.clone();
         let transaction_pool = transaction_pool.clone();
 
-        Box::new(move |deny_unsafe, _| {
+        Box::new(move |_| {
             let deps = crate::rpc::FullDeps {
                 client: client.clone(),
                 pool: transaction_pool.clone(),
                 maybe_storage_hub_client_config: maybe_storage_hub_client_rpc_config.clone(),
                 command_sink: command_sink.clone(),
-                deny_unsafe,
+                deny_unsafe: DenyUnsafe::No,
             };
 
             crate::rpc::create_full(deps).map_err(Into::into)
@@ -515,7 +517,7 @@ where
         // Here you can check whether the hardware meets your chains' requirements. Putting a link
         // in there and swapping out the requirements for your own are probably a good idea. The
         // requirements for a para-chain are dictated by its relay-chain.
-        match SUBSTRATE_REFERENCE_HARDWARE.check_hardware(&hwbench) {
+        match SUBSTRATE_REFERENCE_HARDWARE.check_hardware(&hwbench, true) {
             Err(err) if collator => {
                 log::warn!(
 				"⚠️  The hardware does not meet the minimal requirements {} for role 'Authority'.",
@@ -698,8 +700,10 @@ where
 
     let params = new_partial(&parachain_config, false)?;
     let (block_import, mut telemetry, telemetry_worker_handle) = params.other;
+    let prometheus_registry = parachain_config.prometheus_registry().cloned();
     let mut net_config = sc_network::config::FullNetworkConfiguration::<_, _, Network>::new(
         &parachain_config.network,
+        prometheus_registry,
     );
 
     let client = params.client.clone();
@@ -808,13 +812,13 @@ where
         let client = client.clone();
         let transaction_pool = transaction_pool.clone();
 
-        Box::new(move |deny_unsafe, _| {
+        Box::new(move |_| {
             let deps = crate::rpc::FullDeps {
                 client: client.clone(),
                 pool: transaction_pool.clone(),
                 maybe_storage_hub_client_config: maybe_storage_hub_client_rpc_config.clone(),
                 command_sink: None,
-                deny_unsafe,
+                deny_unsafe: DenyUnsafe::No,
             };
 
             crate::rpc::create_full(deps).map_err(Into::into)
@@ -855,7 +859,7 @@ where
         // Here you can check whether the hardware meets your chains' requirements. Putting a link
         // in there and swapping out the requirements for your own are probably a good idea. The
         // requirements for a para-chain are dictated by its relay-chain.
-        match SUBSTRATE_REFERENCE_HARDWARE.check_hardware(&hwbench) {
+        match SUBSTRATE_REFERENCE_HARDWARE.check_hardware(&hwbench, true) {
             Err(err) if validator => {
                 log::warn!(
 				"⚠️  The hardware does not meet the minimal requirements {} for role 'Authority'.",
