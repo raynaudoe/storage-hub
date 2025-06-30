@@ -269,6 +269,30 @@ Substrate networking crates successfully upgraded to polkadot-stable2409 with wo
 • All networking crates already configured with polkadot-stable2409 branch - only missing workspace declarations
 • Individual crate checks verify successfully; workspace builds with one minor warning only
 
+## sc-service, sc-cli
+
+### Overview
+Core substrate service and CLI crates already configured for polkadot-stable2409 in workspace dependencies and building successfully without modifications.
+
+### Common issues & fixes
+• 🔴 *Test compilation failures with --all-targets due to missing test dependencies*
+  🟢 *Missing dev-dependencies for test features (substrate_test_runtime_client, tempfile, futures_timer, sp_tracing)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. sc-service@0.46.0, sc-cli@0.47.0)*
+
+• 🔴 *Workspace builds with minor warning about unused field*
+  🟢 *Unused `deny_unsafe` field in RPC FullDeps struct*
+  ✅ *Warning does not prevent compilation; codebase builds successfully*
+
+### Optimisations & tips
+• Core service crates (sc-service@0.46.0, sc-cli@0.47.0) already configured in workspace with polkadot-stable2409 branch
+• Both crates build cleanly without code changes when testing libraries only
+• sc-service and sc-cli are actively used by the storage-hub-node binary
+• Workspace builds successfully with only minor dead code warnings
+
 ## sc-consensus-aura, sc-consensus-babe, sc-consensus-babe-rpc, sc-consensus-beefy, sc-consensus-beefy-rpc, sc-consensus-grandpa, sc-consensus-grandpa-rpc, sc-consensus-manual-seal
 
 ### Overview
