@@ -87,5 +87,5 @@ where
         )?;
     };
 
-    Ok(io)
+    Ok(io.into())
 }

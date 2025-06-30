@@ -147,3 +147,27 @@ Core substrate frame crates already configured for polkadot-stable2409 in worksp
 • frame-metadata-hash-extension@0.6.0, frame-system-rpc-runtime-api, frame-try-runtime all verify individually
 • frame-support-procedural@30.0.6 includes procedural-tools as working dependency
 • All frame crates already configured in workspace with polkadot-stable2409 branch - no Cargo.toml changes needed
+
+## frame-benchmarking, frame-executive, frame-system-benchmarking
+
+### Overview
+Core substrate frame benchmarking and executive crates already configured for polkadot-stable2409 and building successfully in runtime context.
+
+### Common issues & fixes
+• 🔴 *Multiple frame-benchmarking version ambiguity when using `-p` flag*
+  🟢 *Workspace contains both crates.io registry and git versions of frame-benchmarking*  
+  ✅ *Use exact version specification: `cargo check -p frame-benchmarking@38.1.0`*
+
+• 🔴 *frame-system-benchmarking cargo resolver panic with --all-targets*
+  🟢 *Crate is optional dependency only used with runtime-benchmarks feature*
+  ✅ *Crate builds successfully when runtime feature is enabled in runtime context*
+
+• 🔴 *Workspace build fails due to jsonrpsee version conflicts (0.23.2 vs 0.24.9)*
+  🟢 *Node RPC code uses incompatible jsonrpsee RpcModule types between versions*
+  ✅ *Frame crates compile successfully in runtime context despite node issues*
+
+### Optimisations & tips
+• frame-benchmarking@38.1.0, frame-executive, frame-system-benchmarking all already configured in workspace dependencies
+• frame-executive builds cleanly without any version specification issues
+• Runtime compiles successfully with all frame crates including benchmarking features
+• Individual crate checks require version specification for frame-benchmarking due to registry conflicts
