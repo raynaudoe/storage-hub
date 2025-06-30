@@ -627,3 +627,23 @@ All assigned Cumulus crates already fully configured for polkadot-stable2409 in 
 • Cumulus primitives (cumulus-primitives-storage-weight-reclaim, cumulus-primitives-utility) compile without issues  
 • staging-parachain-info builds successfully as standalone crate
 • All assigned crates verified building individually and in workspace context - no upgrade work needed for this batch
+
+## cumulus-relay-chain-interface, cumulus-relay-chain-rpc-interface
+
+### Overview
+Core cumulus relay chain interface crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependency for cumulus-relay-chain-rpc-interface.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependency for cumulus-relay-chain-rpc-interface*
+  🟢 *cumulus-relay-chain-interface was configured but cumulus-relay-chain-rpc-interface was not in workspace*
+  ✅ *Added cumulus-relay-chain-rpc-interface to workspace Cargo.toml with polkadot-stable2409 branch*
+
+• 🔴 *Expected strongly connected component cycle warnings in relay chain interface crates*
+  🟢 *Polkadot subsystem dependency cycles are architectural by design for message passing between subsystems*
+  ✅ *Warnings are informational only and do not prevent compilation - both crates build successfully*
+
+### Optimisations & tips
+• cumulus-relay-chain-interface@0.18.0 already configured and builds cleanly in under 1 second
+• cumulus-relay-chain-rpc-interface@0.18.0 compiles cleanly after workspace dependency addition in under 2 seconds
+• Both crates work out of the box with polkadot-stable2409 without any code changes
+• Workspace builds successfully with only minor dead code warning about unused deny_unsafe field
