@@ -10,6 +10,7 @@
 • **Most procedural macro crates compile without changes**: sp-api-proc-macro, sp-runtime-interface-proc-macro, cumulus-pallet-parachain-system-proc-macro, etc. work out of the box.
 • **XCM Crates Test Dependencies**: XCM staging crates (staging-xcm, staging-xcm-executor, staging-xcm-builder) may fail test compilation due to missing `hex_literal` dev-dependency, but libs compile cleanly.
 • **Cumulus Primitives**: All cumulus-primitives-* crates compile cleanly without code changes - just need workspace dependency declarations.
+• **Cumulus Pallets**: All cumulus-pallet-* crates (parachain-system, aura-ext, session-benchmarking, xcm, xcmp-queue) are already configured and compile without issues in stable2409.
 
 ## binary-merkle-tree, cumulus-pallet-parachain-system-proc-macro, fork-tree, frame-election-provider-solution-type, frame-support-procedural-tools-derive, pallet-staking-reward-curve, sc-chain-spec-derive, sc-network-types, sc-tracing-proc-macro, sp-api-proc-macro, sp-arithmetic, sp-crypto-hashing, sp-database, sp-debug-derive, sp-maybe-compressed-blob, sp-metadata-ir, sp-panic-handler, sp-runtime-interface-proc-macro, sp-std, sp-tracing, sp-version-proc-macro, sp-wasm-interface, substrate-bip39, substrate-build-script-utils, substrate-prometheus-endpoint, tracing-gum-proc-macro, xcm-procedural
 
@@ -606,3 +607,23 @@ XCM and polkadot runtime crates successfully upgraded to polkadot-stable2409 wit
 • polkadot-runtime-metrics@17.0.0, slot-range-helper@15.0.0 compile without issues after workspace dependency addition
 • Use versioned cargo check for ambiguous packages to avoid conflicts with older SDK versions
 • Some assigned crates (bp-xcm-bridge-hub-router, pallet-xcm-benchmarks) don't exist as standalone crates in stable2409 - may be integrated into other crates or feature-gated
+
+## cumulus-pallet-parachain-system, cumulus-pallet-aura-ext, cumulus-pallet-session-benchmarking, cumulus-pallet-xcm, cumulus-pallet-xcmp-queue, cumulus-primitives-storage-weight-reclaim, cumulus-primitives-utility, staging-parachain-info
+
+### Overview
+All assigned Cumulus crates already fully configured for polkadot-stable2409 in workspace dependencies and compiling successfully without any code modifications needed.
+
+### Common issues & fixes
+• 🔴 *No compilation issues encountered with any assigned crates*
+  🟢 *All crates were pre-configured and working with polkadot-stable2409*  
+  ✅ *No fixes required - all crates compile in under 1 second each*
+
+• 🔴 *Workspace builds with minor warning about unused deny_unsafe field*
+  🟢 *Leftover field from jsonrpsee upgrade changes*
+  ✅ *Warning does not prevent compilation; workspace builds successfully*
+
+### Optimisations & tips
+• Cumulus pallets (cumulus-pallet-parachain-system, cumulus-pallet-aura-ext, cumulus-pallet-session-benchmarking, cumulus-pallet-xcm, cumulus-pallet-xcmp-queue) already configured and build cleanly
+• Cumulus primitives (cumulus-primitives-storage-weight-reclaim, cumulus-primitives-utility) compile without issues  
+• staging-parachain-info builds successfully as standalone crate
+• All assigned crates verified building individually and in workspace context - no upgrade work needed for this batch
