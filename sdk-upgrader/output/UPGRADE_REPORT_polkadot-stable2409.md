@@ -8,6 +8,7 @@
 • **jsonrpsee Feature Changes**: Need to add `jsonrpsee-proc-macros` and `tracing` features to workspace dependencies to access proc macros.
 • **jsonrpsee RPC Module Fixes**: Remove extra `.into()` calls in RPC module merges and adjust return types from `Ok(io.into())` to `Ok(io)` for compatibility.
 • **Most procedural macro crates compile without changes**: sp-api-proc-macro, sp-runtime-interface-proc-macro, cumulus-pallet-parachain-system-proc-macro, etc. work out of the box.
+• **XCM Crates Test Dependencies**: XCM staging crates (staging-xcm, staging-xcm-executor, staging-xcm-builder) may fail test compilation due to missing `hex_literal` dev-dependency, but libs compile cleanly.
 
 ## binary-merkle-tree, cumulus-pallet-parachain-system-proc-macro, fork-tree, frame-election-provider-solution-type, frame-support-procedural-tools-derive, pallet-staking-reward-curve, sc-chain-spec-derive, sc-network-types, sc-tracing-proc-macro, sp-api-proc-macro, sp-arithmetic, sp-crypto-hashing, sp-database, sp-debug-derive, sp-maybe-compressed-blob, sp-metadata-ir, sp-panic-handler, sp-runtime-interface-proc-macro, sp-std, sp-tracing, sp-version-proc-macro, sp-wasm-interface, substrate-bip39, substrate-build-script-utils, substrate-prometheus-endpoint, tracing-gum-proc-macro, xcm-procedural
 
@@ -452,6 +453,26 @@ Core polkadot primitive crates already configured for polkadot-stable2409 in wor
 • Core primitives (polkadot-core-primitives@15.0.0, polkadot-parachain-primitives@14.0.0, polkadot-primitives@16.0.0) build cleanly with --all-targets
 • Individual crate checks verify successfully in under 2 seconds each
 • Workspace builds successfully with only one minor dead code warning
+
+## staging-xcm, staging-xcm-executor, staging-xcm-builder, xcm-runtime-apis
+
+### Overview
+XCM-related crates already configured for polkadot-stable2409 in workspace dependencies and building successfully without any code modifications needed.
+
+### Common issues & fixes
+• 🔴 *Test compilation failures with --all-targets due to missing hex_literal dev-dependency*
+  🟢 *staging-xcm tests use hex_literal::hex! macro but dependency not configured for test features*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: staging-xcm@14.2.2, staging-xcm-executor@17.0.2, staging-xcm-builder@17.0.5, xcm-runtime-apis@0.4.3*
+
+### Optimisations & tips
+• All XCM crates already configured in workspace with polkadot-stable2409 branch - no Cargo.toml changes needed
+• Core XCM libs (staging-xcm@14.2.2, staging-xcm-executor@17.0.2, staging-xcm-builder@17.0.5, xcm-runtime-apis@0.4.3) compile cleanly in under 1 second each
+• Workspace builds successfully with only minor dead code warning - no XCM-specific issues found
+• Individual crate checks verify all staging-xcm variants work properly with current polkadot-sdk integration
 
 ## frame-election-provider-support, pallet-babe, pallet-beefy, pallet-beefy-mmr, pallet-broker, pallet-election-provider-multi-phase, pallet-elections-phragmen, pallet-fast-unstake, pallet-grandpa, pallet-offences
 
