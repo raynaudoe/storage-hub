@@ -408,3 +408,47 @@ Core substrate pallet crates successfully upgraded to polkadot-stable2409 with w
 • Unused pallets (authority-discovery, collective, conviction-voting, democracy, identity, mmr, nis, ranked-collective, referenda, society, state-trie-migration) compile individually but not integrated in runtime
 • Use versioned cargo check for ambiguous packages: pallet-balances@39.0.1, pallet-message-queue@41.0.2, pallet-authority-discovery@38.0.0
 • All pallet crates configured with polkadot-stable2409 branch - workspace builds successfully with only dead code warnings
+
+## pallet-asset-conversion, pallet-asset-tx-payment, pallet-assets, pallet-bounties, pallet-child-bounties, pallet-collator-selection, pallet-nfts, pallet-tips, pallet-transaction-payment-rpc-runtime-api, pallet-transaction-payment-rpc, pallet-treasury
+
+### Overview
+Substrate pallet crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies for completeness - all crates already configured and building without code changes.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for pallet-asset-conversion, pallet-asset-tx-payment, pallet-assets, pallet-bounties, pallet-child-bounties, pallet-tips, pallet-treasury*
+  🟢 *Pallets not explicitly declared in workspace but needed for individual crate checks*
+  ✅ *Added pallet-asset-conversion, pallet-asset-tx-payment, pallet-assets, pallet-bounties, pallet-child-bounties, pallet-tips, pallet-treasury to workspace Cargo.toml*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag for pallet-treasury*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: `cargo check -p pallet-treasury@37.0.0`*
+
+• 🔴 *Workspace builds with minor warning about unused field*
+  🟢 *Unused `deny_unsafe` field in RPC FullDeps struct*
+  ✅ *Warning does not prevent compilation; workspace builds successfully*
+
+### Optimisations & tips
+• Most assigned pallets (pallet-nfts, pallet-transaction-payment-rpc, pallet-transaction-payment-rpc-runtime-api, pallet-collator-selection) already in workspace dependencies
+• New pallets (pallet-asset-conversion, pallet-asset-tx-payment, pallet-assets, pallet-bounties, pallet-child-bounties, pallet-tips, pallet-treasury) build cleanly without code changes
+• Use versioned cargo check for ambiguous packages: pallet-treasury@37.0.0 to avoid conflicts
+• All pallet crates already configured with polkadot-stable2409 branch - workspace builds successfully with only dead code warnings
+
+## polkadot-core-primitives, polkadot-parachain-primitives, polkadot-primitives
+
+### Overview
+Core polkadot primitive crates already configured for polkadot-stable2409 in workspace dependencies and building successfully without any modifications needed.
+
+### Common issues & fixes
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: polkadot-core-primitives@15.0.0, polkadot-parachain-primitives@14.0.0, polkadot-primitives@16.0.0*
+
+• 🔴 *Workspace builds with minor warning about unused field*
+  🟢 *Unused `deny_unsafe` field in RPC FullDeps struct leftover from jsonrpsee upgrade*
+  ✅ *Warning does not prevent compilation; workspace builds successfully*
+
+### Optimisations & tips
+• All three polkadot primitive crates already configured in workspace with polkadot-stable2409 branch - no Cargo.toml changes needed
+• Core primitives (polkadot-core-primitives@15.0.0, polkadot-parachain-primitives@14.0.0, polkadot-primitives@16.0.0) build cleanly with --all-targets
+• Individual crate checks verify successfully in under 2 seconds each
+• Workspace builds successfully with only one minor dead code warning
