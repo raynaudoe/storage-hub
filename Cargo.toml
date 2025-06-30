@@ -143,6 +143,9 @@ sp-weights = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = 
 substrate-frame-rpc-system = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 substrate-prometheus-endpoint = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 substrate-wasm-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+mmr-gadget = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+mmr-rpc = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+substrate-state-trie-migration-rpc = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 substrate-build-script-utils = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 frame-benchmarking = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 frame-benchmarking-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
