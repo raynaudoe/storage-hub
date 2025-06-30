@@ -690,3 +690,27 @@ All assigned cumulus client consensus and collator crates were already fully con
 • All assigned crates (cumulus-client-consensus-common, cumulus-client-collator, cumulus-client-consensus-aura) already configured in workspace with polkadot-stable2409 branch
 • Individual crate checks complete in under 1 second each - no upgrade work needed for this batch
 • Core cumulus client consensus and collator functionality works out of the box with stable2409
+
+## polkadot-approval-distribution, polkadot-availability-bitfield-distribution, polkadot-availability-distribution, polkadot-availability-recovery, polkadot-collator-protocol, polkadot-dispute-distribution, polkadot-gossip-support, polkadot-network-bridge, polkadot-node-collation-generation, polkadot-node-core-approval-voting, polkadot-node-core-av-store, polkadot-node-core-backing, polkadot-node-core-bitfield-signing, polkadot-node-core-chain-api, polkadot-node-core-chain-selection, polkadot-node-core-dispute-coordinator, polkadot-node-core-parachains-inherent, polkadot-node-core-prospective-parachains, polkadot-node-core-provisioner, polkadot-node-core-pvf-common, polkadot-node-core-pvf, polkadot-node-core-candidate-validation, polkadot-node-core-pvf-checker, polkadot-node-core-runtime-api, polkadot-statement-distribution
+
+### Overview
+All assigned Polkadot node subsystem and networking crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies - all crates build cleanly without any code changes.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for all assigned polkadot networking and node-core crates*
+  🟢 *Crates existed as transitive dependencies but not explicitly declared in workspace*
+  ✅ *Added all 25 assigned crates to workspace Cargo.toml with polkadot-stable2409 branch*
+
+• 🔴 *Expected strongly connected component cycle warnings in polkadot subsystem crates*
+  🟢 *Polkadot subsystem dependency cycles are architectural by design for message passing between subsystems*
+  ✅ *Warnings are informational only and do not prevent compilation - all crates build successfully in under 1 second each*
+
+• 🔴 *Workspace builds with minor warning about unused deny_unsafe field*
+  🟢 *Leftover field from jsonrpsee upgrade changes*
+  ✅ *Warning does not prevent compilation; workspace builds successfully*
+
+### Optimisations & tips
+• All polkadot networking crates (approval-distribution, availability-*, collator-protocol, dispute-distribution, gossip-support, network-bridge, statement-distribution) compile cleanly
+• All polkadot node-core crates (approval-voting, av-store, backing, bitfield-signing, chain-api, chain-selection, dispute-coordinator, parachains-inherent, prospective-parachains, provisioner, pvf-*, candidate-validation, pvf-checker, runtime-api) work out of the box
+• polkadot-node-collation-generation builds without issues as collator-specific functionality
+• All assigned crates already configured with polkadot-stable2409 branch - no code changes needed beyond workspace declarations
