@@ -244,3 +244,27 @@ Core substrate consensus and block building crates successfully upgraded to polk
 • sc-proposer-metrics is a simple metrics crate that compiles without issues
 • All consensus-related crates already configured in workspace with polkadot-stable2409 branch after additions
 • Individual crate checks verify successfully; workspace builds with minor warnings only
+
+## sc-network-common, sc-network, sc-network-sync, sc-network-gossip, sc-network-light, sc-network-transactions
+
+### Overview
+Substrate networking crates successfully upgraded to polkadot-stable2409 with workspace dependency additions for completeness.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for sc-network-common, sc-network-gossip, sc-network-light, sc-network-transactions*
+  🟢 *Crates were available as transitive dependencies but not explicitly declared in workspace*
+  ✅ *Added sc-network-common, sc-network-gossip, sc-network-light, sc-network-transactions to workspace Cargo.toml*
+
+• 🔴 *Test compilation failures with --all-targets on sc-network crates due to missing dev-dependencies*
+  🟢 *Missing dev-dependencies for test features (substrate_test_runtime_client, quickcheck, tokio_util, etc.)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. sc-network@0.45.6)*
+
+### Optimisations & tips
+• Core networking crates (sc-network@0.45.6, sc-network-sync@0.44.1, sc-network-types@0.12.1) build cleanly
+• sc-network-common, sc-network-gossip, sc-network-light, sc-network-transactions all compile without issues
+• All networking crates already configured with polkadot-stable2409 branch - only missing workspace declarations
+• Individual crate checks verify successfully; workspace builds with one minor warning only
