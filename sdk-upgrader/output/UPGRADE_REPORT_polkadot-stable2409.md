@@ -99,3 +99,27 @@ Core substrate API and consensus crates successfully upgraded to polkadot-stable
 • sp-consensus crates work: sp-consensus-aura@0.40.0, sp-consensus-babe@0.40.0, sp-consensus-slots@0.40.1  
 • sp-transaction-pool@34.0.0, sp-offchain@34.0.0, sp-genesis-builder@0.15.1 all compatible out of box
 • Crates sp-rpc, sp-transaction-storage-proof, sp-statement-store not used in this codebase - no action needed
+
+## sp-block-builder, sp-consensus-aura, sp-consensus-babe, sp-consensus-grandpa, sp-consensus-beefy, sp-authority-discovery, sp-mixnet, sp-mmr-primitives, sp-npos-elections, sp-session
+
+### Overview
+Core substrate consensus and block building primitives successfully upgraded to polkadot-stable2409 with workspace dependency additions.
+
+### Common issues & fixes
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*  
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. sp-consensus-babe@0.40.0)*
+
+• 🔴 *Test compilation failures due to missing test dependencies*
+  🟢 *array-bytes and substrate-test-utils not available for test features in some crates*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Missing workspace dependencies for newly added crates*
+  🟢 *sp-consensus-grandpa, sp-consensus-beefy, sp-authority-discovery, sp-mixnet, sp-mmr-primitives, sp-npos-elections not in original workspace*
+  ✅ *Added missing crates to workspace Cargo.toml with polkadot-stable2409 branch*
+
+### Optimisations & tips
+• Core consensus primitives (sp-block-builder@34.0.0, sp-consensus-aura@0.40.0, sp-consensus-babe@0.40.0) build cleanly
+• Use versioned cargo check: sp-authority-discovery@34.0.0, sp-session@36.0.0, sp-consensus-grandpa@21.0.0
+• sp-consensus-beefy@22.1.0, sp-mmr-primitives@34.1.0 compile libs but tests fail due to array-bytes feature gating
+• sp-npos-elections@34.0.0 lib builds cleanly; tests fail due to missing substrate-test-utils dev dependency
