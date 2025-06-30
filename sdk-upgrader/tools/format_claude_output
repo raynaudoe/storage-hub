@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+#
+# format_claude_output — pretty-prints the streaming JSON lines produced by the
+# Anthropics `claude` CLI ( --output-format stream-json ) so humans can follow
+# the conversation in real time.
+#
+# Usage:
+#   claude … --output-format stream-json | format_claude_output
+#
+# Dependencies: jq
+set -euo pipefail
+
+command -v jq >/dev/null 2>&1 || { echo "error: jq is required but not found" >&2; exit 1; }
+
+format_claude_output() {
+  while IFS= read -r line; do
+    # Skip empty lines
+    [[ -z "$line" ]] && continue
+
+    # Try to parse as JSON; on failure, just echo raw
+    if ! echo "$line" | jq . >/dev/null 2>&1; then
+      echo "$line"
+      continue
+    fi
+
+    # Extract envelope fields
+    type=$(echo "$line" | jq -r '.type // empty' 2>/dev/null)
+    subtype=$(echo "$line" | jq -r '.subtype // empty' 2>/dev/null)
+
+    case "$type" in
+      system)
+        case "$subtype" in
+          init)
+            echo "🚀 Initialising Claude session…"
+            ;;
+          *)
+            echo "🔧 System: $subtype"
+            ;;
+        esac
+        ;;
+
+      assistant)
+        content=$(echo "$line" | jq -r '.message.content[0].text // .content[0].text // empty' 2>/dev/null)
+        if [[ -n "$content" ]]; then
+          # Claude streams one token per JSON line, so do not add newline unless token ends with it
+          printf "%s" "$content"
+        fi
+
+        tool_uses=$(echo "$line" | jq -r '.message.content[]? | select(.type == "tool_use") | .name' 2>/dev/null)
+        if [[ -n "$tool_uses" ]]; then
+          echo -e "\n🔧 Using tool: $tool_uses"
+        fi
+        ;;
+
+      user)
+        tool_result=$(echo "$line" | jq -r '.message.content[]? | select(.type == "tool_result") | .content' 2>/dev/null)
+        if [[ -n "$tool_result" ]]; then
+          if (( ${#tool_result} > 200 )); then
+            echo -e "\n📋 Tool output: ${tool_result:0:200}…"
+          else
+            echo -e "\n📋 Tool output: $tool_result"
+          fi
+        fi
+        ;;
+
+      thinking)
+        echo -e "\n🤔 Claude is thinking…"
+        ;;
+
+      error)
+        error_msg=$(echo "$line" | jq -r '.error // .message // "unknown error"' 2>/dev/null)
+        echo -e "\n❌ Error: $error_msg"
+        ;;
+
+      *)
+        preview=$(echo "$line" | jq -r '. | tostring' | head -c 80)
+        echo -e "\n🔍 [$type] $preview…"
+        ;;
+    esac
+  done
+}
+
+# If the script is used in a pipeline without explicit function call, run now.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  format_claude_output
+fi 
