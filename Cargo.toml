@@ -231,6 +231,8 @@ polkadot-node-core-candidate-validation = { git = "https://github.com/paritytech
 polkadot-node-core-pvf-checker = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-node-core-runtime-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-statement-distribution = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-rpc = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-service = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 
 # Polkadot
 polkadot-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", features = [
