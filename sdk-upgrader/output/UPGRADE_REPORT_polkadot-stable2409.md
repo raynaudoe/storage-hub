@@ -6,6 +6,7 @@
 
 • **XCM Dry Run API Change**: The `dry_run_call` function now requires an additional `result_xcms_version: u32` parameter. Update signatures and calls accordingly.
 • **jsonrpsee Feature Changes**: Need to add `jsonrpsee-proc-macros` and `tracing` features to workspace dependencies to access proc macros.
+• **jsonrpsee RPC Module Fixes**: Remove extra `.into()` calls in RPC module merges and adjust return types from `Ok(io.into())` to `Ok(io)` for compatibility.
 • **Most procedural macro crates compile without changes**: sp-api-proc-macro, sp-runtime-interface-proc-macro, cumulus-pallet-parachain-system-proc-macro, etc. work out of the box.
 
 ## binary-merkle-tree, cumulus-pallet-parachain-system-proc-macro, fork-tree, frame-election-provider-solution-type, frame-support-procedural-tools-derive, pallet-staking-reward-curve, sc-chain-spec-derive, sc-network-types, sc-tracing-proc-macro, sp-api-proc-macro, sp-arithmetic, sp-crypto-hashing, sp-database, sp-debug-derive, sp-maybe-compressed-blob, sp-metadata-ir, sp-panic-handler, sp-runtime-interface-proc-macro, sp-std, sp-tracing, sp-version-proc-macro, sp-wasm-interface, substrate-bip39, substrate-build-script-utils, substrate-prometheus-endpoint, tracing-gum-proc-macro, xcm-procedural
@@ -171,3 +172,27 @@ Core substrate frame benchmarking and executive crates already configured for po
 • frame-executive builds cleanly without any version specification issues
 • Runtime compiles successfully with all frame crates including benchmarking features
 • Individual crate checks require version specification for frame-benchmarking due to registry conflicts
+
+## sc-allocator, sc-executor-common, sc-executor-polkavm, sc-executor-wasmtime, sc-executor
+
+### Overview
+Core substrate executor crates already configured for polkadot-stable2409 as transitive dependencies and building successfully without modifications.
+
+### Common issues & fixes
+• 🔴 *jsonrpsee RPC module type conflicts between versions 0.23.2 and 0.24.9*
+  🟢 *Extra .into() calls causing type conversion issues in RPC module merges*  
+  ✅ *Removed .into() calls from System::new(), TransactionPayment::new(), and ManualSeal::new() RPC merges*
+
+• 🔴 *RPC builder closure return type mismatch: RpcModule<()> vs RpcModule<_>*
+  🟢 *Final Ok(io.into()) conversion causing incompatible return type*
+  ✅ *Changed return from Ok(io.into()) to Ok(io) in create_full function*
+
+• 🔴 *All sc-executor crates are transitive dependencies not direct workspace members*
+  🟢 *sc-allocator, sc-executor-common, sc-executor-polkavm, sc-executor-wasmtime pulled in by sc-executor*
+  ✅ *No Cargo.toml changes needed - already resolved via polkadot-stable2409 branch dependency*
+
+### Optimisations & tips
+• All executor crates (sc-allocator@29.0.0, sc-executor-common@0.35.0, etc.) build cleanly as transitive deps
+• Use versioned cargo check: sc-allocator@29.0.0, sc-executor-common@0.35.0, sc-executor-polkavm@0.32.0, sc-executor-wasmtime@0.35.0
+• sc-executor already configured in workspace dependencies with polkadot-stable2409 branch - no direct config needed
+• Focus on RPC compatibility issues rather than executor-specific problems when troubleshooting builds

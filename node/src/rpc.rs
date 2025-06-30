@@ -72,20 +72,20 @@ where
         deny_unsafe,
     } = deps;
 
-    io.merge(System::new(client.clone(), pool).into_rpc().into())?;
-    io.merge(TransactionPayment::new(client).into_rpc().into())?;
+    io.merge(System::new(client.clone(), pool).into_rpc())?;
+    io.merge(TransactionPayment::new(client).into_rpc())?;
 
     if let Some(storage_hub_client_config) = maybe_storage_hub_client_config {
-        io.merge(StorageHubClientRpc::new(storage_hub_client_config).into_rpc().into())?;
+        io.merge(StorageHubClientRpc::new(storage_hub_client_config).into_rpc())?;
     }
 
     if let Some(command_sink) = command_sink {
         io.merge(
             // We provide the rpc handler with the sending end of the channel to allow the rpc
             // send EngineCommands to the background block authorship task.
-            ManualSeal::new(command_sink).into_rpc().into(),
+            ManualSeal::new(command_sink).into_rpc(),
         )?;
     };
 
-    Ok(io.into())
+    Ok(io)
 }
