@@ -101,6 +101,30 @@ Core substrate API and consensus crates successfully upgraded to polkadot-stable
 • sp-transaction-pool@34.0.0, sp-offchain@34.0.0, sp-genesis-builder@0.15.1 all compatible out of box
 • Crates sp-rpc, sp-transaction-storage-proof, sp-statement-store not used in this codebase - no action needed
 
+## pallet-asset-rate, pallet-authorship, pallet-indices, pallet-membership, pallet-multisig, pallet-parameters, pallet-preimage, pallet-proxy, pallet-recovery, pallet-root-testing, pallet-scheduler, pallet-sudo, pallet-timestamp, pallet-transaction-payment, pallet-uniques, pallet-utility, pallet-vesting, pallet-whitelist
+
+### Overview
+Core substrate pallet crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies - most already configured and building without code changes.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for pallet-asset-rate, pallet-indices, pallet-membership, pallet-multisig, pallet-preimage, pallet-proxy, pallet-recovery, pallet-root-testing, pallet-scheduler, pallet-utility, pallet-vesting, pallet-whitelist*
+  🟢 *Pallets not explicitly declared in workspace but needed for completeness*
+  ✅ *Added all missing pallet dependencies to workspace Cargo.toml with polkadot-stable2409 branch*
+
+• 🔴 *Multiple crate version ambiguity when using `-p <crate>` flag*
+  🟢 *Workspace contains both old and new versions from different SDK releases*
+  ✅ *Use exact version specification: `cargo check -p <crate>@<version>` (e.g. pallet-asset-rate@17.0.0, pallet-authorship@38.0.0)*
+
+• 🔴 *Workspace builds with minor warning about unused field*
+  🟢 *Unused `deny_unsafe` field in RPC FullDeps struct*
+  ✅ *Warning does not prevent compilation; workspace builds successfully*
+
+### Optimisations & tips
+• Most pallet crates (pallet-indices, pallet-membership, pallet-multisig, etc.) build cleanly without code changes
+• Use versioned cargo check: pallet-asset-rate@17.0.0, pallet-authorship@38.0.0, pallet-timestamp@37.0.0, pallet-transaction-payment@38.0.2, pallet-vesting@38.0.0
+• All substrate pallets already configured with polkadot-stable2409 branch after workspace dependency additions
+• Individual pallet checks verify successfully; workspace builds with one minor dead code warning only
+
 ## sp-block-builder, sp-consensus-aura, sp-consensus-babe, sp-consensus-grandpa, sp-consensus-beefy, sp-authority-discovery, sp-mixnet, sp-mmr-primitives, sp-npos-elections, sp-session
 
 ### Overview
