@@ -268,3 +268,27 @@ Substrate networking crates successfully upgraded to polkadot-stable2409 with wo
 • sc-network-common, sc-network-gossip, sc-network-light, sc-network-transactions all compile without issues
 • All networking crates already configured with polkadot-stable2409 branch - only missing workspace declarations
 • Individual crate checks verify successfully; workspace builds with one minor warning only
+
+## sc-consensus-aura, sc-consensus-babe, sc-consensus-babe-rpc, sc-consensus-beefy, sc-consensus-beefy-rpc, sc-consensus-grandpa, sc-consensus-grandpa-rpc, sc-consensus-manual-seal
+
+### Overview
+Substrate consensus crates successfully upgraded to polkadot-stable2409 by adding missing workspace dependencies for completeness, though only Aura and manual-seal are actively used in this parachain codebase.
+
+### Common issues & fixes
+• 🔴 *Missing workspace dependencies for sc-consensus-babe, sc-consensus-babe-rpc, sc-consensus-beefy, sc-consensus-beefy-rpc, sc-consensus-grandpa, sc-consensus-grandpa-rpc*
+  🟢 *Crates not used in parachain (uses Aura consensus) but needed for workspace completeness*
+  ✅ *Added sc-consensus-babe, sc-consensus-babe-rpc, sc-consensus-beefy, sc-consensus-beefy-rpc, sc-consensus-grandpa, sc-consensus-grandpa-rpc to workspace Cargo.toml*
+
+• 🔴 *Test compilation failures with --all-targets on sc-consensus-aura due to missing dev-dependencies*
+  🟢 *Missing dev-dependencies for test features (sp_keyring, sc_network_test, parking_lot, sc_keystore, etc.)*
+  ✅ *Use `cargo check -p <crate>` without --all-targets for lib compilation only*
+
+• 🔴 *Parachain consensus differs from relay chain consensus mechanisms*
+  🟢 *Parachains use Aura for block production, relay on relay chain for finality (not BABE/GRANDPA/BEEFY)*
+  ✅ *sc-consensus-aura and sc-consensus-manual-seal actively used; others added for workspace consistency*
+
+### Optimisations & tips
+• Consensus crates (sc-consensus-aura, sc-consensus-manual-seal, sc-consensus-slots, sc-consensus-epochs) actively used and build cleanly
+• BABE/GRANDPA/BEEFY consensus crates compile successfully but unused in parachain architecture
+• sc-consensus-aura@0.45.0, sc-consensus-manual-seal used in development mode with manual sealing
+• All consensus crates already configured with polkadot-stable2409 branch - workspace builds successfully with minor warnings only
