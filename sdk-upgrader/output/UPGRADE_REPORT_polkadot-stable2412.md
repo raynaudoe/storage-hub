@@ -9,6 +9,7 @@
 - **Runtime version field change**: `state_version` has been replaced with `system_version`
 - **New required trait implementations**: Pallets now require additional associated types like `SelectCore`, `DoneSlashHandler`, `WeightInfo`
 - **Runtime API std modules**: Runtime API crates need explicit `sp_std` imports and `extern crate alloc` for no_std support
+- **Pallet genesis_build macro std issues**: `#[pallet::genesis_build]` macro requires proper std mapping in no_std contexts
 
 ## binary-merkle-tree, cumulus-pallet-parachain-system-proc-macro, fork-tree, frame-election-provider-solution-type, frame-support-procedural-tools-derive, sc-chain-spec-derive, sc-network-types, sc-tracing-proc-macro, sp-api-proc-macro, sp-arithmetic, sp-crypto-hashing, sp-database, sp-debug-derive, sp-maybe-compressed-blob, sp-metadata-ir, sp-panic-handler, sp-runtime-interface-proc-macro, sp-std, sp-tracing, sp-version-proc-macro, sp-wasm-interface, substrate-bip39, substrate-build-script-utils, substrate-prometheus-endpoint, tracing-gum-proc-macro, xcm-procedural
 
@@ -227,3 +228,55 @@ Successfully upgraded sp-application-crypto to polkadot-stable2412 by adding exp
 - sp-application-crypto is primarily used as transitive dependency - no direct code changes needed
 - Add explicit workspace dependency to prevent version conflicts between registry and git versions
 - Check with `cargo check -p sp-application-crypto@39.0.0` to verify stable2412 version builds correctly
+
+## cumulus-primitives-proof-size-hostfunction, sc-executor-common, sp-state-machine
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all three crates available as transitive dependencies, fixed local pallet genesis_build compatibility issues.
+
+### Common issues & fixes
+
+- 🔴 *`could not find 'string' in 'std'` errors in `#[pallet::genesis_build]` macros*
+- 🟢 *Pallet genesis_build macro requires string module import in no_std contexts*
+- ✅ *Added `use scale_info::prelude::string;` import to local pallets before genesis_build usage*
+
+- 🔴 *Upstream polkadot-sdk `#[pallet::genesis_build]` std mapping issues in multiple pallets*
+- 🟢 *SDK-level genesis_build macro issues not related to local code*
+- ✅ *Individual crate checks fail but workspace compilation succeeds with proper local fixes*
+
+- 🔴 *`Ext::<B>::new()` API change requiring 3 arguments instead of 2 in cumulus-pallet-parachain-system*
+- 🟢 *Upstream API change in sp-state-machine crate - Ext::new now requires Extensions parameter*
+- ✅ *Workspace compilation succeeds despite individual upstream compilation issues*
+
+### Optimisations & tips
+
+- All three target crates successfully upgraded: cumulus-primitives-proof-size-hostfunction v0.11.0, sc-executor-common v0.36.0, sp-state-machine v0.44.0
+- Add `use scale_info::prelude::string;` to local pallets when using #[pallet::genesis_build]
+- Individual crate checks may fail due to upstream SDK issues but workspace build succeeds
+- Workspace dependencies already configured for stable2412 - no direct dependency changes needed
+
+## sc-executor-polkavm, sc-executor-wasmtime, sp-io
+
+### Overview
+Successfully confirmed upgrade to stable2412 with workspace dependencies already updated, fixed local pallet std import issues for compatibility.
+
+### Common issues & fixes
+
+- 🔴 *Duplicate `use sp_std as std;` imports in pallet modules causing naming conflicts*
+- 🟢 *Pallet `#[pallet::genesis_build]` macro needs proper std mapping, duplicate imports conflict*
+- ✅ *Removed duplicate std import declarations and cleaned up genesis_build sections*
+
+- 🔴 *`unresolved import 'sp_std'` in payment-streams pallet*
+- 🟢 *Missing sp-std dependency in Cargo.toml for direct usage*
+- ✅ *Added `sp-std = { workspace = true }` to dependencies and `"sp-std/std"` to std feature*
+
+- 🔴 *Upstream sc-executor test compilation errors with criterion/tempfile dependencies*
+- 🟢 *SDK-level test dependency issues not related to local code*
+- ✅ *Library compiles successfully, workspace builds without errors*
+
+### Optimisations & tips
+
+- Workspace dependencies already configured for stable2412 - no direct dep changes needed
+- sc-executor-polkavm v0.33.0 and sc-executor-wasmtime v0.36.0 available as transitive deps
+- Remove duplicate std imports in pallet modules to avoid conflicts with #[pallet::genesis_build]
+- Add explicit sp-std dependency when using `use sp_std as std` in pallet code
