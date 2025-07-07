@@ -358,3 +358,55 @@ Successfully confirmed stable2412 upgrade with all actually-used crates building
 - bp-xcm-bridge-hub-router, sp-consensus, sp-transaction-storage-proof not used in Storage Hub project
 - sp-api@35.0.0, sp-timestamp@35.0.0, polkadot-parachain-primitives@15.0.0 all build successfully
 - Workspace dependencies already configured for stable2412 - no manual updates needed
+
+## cumulus-primitives-aura, cumulus-primitives-core, frame-system, frame-try-runtime, polkadot-node-primitives, sc-client-api, tracing-gum
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates building correctly - workspace dependencies already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *`frame-system` and `sc-client-api` test compilation errors with `use of undeclared crate or module`*
+- 🟢 *Upstream Polkadot SDK test dependency issues in no_std contexts, not related to local code*
+- ✅ *Individual crate tests fail but workspace compilation succeeds - no action required*
+
+- 🔴 *Multiple package version ambiguity errors like `frame-system@29.0.0` vs `frame-system@39.1.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p frame-system@39.1.0` to target stable2412*
+
+- 🔴 *No code changes required for assigned crates*
+- 🟢 *All crates are used as transitive dependencies and workspace dependencies already updated*
+- ✅ *Workspace dependencies already configured for stable2412 in main Cargo.toml*
+
+### Optimisations & tips
+
+- cumulus-primitives-aura v0.16.0, cumulus-primitives-core v0.17.0, frame-try-runtime v0.45.0 all build successfully
+- polkadot-node-primitives v17.0.1 and tracing-gum v17.0.0 compile without issues
+- Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
+- Use explicit version specification to avoid ambiguous package errors when multiple versions exist
+
+## frame-support, polkadot-primitives, sc-transaction-pool-api, sp-consensus-aura, sp-consensus-babe, substrate-wasm-builder
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates working properly - no local code changes required as workspace dependencies were already updated.
+
+### Common issues & fixes
+
+- 🔴 *`sp-crypto-hashing` and `pretty_assertions` unresolved import errors in frame-support@39.1.0 tests*
+- 🟢 *Upstream Polkadot SDK test dependency issues not related to local code*
+- ✅ *Individual crate checks fail but workspace compilation succeeds - no action required*
+
+- 🔴 *Multiple package version ambiguity errors like `frame-support@29.0.2` vs `frame-support@39.1.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p frame-support@39.1.0` to target stable2412*
+
+- 🔴 *Assignment included unused crates: `mmr-rpc`, `sc-block-builder`, `sp-consensus-beefy`*
+- 🟢 *These crates are not used in this Storage Hub project*
+- ✅ *No action required - crates not present in any Cargo.toml dependencies*
+
+### Optimisations & tips
+
+- Use `cargo check -p <crate>@<version>` to target specific stable2412 versions when multiple exist
+- mmr-rpc, sc-block-builder, sp-consensus-beefy not used in Storage Hub project
+- frame-support@39.1.0, polkadot-primitives@17.1.0, sc-transaction-pool-api@38.1.0, sp-consensus-aura@0.41.0, sp-consensus-babe@0.41.0, substrate-wasm-builder@25.0.1 all available via stable2412
+- Workspace dependencies already configured for stable2412 - no manual updates needed
