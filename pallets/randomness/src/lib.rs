@@ -43,7 +43,7 @@ pub mod pallet {
     use frame_system::pallet_prelude::{BlockNumberFor, *};
     use polkadot_parachain_primitives::primitives::RelayChainBlockNumber;
     use shp_session_keys::{InherentError, INHERENT_IDENTIFIER};
-    use sp_runtime::traits::{BlockNumberProvider};
+    use sp_runtime::traits::{BlockNumberProvider, Hash};
 
     #[pallet::pallet]
     pub struct Pallet<T>(PhantomData<T>);
