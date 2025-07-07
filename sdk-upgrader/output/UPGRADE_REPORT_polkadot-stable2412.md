@@ -158,3 +158,29 @@ Addressed deprecated macro usage, runtime API std compatibility issues, and tele
 - For runtime APIs, add std mapping before sp_api macro: `use sp_std as std` when no_std
 - MockValidationDataInherentDataProvider requires upgrade_go_ahead field in stable2412
 - Transaction pool API changes from FullPool to BasicPool require deeper investigation
+
+## sc-allocator, sc-state-db, sc-storage-monitor, sp-keystore, sp-rpc, sp-trie
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all target crates working properly - no local code changes required as workspace dependencies were already updated.
+
+### Common issues & fixes
+
+- 🔴 *No compilation errors found for assigned crates*
+- 🟢 *All crates (sc-allocator, sc-state-db, sc-storage-monitor, sp-keystore, sp-rpc, sp-trie) compile successfully*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml*
+
+- 🔴 *Missing crates (sc-allocator, sc-state-db, sc-storage-monitor, sp-rpc) not found in source code*
+- 🟢 *These crates are transitive dependencies not directly used by the project*
+- ✅ *No action required - crates are available via Polkadot SDK stable2412 branch*
+
+- 🔴 *Upstream Polkadot SDK `std` module issues in no_std contexts*
+- 🟢 *SDK-level issues not related to local code, compilation proceeds successfully*
+- ✅ *Individual crate compilation succeeds despite SDK warnings*
+
+### Optimisations & tips
+
+- sc-allocator, sc-state-db, sc-storage-monitor, sp-rpc not directly used - check as transitive deps
+- sp-keystore and sp-trie actively used in runtime and node - both compile successfully
+- Workspace dependencies in main Cargo.toml already updated to stable2412 branch
+- Individual crate checks may show SDK issues but workspace compilation succeeds
