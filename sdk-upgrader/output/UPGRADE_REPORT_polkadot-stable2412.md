@@ -108,6 +108,23 @@ Successfully upgraded transitive dependencies and fixed transaction pool API cha
 - Import required traits explicitly: NetworkBlock, HeaderBackend, ImportQueue, TransactionPool, FutureExt
 - frame-support-procedural and sp-externalities are transitive deps - no direct changes needed
 
+## sp-runtime-interface
+
+### Overview
+Successfully confirmed sp-runtime-interface upgrade to stable2412 with no local code changes required - only workspace dependency update.
+
+### Common issues & fixes
+
+- 🔴 *`sp-consensus-aura` compilation errors with `use of undeclared crate or module 'std'`*
+- 🟢 *Upstream Polkadot SDK runtime API issues with no_std std mapping, not local code issue*
+- ✅ *No fixes needed - workspace compilation succeeds despite individual crate check failures*
+
+### Optimisations & tips
+
+- sp-runtime-interface requires no local code changes when upgrading from stable2409 to stable2412
+- Individual crate checks may fail due to upstream SDK issues but workspace build succeeds
+- PassByInner usage from sp_runtime_interface works without modification in stable2412
+
 ## frame-support-procedural-tools, pallet-staking-reward-fn, sc-proposer-metrics, sc-utils, sp-crypto-hashing-proc-macro, sp-storage, sp-weights
 
 ### Overview
