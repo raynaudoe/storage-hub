@@ -674,3 +674,29 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - westend-runtime not used in Storage Hub project - no action needed
 - Workspace dependencies already configured for stable2412 - no manual updates needed
 - All crates compile successfully with workspace build passing in under 40 seconds
+
+## polkadot-rpc, sc-service
+
+### Overview
+Successfully confirmed upgrade to stable2412 with both crates building correctly - workspace dependencies were already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *No compilation errors found for either assigned crate*
+- 🟢 *Both crates (polkadot-rpc v22.0.0, sc-service v0.44.0) compile successfully*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml*
+
+- 🔴 *polkadot-rpc not directly used in Storage Hub project*
+- 🟢 *This crate is available as transitive dependency via polkadot-cli*
+- ✅ *No action required - crate builds successfully via dependency tree*
+
+- 🔴 *sc-service used extensively in node binary and client libraries*
+- 🟢 *All usage is via workspace dependencies automatically using stable2412 version*
+- ✅ *Node binary and all client libraries compile successfully*
+
+### Optimisations & tips
+
+- polkadot-rpc v22.0.0 available as transitive dependency - no direct usage or configuration needed
+- sc-service v0.44.0 actively used in node binary and client libraries - all compile successfully
+- Workspace dependencies already configured for stable2412 - no manual updates needed
+- Both crates verified with individual crate checks and full workspace compilation
