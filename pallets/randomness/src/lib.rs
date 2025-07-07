@@ -42,7 +42,7 @@ pub mod pallet {
     use frame_system::pallet_prelude::{BlockNumberFor, *};
     use polkadot_parachain_primitives::primitives::RelayChainBlockNumber;
     use shp_session_keys::{InherentError, INHERENT_IDENTIFIER};
-    use sp_runtime::traits::{BlockNumberProvider, Saturating};
+    use sp_runtime::traits::{BlockNumberProvider, Hash};
 
     #[pallet::pallet]
     pub struct Pallet<T>(PhantomData<T>);
@@ -181,7 +181,7 @@ pub mod pallet {
             // Return Ok(Some(_)) unconditionally because this inherent is required in every block
             // If it is not found, throw a InherentRequired error.
             Ok(Some(InherentError::Other(
-                sp_runtime::RuntimeString::Borrowed("Inherent required to set babe randomness"),
+                "Inherent required to set babe randomness".into(),
             )))
         }
 
@@ -255,13 +255,13 @@ impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for RandomnessFromOneEpo
         // If there's randomness available
         if let Some((babe_randomness, latest_valid_block)) = LatestOneEpochAgoRandomness::<T>::get()
         {
-            let hashed_subject = T::Hashing::hash(subject);
+            let hashed_subject = T::Hashing::hash_of(subject);
             let mut digest = Vec::new();
             // Concatenate the latest randomness with the hashed subject
             digest.extend_from_slice(babe_randomness.as_ref());
             digest.extend_from_slice(hashed_subject.as_ref());
             // Hash it
-            let randomness = T::Hashing::hash(digest.as_slice());
+            let randomness = T::Hashing::hash_of(digest.as_slice());
             // Return the randomness for this subject and the latest block for which this randomness is useful
             // `subject` commitments done after `latest_valid_block` are predictable, and as such MUST be discarded
             (randomness, latest_valid_block)
@@ -287,13 +287,13 @@ impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for ParentBlockRandomnes
         if let Some((parent_block_randomness, latest_valid_block)) =
             LatestParentBlockRandomness::<T>::get()
         {
-            let hashed_subject = T::Hashing::hash(subject);
+            let hashed_subject = T::Hashing::hash_of(subject);
             let mut digest = Vec::new();
             // Concatenate the latest randomness with the hashed subject
             digest.extend_from_slice(parent_block_randomness.as_ref());
             digest.extend_from_slice(hashed_subject.as_ref());
             // Hash it
-            let randomness = T::Hashing::hash(digest.as_slice());
+            let randomness = T::Hashing::hash_of(digest.as_slice());
             // Return the randomness for this subject and the latest block for which this randomness is useful
             // `subject` commitments done after `latest_valid_block` are predictable, and as such MUST be discarded
             (randomness, latest_valid_block)

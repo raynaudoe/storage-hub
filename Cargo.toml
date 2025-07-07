@@ -93,7 +93,7 @@ sp-io = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stab
 sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-runtime-interface = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-std = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
-sp-trie = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+sp-trie = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-arithmetic = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
@@ -103,7 +103,7 @@ sp-consensus-babe = { git = "https://github.com/paritytech/polkadot-sdk.git", br
 sp-genesis-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-inherents = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-keyring = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
-sp-keystore = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+sp-keystore = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-offchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-session = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-state-machine = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
