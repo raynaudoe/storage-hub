@@ -700,3 +700,29 @@ Successfully confirmed upgrade to stable2412 with both crates building correctly
 - sc-service v0.44.0 actively used in node binary and client libraries - all compile successfully
 - Workspace dependencies already configured for stable2412 - no manual updates needed
 - Both crates verified with individual crate checks and full workspace compilation
+
+## sc-cli
+
+### Overview
+Successfully confirmed upgrade to stable2412 with sc-cli already properly configured and working - no code changes required as workspace dependencies were previously updated.
+
+### Common issues & fixes
+
+- 🔴 *No compilation errors found for sc-cli usage*
+- 🟢 *sc-cli v0.50.2 from stable2412 branch already configured and working*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml line 117*
+
+- 🔴 *sc-cli actively used in storage-hub-node package in /storage-hub/node/src/command.rs*
+- 🟢 *All standard sc-cli traits and types work without modification: SubstrateCli, CliConfiguration, ChainSpec, etc.*
+- ✅ *Node binary uses sc-cli = { workspace = true } which correctly resolves to stable2412 version*
+
+- 🔴 *Cargo.lock shows correct version: sc-cli v0.50.2 from stable2412 git branch*
+- 🟢 *Git commit hash dc5153c62481eb7803e9e8941fd4088723e5e0c9 confirms stable2412 branch*
+- ✅ *No API breaking changes in sc-cli between stable2409 and stable2412 affecting this project*
+
+### Optimisations & tips
+
+- sc-cli v0.50.2 successfully upgraded with workspace dependencies already configured for stable2412
+- Node binary uses standard sc-cli traits without deprecated API usage
+- All CLI functionality (SubstrateCli, CliConfiguration, command parsing) works without modification
+- Workspace compilation succeeds despite some local pallet genesis_build issues unrelated to sc-cli
