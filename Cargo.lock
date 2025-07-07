@@ -1836,7 +1836,7 @@ dependencies = [
  "async-trait",
  "cumulus-client-collator",
  "cumulus-client-consensus-common",
- "cumulus-client-consensus-proposer",
+ "cumulus-client-consensus-proposer 0.16.0",
  "cumulus-client-parachain-inherent",
  "cumulus-primitives-aura 0.15.0",
  "cumulus-primitives-core 0.16.0",
@@ -1915,6 +1915,21 @@ dependencies = [
  "sp-inherents 34.0.0",
  "sp-runtime 39.0.5",
  "sp-state-machine 0.43.0",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cumulus-client-consensus-proposer"
+version = "0.17.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "cumulus-primitives-parachain-inherent 0.17.0",
+ "sp-consensus 0.41.0",
+ "sp-inherents 35.0.0",
+ "sp-runtime 40.1.0",
+ "sp-state-machine 0.44.0",
  "thiserror 1.0.69",
 ]
 
@@ -2215,6 +2230,7 @@ name = "cumulus-primitives-parachain-inherent"
 version = "0.17.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
+ "async-trait",
  "cumulus-primitives-core 0.17.0",
  "parity-scale-codec",
  "scale-info",
@@ -4014,6 +4030,20 @@ dependencies = [
  "scale-info",
  "sp-core 34.0.0",
  "sp-runtime 39.0.5",
+]
+
+[[package]]
+name = "frame-system-benchmarking"
+version = "39.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core 35.0.0",
+ "sp-runtime 40.1.0",
 ]
 
 [[package]]
@@ -7624,6 +7654,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-balances"
+version = "40.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "docify",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "pallet-beefy"
 version = "39.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -7729,7 +7774,7 @@ dependencies = [
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "num-bigint",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-file-system",
  "pallet-nfts",
  "pallet-payment-streams",
@@ -7826,7 +7871,7 @@ dependencies = [
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "log",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-payment-streams",
  "pallet-proofs-dealer",
  "pallet-storage-providers",
@@ -8017,7 +8062,7 @@ dependencies = [
  "hex",
  "log",
  "num-bigint",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-bucket-nfts",
  "pallet-cr-randomness",
  "pallet-file-system-runtime-api",
@@ -8203,6 +8248,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-message-queue"
+version = "42.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "environmental",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-arithmetic 26.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-core 35.0.0",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
+ "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+]
+
+[[package]]
 name = "pallet-mmr"
 version = "38.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -8371,13 +8435,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-parameters"
+version = "0.10.1"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "docify",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "parity-scale-codec",
+ "paste",
+ "scale-info",
+ "serde",
+ "sp-core 35.0.0",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "pallet-payment-streams"
 version = "0.1.0"
 dependencies = [
  "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-nfts",
  "pallet-payment-streams-runtime-api",
  "pallet-proofs-dealer",
@@ -8431,7 +8512,7 @@ dependencies = [
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "hex",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-payment-streams",
  "pallet-proofs-dealer-runtime-api",
  "pallet-storage-providers",
@@ -8486,7 +8567,7 @@ dependencies = [
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "log",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "parity-scale-codec",
  "polkadot-parachain-primitives 15.0.0",
  "scale-info",
@@ -8754,7 +8835,7 @@ dependencies = [
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "log",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-payment-streams",
  "pallet-proofs-dealer",
  "pallet-randomness",
@@ -8801,6 +8882,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-sudo"
+version = "39.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "docify",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "pallet-timestamp"
 version = "28.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8838,6 +8934,25 @@ dependencies = [
  "sp-runtime 39.0.5",
  "sp-storage 21.0.0",
  "sp-timestamp 34.0.0",
+]
+
+[[package]]
+name = "pallet-timestamp"
+version = "38.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "docify",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-inherents 35.0.0",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
+ "sp-storage 22.0.0",
+ "sp-timestamp 35.0.0",
 ]
 
 [[package]]
@@ -8912,7 +9027,7 @@ version = "41.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
 dependencies = [
  "jsonrpsee",
- "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-transaction-payment-rpc-runtime-api 38.0.0",
  "parity-scale-codec",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
@@ -8932,6 +9047,18 @@ dependencies = [
  "sp-api 34.0.0",
  "sp-runtime 39.0.5",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
+]
+
+[[package]]
+name = "pallet-transaction-payment-rpc-runtime-api"
+version = "39.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "pallet-transaction-payment 39.1.0",
+ "parity-scale-codec",
+ "sp-api 35.0.0",
+ "sp-runtime 40.1.0",
+ "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
 ]
 
 [[package]]
@@ -8974,16 +9101,16 @@ dependencies = [
 
 [[package]]
 name = "pallet-uniques"
-version = "38.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+version = "39.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
- "frame-benchmarking 38.1.0",
- "frame-support 38.2.0",
- "frame-system 38.0.0",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
  "log",
  "parity-scale-codec",
  "scale-info",
- "sp-runtime 39.0.5",
+ "sp-runtime 40.1.0",
 ]
 
 [[package]]
@@ -10623,7 +10750,7 @@ dependencies = [
  "log",
  "mmr-gadget",
  "pallet-transaction-payment 38.0.2",
- "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-transaction-payment-rpc-runtime-api 38.0.0",
  "parity-db",
  "parity-scale-codec",
  "parking_lot 0.12.3",
@@ -11870,7 +11997,7 @@ dependencies = [
  "frame-metadata-hash-extension 0.6.0",
  "frame-support 38.2.0",
  "frame-system 38.0.0",
- "frame-system-benchmarking",
+ "frame-system-benchmarking 38.0.0",
  "frame-system-rpc-runtime-api 34.0.0",
  "frame-try-runtime 0.44.0",
  "hex-literal",
@@ -11897,7 +12024,7 @@ dependencies = [
  "pallet-multisig",
  "pallet-nis",
  "pallet-offences",
- "pallet-parameters",
+ "pallet-parameters 0.9.0",
  "pallet-preimage",
  "pallet-proxy",
  "pallet-ranked-collective",
@@ -11909,11 +12036,11 @@ dependencies = [
  "pallet-society",
  "pallet-staking 38.0.1",
  "pallet-state-trie-migration",
- "pallet-sudo",
+ "pallet-sudo 38.0.0",
  "pallet-timestamp 37.0.0",
  "pallet-tips",
  "pallet-transaction-payment 38.0.2",
- "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-transaction-payment-rpc-runtime-api 38.0.0",
  "pallet-treasury 37.0.0",
  "pallet-utility",
  "pallet-vesting 38.0.0",
@@ -14119,7 +14246,7 @@ dependencies = [
  "frame-metadata-hash-extension 0.7.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
- "frame-system-benchmarking",
+ "frame-system-benchmarking 39.0.0",
  "frame-system-rpc-runtime-api 35.0.0",
  "frame-try-runtime 0.45.0",
  "hex-literal",
@@ -14127,15 +14254,15 @@ dependencies = [
  "num-bigint",
  "pallet-aura",
  "pallet-authorship 39.0.0",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-bucket-nfts",
  "pallet-collator-selection",
  "pallet-cr-randomness",
  "pallet-file-system",
  "pallet-file-system-runtime-api",
- "pallet-message-queue 41.0.2",
+ "pallet-message-queue 42.0.0",
  "pallet-nfts",
- "pallet-parameters",
+ "pallet-parameters 0.10.1",
  "pallet-payment-streams",
  "pallet-payment-streams-runtime-api",
  "pallet-proofs-dealer",
@@ -14144,10 +14271,10 @@ dependencies = [
  "pallet-session 38.0.0",
  "pallet-storage-providers",
  "pallet-storage-providers-runtime-api",
- "pallet-sudo",
- "pallet-timestamp 37.0.0",
+ "pallet-sudo 39.0.0",
+ "pallet-timestamp 38.0.0",
  "pallet-transaction-payment 39.1.0",
- "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-transaction-payment-rpc-runtime-api 39.0.0",
  "pallet-uniques",
  "pallet-xcm",
  "parachains-common",
@@ -17270,7 +17397,7 @@ dependencies = [
  "cumulus-client-collator",
  "cumulus-client-consensus-aura",
  "cumulus-client-consensus-common",
- "cumulus-client-consensus-proposer",
+ "cumulus-client-consensus-proposer 0.17.0",
  "cumulus-client-parachain-inherent",
  "cumulus-client-service",
  "cumulus-primitives-core 0.17.0",
@@ -17383,7 +17510,7 @@ dependencies = [
  "frame-metadata-hash-extension 0.7.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
- "frame-system-benchmarking",
+ "frame-system-benchmarking 39.0.0",
  "frame-system-rpc-runtime-api 35.0.0",
  "frame-try-runtime 0.45.0",
  "hex-literal",
@@ -17391,15 +17518,15 @@ dependencies = [
  "num-bigint",
  "pallet-aura",
  "pallet-authorship 39.0.0",
- "pallet-balances 39.0.1",
+ "pallet-balances 40.1.0",
  "pallet-bucket-nfts",
  "pallet-collator-selection",
  "pallet-cr-randomness",
  "pallet-file-system",
  "pallet-file-system-runtime-api",
- "pallet-message-queue 41.0.2",
+ "pallet-message-queue 42.0.0",
  "pallet-nfts",
- "pallet-parameters",
+ "pallet-parameters 0.10.1",
  "pallet-payment-streams",
  "pallet-payment-streams-runtime-api",
  "pallet-proofs-dealer",
@@ -17408,10 +17535,10 @@ dependencies = [
  "pallet-session 38.0.0",
  "pallet-storage-providers",
  "pallet-storage-providers-runtime-api",
- "pallet-sudo",
- "pallet-timestamp 37.0.0",
+ "pallet-sudo 39.0.0",
+ "pallet-timestamp 38.0.0",
  "pallet-transaction-payment 39.1.0",
- "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-transaction-payment-rpc-runtime-api 39.0.0",
  "pallet-xcm",
  "parachains-common",
  "parity-scale-codec",
@@ -19298,7 +19425,7 @@ dependencies = [
  "frame-metadata-hash-extension 0.6.0",
  "frame-support 38.2.0",
  "frame-system 38.0.0",
- "frame-system-benchmarking",
+ "frame-system-benchmarking 38.0.0",
  "frame-system-rpc-runtime-api 34.0.0",
  "frame-try-runtime 0.44.0",
  "hex-literal",
@@ -19331,7 +19458,7 @@ dependencies = [
  "pallet-nomination-pools-runtime-api",
  "pallet-offences",
  "pallet-offences-benchmarking",
- "pallet-parameters",
+ "pallet-parameters 0.9.0",
  "pallet-preimage",
  "pallet-proxy",
  "pallet-recovery",
@@ -19344,10 +19471,10 @@ dependencies = [
  "pallet-staking 38.0.1",
  "pallet-staking-runtime-api",
  "pallet-state-trie-migration",
- "pallet-sudo",
+ "pallet-sudo 38.0.0",
  "pallet-timestamp 37.0.0",
  "pallet-transaction-payment 38.0.2",
- "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-transaction-payment-rpc-runtime-api 38.0.0",
  "pallet-treasury 37.0.0",
  "pallet-utility",
  "pallet-vesting 38.0.0",
