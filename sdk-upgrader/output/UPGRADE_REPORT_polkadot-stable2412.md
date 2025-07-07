@@ -675,6 +675,28 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - Workspace dependencies already configured for stable2412 - no manual updates needed
 - All crates compile successfully with workspace build passing in under 40 seconds
 
+## polkadot-overseer
+
+### Overview
+Successfully confirmed polkadot-overseer upgrade to stable2412 with crate v21.1.0 working correctly as transitive dependency - no direct usage or code changes required.
+
+### Common issues & fixes
+
+- 🔴 *polkadot-overseer not found in direct dependencies*
+- 🟢 *This crate is used as transitive dependency via cumulus-relay-chain-interface, not directly by Storage Hub project*
+- ✅ *No action required - crate available and working via dependency tree: polkadot-overseer v21.1.0*
+
+- 🔴 *OverseerHandle usage found in node service.rs but no polkadot-overseer import*
+- 🟢 *OverseerHandle is imported from cumulus-relay-chain-interface, not directly from polkadot-overseer*
+- ✅ *Code correctly uses `cumulus_relay_chain_interface::OverseerHandle` and `.overseer_handle()` method*
+
+### Optimisations & tips
+
+- polkadot-overseer v21.1.0 successfully upgraded as transitive dependency via stable2412 branch
+- Storage Hub project uses OverseerHandle through cumulus-relay-chain-interface abstraction, not direct polkadot-overseer imports
+- Individual crate check `cargo check -p cumulus-relay-chain-interface` confirms polkadot-overseer v21.1.0 compiles successfully
+- No direct dependency configuration needed - workspace dependencies handle transitive upgrade automatically
+
 ## polkadot-rpc, sc-service
 
 ### Overview
