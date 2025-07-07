@@ -910,3 +910,25 @@ Successfully confirmed upgrade to stable2412 with all assigned crates working co
 - Clean up unused scale_info::prelude::string imports left from previous upgrade iterations
 - Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
 - Workspace dependencies already configured for stable2412 in main Cargo.toml - no manual updates needed
+
+## cumulus-relay-chain-inprocess-interface
+
+### Overview
+Successfully confirmed cumulus-relay-chain-inprocess-interface upgrade to stable2412 with crate v0.22.1 working correctly as transitive dependency - no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *cumulus-relay-chain-inprocess-interface not found in direct workspace dependencies*
+- 🟢 *This crate is used as transitive dependency via cumulus-client-service and polkadot-service, not directly by Storage Hub project*
+- ✅ *No action required - crate available and working via dependency tree: cumulus-relay-chain-inprocess-interface v0.22.1*
+
+- 🔴 *No compilation errors found for cumulus-relay-chain-inprocess-interface*
+- 🟢 *Crate compiles successfully with stable2412 dependencies via workspace configuration*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml line 190 (cumulus-relay-chain-interface)*
+
+### Optimisations & tips
+
+- cumulus-relay-chain-inprocess-interface v0.22.1 successfully upgraded as transitive dependency via stable2412 branch
+- Storage Hub project uses cumulus-relay-chain-interface abstraction which pulls in inprocess interface automatically
+- Individual crate check `cargo check -p cumulus-relay-chain-inprocess-interface` confirms v0.22.1 compiles successfully
+- No direct dependency configuration needed - workspace dependencies handle transitive upgrade automatically
