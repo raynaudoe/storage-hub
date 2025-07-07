@@ -507,6 +507,36 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - Use explicit version specification to avoid ambiguous package errors when multiple versions exist
 - Workspace dependencies already configured for stable2412 - no manual updates needed
 
+## polkadot-node-subsystem-types, polkadot-runtime-common, sc-consensus-aura, sc-consensus-babe, sc-consensus-beefy, sc-consensus-grandpa, sc-rpc-api, xcm-simulator
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates building correctly and fixed XCM simulator compatibility issues for updated APIs.
+
+### Common issues & fixes
+
+- 🔴 *`no field 'weight' on type 'DispatchInfo'` in xcm-simulator tests*
+- 🟢 *DispatchInfo structure changed from single weight field to call_weight and extension_weight*
+- ✅ *Updated to `bucket_creation_call.get_dispatch_info().call_weight`*
+
+- 🔴 *`variant 'Instruction<_>::Transact' has no field named 'require_weight_at_most'` in XCM instructions*
+- 🟢 *XCM Transact instruction field renamed from require_weight_at_most to fallback_max_weight*
+- ✅ *Updated to `fallback_max_weight: Some(estimated_weight),`*
+
+- 🔴 *`mismatched types: expected 'staging_xcm::v4::Location', found 'xcm_simulator::Location'` in VersionedLocation*
+- 🟢 *XCM Location type conversion required for VersionedLocation V4 constructor*
+- ✅ *Added `.into()` conversion: `VersionedLocation::V4(destination.clone().into())`*
+
+- 🔴 *Missing assigned crates: `polkadot-node-subsystem-types`, `sc-consensus-babe`, `sc-consensus-beefy`, `sc-consensus-grandpa`*
+- 🟢 *These crates are available as transitive dependencies but not directly used in Storage Hub project*
+- ✅ *Verified working via cargo check: polkadot-node-subsystem-types, sc-consensus-babe, sc-consensus-beefy, sc-consensus-grandpa all build successfully*
+
+### Optimisations & tips
+
+- Directly-used crates successfully upgraded: polkadot-runtime-common@18.1.0, sc-consensus-aura, sc-rpc-api, xcm-simulator@18.1.0
+- Transitive dependency crates verified: polkadot-node-subsystem-types, sc-consensus-babe, sc-consensus-beefy, sc-consensus-grandpa
+- XCM API changes: replace `get_dispatch_info().weight` with `get_dispatch_info().call_weight`
+- XCM Transact: replace `require_weight_at_most` with `fallback_max_weight: Some(value)`
+
 ## pallet-aura, pallet-session, pallet-transaction-payment-rpc, sc-network, staging-xcm-builder, xcm-runtime-apis
 
 ### Overview

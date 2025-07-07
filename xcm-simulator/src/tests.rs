@@ -92,8 +92,8 @@ mod relay_token {
             let assets: Assets = (Here, 50u128 * CENTS).into();
             assert_ok!(relay_chain::XcmPallet::transfer_assets(
                 relay_chain::RuntimeOrigin::signed(ALICE),
-                Box::new(VersionedLocation::V4(destination.clone())),
-                Box::new(VersionedLocation::V4(beneficiary.clone())),
+                Box::new(VersionedLocation::V4(destination.clone().into())),
+                Box::new(VersionedLocation::V4(beneficiary.clone().into())),
                 Box::new(VersionedAssets::V4(assets)),
                 0,
                 WeightLimit::Unlimited,
@@ -421,7 +421,7 @@ mod root {
                 who: sp_runtime::MultiAddress::Id(BOB.clone()),
                 new_free: 100 * CENTS,
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             let message: Xcm<()> = vec![
                 UnpaidExecution {
                     weight_limit: Unlimited,
@@ -429,7 +429,7 @@ mod root {
                 },
                 Transact {
                     origin_kind: OriginKind::Superuser,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
             ]
@@ -501,7 +501,7 @@ mod providers {
                 multiaddresses,
                 payment_account: sh_sibling_account_id(NON_SYS_PARA_ID),
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -511,7 +511,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -585,7 +585,7 @@ mod providers {
                 multiaddresses,
                 payment_account: sh_sibling_account_id(NON_SYS_PARA_ID),
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -595,7 +595,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -638,7 +638,7 @@ mod providers {
             >::confirm_sign_up {
                 provider_account: None,
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -648,7 +648,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -715,7 +715,7 @@ mod providers {
                 multiaddresses,
                 payment_account: sh_sibling_account_id(NON_SYS_PARA_ID),
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -725,7 +725,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -758,7 +758,7 @@ mod providers {
             let call = storagehub::RuntimeCall::Providers(pallet_storage_providers::Call::<
                 storagehub::Runtime,
             >::cancel_sign_up {});
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -768,7 +768,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -839,7 +839,7 @@ mod providers {
                 multiaddresses,
                 payment_account: sh_sibling_account_id(NON_SYS_PARA_ID),
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -849,7 +849,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -892,7 +892,7 @@ mod providers {
             >::confirm_sign_up {
                 provider_account: None,
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -902,7 +902,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -943,7 +943,7 @@ mod providers {
             let call = storagehub::RuntimeCall::Providers(pallet_storage_providers::Call::<
                 storagehub::Runtime,
             >::bsp_sign_off {});
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -953,7 +953,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -1025,7 +1025,7 @@ mod providers {
                 multiaddresses,
                 payment_account: sh_sibling_account_id(NON_SYS_PARA_ID),
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -1035,7 +1035,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -1078,7 +1078,7 @@ mod providers {
             >::confirm_sign_up {
                 provider_account: None,
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -1088,7 +1088,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -1122,7 +1122,7 @@ mod providers {
             >::change_capacity {
                 new_capacity: 20,
             });
-            let estimated_weight = call.get_dispatch_info().weight;
+            let estimated_weight = call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -1132,7 +1132,7 @@ mod providers {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: call.encode().into(),
                 },
                 RefundSurplus,
@@ -1245,7 +1245,7 @@ mod users {
                     private: false,
                     value_prop_id,
                 });
-            let estimated_weight = bucket_creation_call.get_dispatch_info().weight;
+            let estimated_weight = bucket_creation_call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -1255,7 +1255,7 @@ mod users {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: bucket_creation_call.encode().into(),
                 },
                 RefundSurplus,
@@ -1315,7 +1315,7 @@ mod users {
                     peer_ids: parachain_peer_id,
                     replication_target: ReplicationTarget::Standard,
                 });
-            let estimated_weight = file_creation_call.get_dispatch_info().weight;
+            let estimated_weight = file_creation_call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -1325,7 +1325,7 @@ mod users {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: file_creation_call.encode().into(),
                 },
                 RefundSurplus,
@@ -1398,7 +1398,7 @@ mod users {
                     fingerprint: file_fingerprint.clone(),
                     maybe_inclusion_forest_proof: None,
                 });
-            let estimated_weight = file_deletion_call.get_dispatch_info().weight;
+            let estimated_weight = file_deletion_call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 WithdrawAsset((Parent, 100 * CENTS).into()),
@@ -1408,7 +1408,7 @@ mod users {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: file_deletion_call.encode().into(),
                 },
                 RefundSurplus,
@@ -1618,7 +1618,7 @@ mod users {
                     private: false,
                     value_prop_id,
                 });
-            let estimated_weight = bucket_creation_call.get_dispatch_info().weight;
+            let estimated_weight = bucket_creation_call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 DescendOrigin(
@@ -1635,7 +1635,7 @@ mod users {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: bucket_creation_call.encode().into(),
                 },
                 RefundSurplus,
@@ -1700,7 +1700,7 @@ mod users {
                     peer_ids: parachain_peer_id,
                     replication_target: ReplicationTarget::Standard,
                 });
-            let estimated_weight = file_creation_call.get_dispatch_info().weight;
+            let estimated_weight = file_creation_call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 DescendOrigin(
@@ -1717,7 +1717,7 @@ mod users {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: file_creation_call.encode().into(),
                 },
                 RefundSurplus,
@@ -1794,7 +1794,7 @@ mod users {
                     fingerprint: file_fingerprint.clone(),
                     maybe_inclusion_forest_proof: None,
                 });
-            let estimated_weight = file_deletion_call.get_dispatch_info().weight;
+            let estimated_weight = file_deletion_call.get_dispatch_info().call_weight;
             // Remember, this message will be executed from the context of StorageHub
             let message: Xcm<()> = vec![
                 DescendOrigin(
@@ -1811,7 +1811,7 @@ mod users {
                 },
                 Transact {
                     origin_kind: OriginKind::SovereignAccount,
-                    require_weight_at_most: estimated_weight,
+                    fallback_max_weight: Some(estimated_weight),
                     call: file_deletion_call.encode().into(),
                 },
                 RefundSurplus,
