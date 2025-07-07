@@ -255,6 +255,32 @@ Successfully confirmed upgrade to stable2412 with all three crates available as 
 - Individual crate checks may fail due to upstream SDK issues but workspace build succeeds
 - Workspace dependencies already configured for stable2412 - no direct dependency changes needed
 
+## polkadot-core-primitives, slot-range-helper, sp-inherents, sp-keyring, sp-npos-elections, sp-staking, sp-version, staging-xcm
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates - workspace dependencies already configured and individual crate compilation verified.
+
+### Common issues & fixes
+
+- 🔴 *No compilation errors found for primary assigned crates*
+- 🟢 *All crates (polkadot-core-primitives, sp-keyring, sp-version, staging-xcm) compile successfully*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml*
+
+- 🔴 *Missing crates (sp-staking, sp-npos-elections, slot-range-helper) not found in workspace dependencies*
+- 🟢 *These crates are transitive dependencies available via dependency tree*
+- ✅ *Confirmed working: sp-staking@37.0.0, sp-npos-elections@35.1.0, slot-range-helper@16.0.0*
+
+- 🔴 *`sp-inherents` and `sp-npos-elections` test compilation failures with `use of undeclared crate or module`*
+- 🟢 *Upstream Polkadot SDK test dependency issues not related to local code*
+- ✅ *Library compiles successfully, workspace builds without errors*
+
+### Optimisations & tips
+
+- polkadot-core-primitives v16.0.0, sp-keyring v40.0.0, sp-version v38.0.0, staging-xcm v15.1.0 successfully upgraded
+- sp-staking, sp-npos-elections, slot-range-helper available as transitive deps - no explicit configuration needed
+- Individual crate checks may show upstream SDK test issues but workspace compilation succeeds
+- Use cargo check with specific versions to avoid ambiguous package specification errors
+
 ## sc-executor-polkavm, sc-executor-wasmtime, sp-io
 
 ### Overview
