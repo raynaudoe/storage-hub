@@ -95,6 +95,7 @@ sp-runtime-interface = { git = "https://github.com/paritytech/polkadot-sdk.git",
 sp-std = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-trie = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
+sp-application-crypto = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-arithmetic = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-block-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }

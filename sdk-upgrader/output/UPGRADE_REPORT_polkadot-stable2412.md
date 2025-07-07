@@ -159,6 +159,32 @@ Addressed deprecated macro usage, runtime API std compatibility issues, and tele
 - MockValidationDataInherentDataProvider requires upgrade_go_ahead field in stable2412
 - Transaction pool API changes from FullPool to BasicPool require deeper investigation
 
+## sp-core
+
+### Overview
+Successfully upgraded sp-core dependency to polkadot-stable2412 with no direct code changes required - only configuration and compatibility fixes for stable2412.
+
+### Common issues & fixes
+
+- 🔴 *`missing 'DoneSlashHandler' in implementation` in pallet_balances::Config*
+- 🟢 *New required associated type for balance slashing in stable2412*
+- ✅ *Added `type DoneSlashHandler = ();` to all pallet_balances::Config implementations*
+
+- 🔴 *`use of undeclared crate or module 'std'` in #[pallet::genesis_build] macro*
+- 🟢 *Pallet macros need explicit std mapping in no_std contexts for stable2412*
+- ✅ *Added `extern crate alloc;` and conditional std imports before pallet macro*
+
+- 🔴 *Runtime API std compatibility issues with genesis build*
+- 🟢 *sp_api macros require explicit std mapping for no_std support*
+- ✅ *Added `#[cfg(feature = "std")] use std; #[cfg(not(feature = "std"))] use sp_std as std;` inside pallet modules*
+
+### Optimisations & tips
+
+- sp-core upgrade requires no direct code changes - only workspace dependency update
+- All pallet mock files need DoneSlashHandler addition for pallet_balances::Config
+- Use `extern crate alloc;` and conditional std imports for genesis_build macro compatibility
+- Check all pallet_balances::Config implementations when upgrading from stable2409 to stable2412
+
 ## sc-allocator, sc-state-db, sc-storage-monitor, sp-keystore, sp-rpc, sp-trie
 
 ### Overview
@@ -184,3 +210,20 @@ Successfully confirmed upgrade to stable2412 with all target crates working prop
 - sp-keystore and sp-trie actively used in runtime and node - both compile successfully
 - Workspace dependencies in main Cargo.toml already updated to stable2412 branch
 - Individual crate checks may show SDK issues but workspace compilation succeeds
+
+## sp-application-crypto
+
+### Overview
+Successfully upgraded sp-application-crypto to polkadot-stable2412 by adding explicit workspace dependency pinning to prevent version conflicts.
+
+### Common issues & fixes
+
+- 🔴 *Multiple `sp-application-crypto` packages (31.0.0 and 39.0.0) causing ambiguous specification errors*
+- 🟢 *Transitive dependencies using both registry and git versions without explicit pinning*
+- ✅ *Added `sp-application-crypto = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }` to workspace dependencies*
+
+### Optimisations & tips
+
+- sp-application-crypto is primarily used as transitive dependency - no direct code changes needed
+- Add explicit workspace dependency to prevent version conflicts between registry and git versions
+- Check with `cargo check -p sp-application-crypto@39.0.0` to verify stable2412 version builds correctly
