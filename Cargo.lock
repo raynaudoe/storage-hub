@@ -8364,7 +8364,7 @@ dependencies = [
  "log",
  "pallet-balances 39.0.1",
  "parity-scale-codec",
- "polkadot-parachain-primitives 14.0.0",
+ "polkadot-parachain-primitives 15.0.0",
  "scale-info",
  "serde",
  "shp-session-keys",
@@ -8636,7 +8636,7 @@ dependencies = [
  "pallet-randomness",
  "pallet-storage-providers-runtime-api",
  "parity-scale-codec",
- "polkadot-parachain-primitives 14.0.0",
+ "polkadot-parachain-primitives 15.0.0",
  "scale-info",
  "serde",
  "shp-constants",
@@ -13839,7 +13839,7 @@ dependencies = [
  "parachains-common",
  "parity-scale-codec",
  "polkadot-core-primitives 16.0.0",
- "polkadot-parachain-primitives 14.0.0",
+ "polkadot-parachain-primitives 15.0.0",
  "polkadot-runtime-common 17.0.1",
  "polkadot-runtime-constants",
  "polkadot-runtime-parachains 17.0.2",
@@ -16173,6 +16173,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-timestamp"
+version = "35.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "parity-scale-codec",
+ "sp-inherents 35.0.0",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "sp-tracing"
 version = "16.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -16854,7 +16864,7 @@ dependencies = [
  "sp-keyring 40.0.0",
  "sp-keystore 0.41.0",
  "sp-runtime 40.1.0",
- "sp-timestamp 34.0.0",
+ "sp-timestamp 35.0.0",
  "sp-trie 38.0.0",
  "staging-xcm 15.1.0",
  "storage-hub-runtime",
@@ -16917,7 +16927,7 @@ dependencies = [
  "pallet-xcm",
  "parachains-common",
  "parity-scale-codec",
- "polkadot-parachain-primitives 14.0.0",
+ "polkadot-parachain-primitives 15.0.0",
  "polkadot-runtime-common 17.0.1",
  "scale-info",
  "serde_json",

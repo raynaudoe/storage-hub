@@ -107,7 +107,7 @@ sp-keystore = { git = "https://github.com/paritytech/polkadot-sdk.git", branch =
 sp-offchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-session = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-state-machine = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
-sp-timestamp = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+sp-timestamp = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 sp-tracing = { git = "https://github.com/paritytech/polkadot-sdk", branch = "stable2412", default-features = false }
 sp-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 sp-version = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
@@ -168,7 +168,7 @@ polkadot-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch 
 polkadot-core-primitives = { git = "https://github.com/paritytech/polkadot-sdk", branch = "stable2412", default-features = false }
 polkadot-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 pallet-xcm = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
-polkadot-parachain-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+polkadot-parachain-primitives = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 polkadot-runtime-common = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 polkadot-runtime-parachains = { git = "https://github.com/paritytech/polkadot-sdk", branch = "stable2409", default-features = false }
 xcm = { package = "staging-xcm", git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }

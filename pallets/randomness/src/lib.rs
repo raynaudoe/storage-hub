@@ -18,6 +18,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use frame_support::pallet;
+use sp_runtime::traits::Hash;
 pub use pallet::*;
 
 #[cfg(feature = "runtime-benchmarks")]
@@ -251,7 +252,6 @@ impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for RandomnessFromOneEpo
     /// The subject is a byte array that is hashed (to make it a fixed size) and then concatenated with
     /// the latest BABE randomness. The result is then hashed again to provide the final randomness.
     fn random(subject: &[u8]) -> (T::Hash, BlockNumberFor<T>) {
-        use sp_runtime::traits::Hash;
         // If there's randomness available
         if let Some((babe_randomness, latest_valid_block)) = LatestOneEpochAgoRandomness::<T>::get()
         {
@@ -283,7 +283,6 @@ impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for ParentBlockRandomnes
     /// The subject is a byte array that is hashed (to make it a fixed size) and then concatenated with
     /// the latest parent block randomness. The result is then hashed again to provide the final randomness.
     fn random(subject: &[u8]) -> (T::Hash, BlockNumberFor<T>) {
-        use sp_runtime::traits::Hash;
         // If there's randomness available
         if let Some((parent_block_randomness, latest_valid_block)) =
             LatestParentBlockRandomness::<T>::get()
