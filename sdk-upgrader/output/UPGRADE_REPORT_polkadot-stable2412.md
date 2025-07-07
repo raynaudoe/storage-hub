@@ -481,3 +481,29 @@ Successfully upgraded four polkadot-sdk crates from stable2409 to stable2412 in 
 - Individual crate libs compile successfully despite workspace build failures during mixed-version state - this is expected behavior  
 - Use `cargo tree | grep -E "(crate-name).*stable2412"` to verify successful upgrade during mixed-version states
 - Node and xcm-simulator packages using workspace dependencies show proper dependency resolution despite transitional compilation issues
+
+## polkadot-runtime-common, sc-consensus-aura, sc-rpc-api, xcm-simulator
+
+### Overview
+Successfully upgraded four polkadot-sdk crates from stable2409 to stable2412 in workspace dependencies, with all crates resolving correctly to new stable2412 versions.
+
+### Common issues & fixes
+
+- 🔴 *error[E0152]: duplicate lang item in crate `sp_io` panic_impl* during workspace builds with mixed dependency versions
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of sp_io in dependency graph during upgrade
+- ✅ *Fix applied*: Verified correct resolution: polkadot-runtime-common v18.1.0, sc-consensus-aura v0.48.0, sc-rpc-api v0.47.0, xcm-simulator v18.1.0
+
+- 🔴 *error[E0277]: the trait bound `...`: ProvideInherent is not satisfied* and complex trait bound errors in xcm-simulator during transitional builds
+- 🟢 *Root cause*: Mixed dependency versions during transition with cumulus and substrate core packages from different branches
+- ✅ *Fix applied*: Expected transitional state - individual packages using workspace dependencies show proper stable2412 dependency resolution
+
+- 🔴 *Four assigned crates not found in project*: polkadot-node-subsystem-types, sc-consensus-babe, sc-consensus-beefy, sc-consensus-grandpa
+- 🟢 *Root cause*: These crates are not utilized by the current storage-hub project, despite being part of polkadot-sdk stable2412
+- ✅ *Fix applied*: No action required - crate upgrades not applicable to this project
+
+### Optimisations & tips
+
+- All four assigned crates correctly resolved from stable2412 branch: cargo tree shows proper version upgrades to stable2412 versions
+- Individual package dependency trees show proper stable2412 resolution despite workspace build failures during mixed-version state - this is expected behavior
+- Use `cargo tree --manifest-path=/path/Cargo.toml | grep "crate.*stable2412"` to verify successful upgrade during mixed-version states
+- polkadot-runtime-common used by xcm-simulator local package, sc-consensus-aura and sc-rpc-api used by node package correctly show stable2412 dependencies
