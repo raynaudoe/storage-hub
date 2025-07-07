@@ -1848,7 +1848,7 @@ dependencies = [
  "sp-block-builder 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-consensus 0.40.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
  "sp-core 34.0.0",
  "sp-inherents 34.0.0",
  "sp-keystore 0.40.0",
@@ -2029,7 +2029,7 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "sp-application-crypto 38.0.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
  "sp-runtime 39.0.5",
 ]
 
@@ -2139,7 +2139,7 @@ version = "0.15.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
 dependencies = [
  "sp-api 34.0.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
 ]
 
 [[package]]
@@ -6406,13 +6406,13 @@ dependencies = [
 
 [[package]]
 name = "merkleized-metadata"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f313fcff1d2a4bcaa2deeaa00bf7530d77d5f7bd0467a117dde2e29a75a7a17a"
+checksum = "38c592efaf1b3250df14c8f3c2d952233f0302bb81d3586db2f303666c1cd607"
 dependencies = [
  "array-bytes",
  "blake3",
- "frame-metadata 16.0.0",
+ "frame-metadata 18.0.0",
  "parity-scale-codec",
  "scale-decode",
  "scale-info",
@@ -7344,7 +7344,7 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "sp-application-crypto 38.0.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
  "sp-runtime 39.0.5",
 ]
 
@@ -8992,14 +8992,14 @@ dependencies = [
  "parity-scale-codec",
  "polkadot-primitives 16.0.0",
  "scale-info",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
  "sp-core 34.0.0",
  "sp-io 38.0.2",
  "sp-runtime 39.0.5",
  "staging-parachain-info",
  "staging-xcm 14.2.2",
  "staging-xcm-executor 17.0.2",
- "substrate-wasm-builder",
+ "substrate-wasm-builder 24.0.2",
 ]
 
 [[package]]
@@ -10015,7 +10015,7 @@ dependencies = [
  "sc-client-api",
  "sc-network",
  "sc-network-types 0.12.1",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "smallvec",
  "sp-api 34.0.0",
  "sp-authority-discovery 34.0.0",
@@ -10189,6 +10189,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "polkadot-primitives"
+version = "17.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "bitvec",
+ "hex-literal",
+ "log",
+ "parity-scale-codec",
+ "polkadot-core-primitives 16.0.0",
+ "polkadot-parachain-primitives 15.0.0",
+ "scale-info",
+ "serde",
+ "sp-api 35.0.0",
+ "sp-application-crypto 39.0.0",
+ "sp-arithmetic 26.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-authority-discovery 35.0.0",
+ "sp-consensus-slots 0.41.0",
+ "sp-core 35.0.0",
+ "sp-inherents 35.0.0",
+ "sp-io 39.0.1",
+ "sp-keystore 0.41.0",
+ "sp-runtime 40.1.0",
+ "sp-staking 37.0.0",
+ "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "polkadot-rpc"
 version = "19.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -10209,7 +10237,7 @@ dependencies = [
  "sc-rpc",
  "sc-rpc-spec-v2",
  "sc-sync-state-rpc",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-application-crypto 38.0.0",
  "sp-block-builder 34.0.0",
@@ -10540,7 +10568,7 @@ dependencies = [
  "sc-sysinfo",
  "sc-telemetry",
  "sc-transaction-pool",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "serde",
  "serde_json",
  "sp-api 34.0.0",
@@ -11787,7 +11815,7 @@ dependencies = [
  "staging-xcm-builder 17.0.5",
  "staging-xcm-executor 17.0.2",
  "static_assertions",
- "substrate-wasm-builder",
+ "substrate-wasm-builder 24.0.2",
  "xcm-runtime-apis",
 ]
 
@@ -12198,7 +12226,7 @@ dependencies = [
  "sc-block-builder",
  "sc-proposer-metrics",
  "sc-telemetry",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-consensus 0.40.0",
@@ -12313,7 +12341,7 @@ dependencies = [
  "parity-scale-codec",
  "parking_lot 0.12.3",
  "sc-executor 0.40.1",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
@@ -12398,7 +12426,7 @@ dependencies = [
  "sp-block-builder 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-consensus 0.40.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
  "sp-consensus-slots 0.40.1",
  "sp-core 34.0.0",
  "sp-inherents 34.0.0",
@@ -12427,7 +12455,7 @@ dependencies = [
  "sc-consensus-epochs",
  "sc-consensus-slots",
  "sc-telemetry",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-application-crypto 38.0.0",
  "sp-block-builder 34.0.0",
@@ -12562,7 +12590,7 @@ dependencies = [
  "sc-network-sync",
  "sc-network-types 0.12.1",
  "sc-telemetry",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "serde_json",
  "sp-api 34.0.0",
@@ -12617,12 +12645,12 @@ dependencies = [
  "sc-consensus-babe",
  "sc-consensus-epochs",
  "sc-transaction-pool",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "serde",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-consensus 0.40.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.40.0",
  "sp-consensus-babe 0.40.0",
  "sp-consensus-slots 0.40.1",
  "sp-core 34.0.0",
@@ -12837,7 +12865,7 @@ dependencies = [
  "sc-client-api",
  "sc-network",
  "sc-network-types 0.12.1",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-consensus 0.40.0",
  "sp-core 34.0.0",
@@ -13068,7 +13096,7 @@ dependencies = [
  "sc-network",
  "sc-network-common",
  "sc-network-types 0.12.1",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
  "sp-core 34.0.0",
@@ -13105,7 +13133,7 @@ dependencies = [
  "sc-mixnet",
  "sc-rpc-api",
  "sc-tracing",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "serde_json",
  "sp-api 34.0.0",
@@ -13130,7 +13158,7 @@ dependencies = [
  "parity-scale-codec",
  "sc-chain-spec",
  "sc-mixnet",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "scale-info",
  "serde",
  "serde_json",
@@ -13182,7 +13210,7 @@ dependencies = [
  "sc-chain-spec",
  "sc-client-api",
  "sc-rpc",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "schnellru",
  "serde",
@@ -13233,7 +13261,7 @@ dependencies = [
  "sc-telemetry",
  "sc-tracing",
  "sc-transaction-pool",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "schnellru",
  "serde",
@@ -13398,7 +13426,7 @@ dependencies = [
  "parity-scale-codec",
  "parking_lot 0.12.3",
  "sc-client-api",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "serde",
  "sp-api 34.0.0",
@@ -13425,6 +13453,22 @@ dependencies = [
  "sp-blockchain 37.0.1",
  "sp-core 34.0.0",
  "sp-runtime 39.0.5",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "sc-transaction-pool-api"
+version = "38.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "async-trait",
+ "futures",
+ "log",
+ "parity-scale-codec",
+ "serde",
+ "sp-blockchain 38.0.0",
+ "sp-core 35.0.0",
+ "sp-runtime 40.1.0",
  "thiserror 1.0.69",
 ]
 
@@ -13864,7 +13908,7 @@ dependencies = [
  "smallvec",
  "sp-api 35.0.0",
  "sp-block-builder 35.0.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.41.0",
  "sp-core 35.0.0",
  "sp-genesis-builder 0.16.0",
  "sp-inherents 35.0.0",
@@ -14028,7 +14072,7 @@ dependencies = [
  "pallet-storage-providers-runtime-api",
  "pallet-transaction-payment 38.0.2",
  "parity-scale-codec",
- "polkadot-primitives 16.0.0",
+ "polkadot-primitives 17.1.0",
  "polkadot-runtime-common 17.0.1",
  "rocksdb",
  "sc-client-api",
@@ -14086,7 +14130,7 @@ dependencies = [
  "pallet-storage-providers",
  "pallet-transaction-payment 38.0.2",
  "parity-scale-codec",
- "polkadot-primitives 16.0.0",
+ "polkadot-primitives 17.1.0",
  "priority-queue",
  "rand 0.8.5",
  "rocksdb",
@@ -14135,7 +14179,7 @@ dependencies = [
  "pallet-proofs-dealer",
  "pallet-storage-providers",
  "parity-scale-codec",
- "polkadot-primitives 16.0.0",
+ "polkadot-primitives 17.1.0",
  "rocksdb",
  "sc-client-api",
  "sc-executor 0.41.0",
@@ -14281,7 +14325,7 @@ dependencies = [
  "pallet-storage-providers-runtime-api",
  "pallet-transaction-payment 38.0.2",
  "parity-scale-codec",
- "polkadot-primitives 16.0.0",
+ "polkadot-primitives 17.1.0",
  "polkadot-runtime-common 17.0.1",
  "sc-client-api",
  "sc-network",
@@ -14962,6 +15006,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-authority-discovery"
+version = "35.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api 35.0.0",
+ "sp-application-crypto 39.0.0",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "sp-block-builder"
 version = "34.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -15066,6 +15122,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-consensus-aura"
+version = "0.41.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "async-trait",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api 35.0.0",
+ "sp-application-crypto 39.0.0",
+ "sp-consensus-slots 0.41.0",
+ "sp-inherents 35.0.0",
+ "sp-runtime 40.1.0",
+ "sp-timestamp 35.0.0",
+]
+
+[[package]]
 name = "sp-consensus-babe"
 version = "0.33.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -15163,6 +15235,17 @@ dependencies = [
  "scale-info",
  "serde",
  "sp-timestamp 34.0.0",
+]
+
+[[package]]
+name = "sp-consensus-slots"
+version = "0.41.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-timestamp 35.0.0",
 ]
 
 [[package]]
@@ -16264,9 +16347,11 @@ name = "sp-timestamp"
 version = "35.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
+ "async-trait",
  "parity-scale-codec",
  "sp-inherents 35.0.0",
  "sp-runtime 40.1.0",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -16909,7 +16994,7 @@ dependencies = [
  "pallet-transaction-payment-rpc",
  "parity-scale-codec",
  "polkadot-cli",
- "polkadot-primitives 16.0.0",
+ "polkadot-primitives 17.1.0",
  "polkadot-runtime-common 17.0.1",
  "priority-queue",
  "rand 0.8.5",
@@ -16931,7 +17016,7 @@ dependencies = [
  "sc-telemetry",
  "sc-tracing",
  "sc-transaction-pool",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 38.1.0",
  "sc-utils 18.0.0",
  "serde",
  "serde_json",
@@ -16953,7 +17038,7 @@ dependencies = [
  "sp-api 35.0.0",
  "sp-block-builder 35.0.0",
  "sp-blockchain 38.0.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.41.0",
  "sp-core 35.0.0",
  "sp-inherents 35.0.0",
  "sp-io 39.0.1",
@@ -17037,7 +17122,7 @@ dependencies = [
  "smallvec",
  "sp-api 35.0.0",
  "sp-block-builder 35.0.0",
- "sp-consensus-aura",
+ "sp-consensus-aura 0.41.0",
  "sp-core 35.0.0",
  "sp-genesis-builder 0.16.0",
  "sp-inherents 35.0.0",
@@ -17053,7 +17138,7 @@ dependencies = [
  "staging-xcm 15.1.0",
  "staging-xcm-builder 18.2.1",
  "staging-xcm-executor 18.0.3",
- "substrate-wasm-builder",
+ "substrate-wasm-builder 25.0.1",
  "xcm-runtime-apis",
 ]
 
@@ -17197,7 +17282,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "sc-rpc-api",
- "sc-transaction-pool-api",
+ "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-block-builder 34.0.0",
  "sp-blockchain 37.0.1",
@@ -17255,23 +17340,44 @@ name = "substrate-wasm-builder"
 version = "24.0.2"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
 dependencies = [
+ "build-helper",
+ "cargo_metadata",
+ "console",
+ "filetime",
+ "jobserver",
+ "parity-wasm",
+ "polkavm-linker",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
+ "strum 0.26.3",
+ "tempfile",
+ "toml 0.8.19",
+ "walkdir",
+ "wasm-opt",
+]
+
+[[package]]
+name = "substrate-wasm-builder"
+version = "25.0.1"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
  "array-bytes",
  "build-helper",
  "cargo_metadata",
  "console",
  "filetime",
- "frame-metadata 16.0.0",
+ "frame-metadata 18.0.0",
  "jobserver",
  "merkleized-metadata",
  "parity-scale-codec",
  "parity-wasm",
  "polkavm-linker",
- "sc-executor 0.40.1",
- "sp-core 34.0.0",
- "sp-io 38.0.2",
- "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
- "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
- "sp-version 37.0.0",
+ "sc-executor 0.41.0",
+ "shlex",
+ "sp-core 35.0.0",
+ "sp-io 39.0.1",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-version 38.0.0",
  "strum 0.26.3",
  "tempfile",
  "toml 0.8.19",
@@ -18969,7 +19075,7 @@ dependencies = [
  "staging-xcm 14.2.2",
  "staging-xcm-builder 17.0.5",
  "staging-xcm-executor 17.0.2",
- "substrate-wasm-builder",
+ "substrate-wasm-builder 24.0.2",
  "westend-runtime-constants",
  "xcm-runtime-apis",
 ]
