@@ -7561,7 +7561,7 @@ dependencies = [
  "sp-keyring",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
 ]
 
 [[package]]
@@ -7656,7 +7656,7 @@ dependencies = [
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
 ]
 
 [[package]]
@@ -7853,7 +7853,7 @@ dependencies = [
  "sp-keyring",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
 ]
 
@@ -8206,7 +8206,7 @@ dependencies = [
  "sp-core 35.0.0",
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
 ]
 
@@ -8263,7 +8263,7 @@ dependencies = [
  "sp-keyring",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
 ]
 
@@ -8586,7 +8586,7 @@ dependencies = [
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
 ]
 
 [[package]]
@@ -13685,7 +13685,7 @@ dependencies = [
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "sp-transaction-pool",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "sp-version 37.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "staging-parachain-info",
@@ -13858,7 +13858,7 @@ dependencies = [
  "sp-api 35.0.0",
  "sp-blockchain",
  "sp-core 35.0.0",
- "sp-keystore 0.40.0",
+ "sp-keystore 0.41.0",
  "sp-runtime 40.1.0",
  "storage-hub-runtime",
  "substrate-frame-rpc-system",
@@ -13919,9 +13919,9 @@ dependencies = [
  "shp-file-metadata",
  "shp-traits",
  "sp-core 35.0.0",
- "sp-keystore 0.40.0",
+ "sp-keystore 0.41.0",
  "sp-runtime 40.1.0",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "storage-hub-runtime",
  "substrate-build-script-utils 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "thiserror 1.0.69",
@@ -13962,7 +13962,7 @@ dependencies = [
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "storage-hub-runtime",
  "tempfile",
  "thiserror 1.0.69",
@@ -13985,8 +13985,8 @@ dependencies = [
  "shp-traits",
  "sp-core 35.0.0",
  "sp-runtime 40.1.0",
- "sp-state-machine 0.43.0",
- "sp-trie 37.0.0",
+ "sp-state-machine 0.44.0",
+ "sp-trie 38.0.0",
  "strum 0.26.3",
  "thiserror 1.0.69",
  "trie-db 0.29.1",
@@ -14039,8 +14039,8 @@ dependencies = [
  "shp-traits",
  "sp-core 35.0.0",
  "sp-runtime 40.1.0",
- "sp-state-machine 0.43.0",
- "sp-trie 37.0.0",
+ "sp-state-machine 0.44.0",
+ "sp-trie 38.0.0",
  "thiserror 1.0.69",
  "tokio",
  "trie-db 0.29.1",
@@ -14130,10 +14130,10 @@ dependencies = [
  "sp-api 35.0.0",
  "sp-blockchain",
  "sp-core 35.0.0",
- "sp-keystore 0.40.0",
+ "sp-keystore 0.41.0",
  "sp-runtime 40.1.0",
  "sp-runtime-interface 29.0.0",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "tokio",
 ]
 
@@ -14183,7 +14183,7 @@ dependencies = [
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "trie-db 0.29.1",
 ]
 
@@ -14216,7 +14216,7 @@ dependencies = [
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "trie-db 0.29.1",
 ]
 
@@ -14229,7 +14229,7 @@ dependencies = [
  "scale-info",
  "sp-core 35.0.0",
  "sp-inherents 34.0.0",
- "sp-keystore 0.40.0",
+ "sp-keystore 0.41.0",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
 ]
@@ -14245,7 +14245,7 @@ dependencies = [
  "sp-io 39.0.1",
  "sp-runtime 40.1.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
 ]
 
 [[package]]
@@ -16589,10 +16589,10 @@ dependencies = [
  "sp-inherents 34.0.0",
  "sp-io 39.0.1",
  "sp-keyring",
- "sp-keystore 0.40.0",
+ "sp-keystore 0.41.0",
  "sp-runtime 40.1.0",
  "sp-timestamp 34.0.0",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "staging-xcm 14.2.0",
  "storage-hub-runtime",
  "substrate-build-script-utils 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
@@ -16677,7 +16677,7 @@ dependencies = [
  "sp-session 36.0.0",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "sp-transaction-pool",
- "sp-trie 37.0.0",
+ "sp-trie 38.0.0",
  "sp-version 37.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "staging-parachain-info",
