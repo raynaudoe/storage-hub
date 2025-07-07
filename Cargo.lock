@@ -1973,7 +1973,7 @@ dependencies = [
  "sc-consensus",
  "sp-api 34.0.0",
  "sp-consensus",
- "sp-maybe-compressed-blob",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-runtime 39.0.5",
  "sp-version 37.0.0",
  "tracing",
@@ -3430,7 +3430,7 @@ dependencies = [
  "sc-cli",
  "sc-client-api",
  "sc-client-db",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sc-service",
  "sc-sysinfo",
  "serde",
@@ -9338,7 +9338,7 @@ dependencies = [
  "polkadot-node-primitives",
  "polkadot-service",
  "sc-cli",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sc-service",
  "sc-storage-monitor",
  "sc-sysinfo",
@@ -9346,7 +9346,7 @@ dependencies = [
  "sp-core 34.0.0",
  "sp-io 38.0.0",
  "sp-keyring",
- "sp-maybe-compressed-blob",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-runtime 39.0.5",
  "substrate-build-script-utils 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "thiserror 1.0.69",
@@ -9496,7 +9496,7 @@ dependencies = [
  "polkadot-node-subsystem-util",
  "polkadot-primitives 16.0.0",
  "sp-core 34.0.0",
- "sp-maybe-compressed-blob",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "thiserror 1.0.69",
  "tracing-gum",
 ]
@@ -9770,9 +9770,9 @@ dependencies = [
  "parity-scale-codec",
  "polkadot-parachain-primitives 14.0.0",
  "polkadot-primitives 16.0.0",
- "sc-executor",
- "sc-executor-common",
- "sc-executor-wasmtime",
+ "sc-executor 0.40.1",
+ "sc-executor-common 0.35.0",
+ "sc-executor-wasmtime 0.35.0",
  "seccompiler",
  "sp-core 34.0.0",
  "sp-crypto-hashing 0.1.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
@@ -9882,7 +9882,7 @@ dependencies = [
  "sp-consensus-slots 0.40.1",
  "sp-core 34.0.0",
  "sp-keystore 0.40.0",
- "sp-maybe-compressed-blob",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-runtime 39.0.5",
  "thiserror 1.0.69",
  "zstd 0.12.4",
@@ -10416,7 +10416,7 @@ dependencies = [
  "sc-consensus-beefy",
  "sc-consensus-grandpa",
  "sc-consensus-slots",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sc-keystore",
  "sc-network",
  "sc-network-sync",
@@ -12032,6 +12032,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-allocator"
+version = "30.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "log",
+ "sp-core 35.0.0",
+ "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "sc-authority-discovery"
 version = "0.45.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#c9211527a90f053f9a58be4c1d6001ccfefbfd5f"
@@ -12110,7 +12121,7 @@ dependencies = [
  "parity-scale-codec",
  "sc-chain-spec-derive",
  "sc-client-api",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sc-network",
  "sc-telemetry",
  "serde",
@@ -12187,7 +12198,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "parking_lot 0.12.3",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sc-transaction-pool-api",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
@@ -12539,9 +12550,9 @@ source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#c
 dependencies = [
  "parity-scale-codec",
  "parking_lot 0.12.3",
- "sc-executor-common",
- "sc-executor-polkavm",
- "sc-executor-wasmtime",
+ "sc-executor-common 0.35.0",
+ "sc-executor-polkavm 0.32.0",
+ "sc-executor-wasmtime 0.35.0",
  "schnellru",
  "sp-api 34.0.0",
  "sp-core 34.0.0",
@@ -12556,14 +12567,50 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-executor"
+version = "0.41.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "parity-scale-codec",
+ "parking_lot 0.12.3",
+ "sc-executor-common 0.36.0",
+ "sc-executor-polkavm 0.33.0",
+ "sc-executor-wasmtime 0.36.0",
+ "schnellru",
+ "sp-api 35.0.0",
+ "sp-core 35.0.0",
+ "sp-externalities 0.30.0",
+ "sp-io 39.0.1",
+ "sp-panic-handler 13.0.1",
+ "sp-runtime-interface 29.0.0",
+ "sp-trie 38.0.0",
+ "sp-version 38.0.0",
+ "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "tracing",
+]
+
+[[package]]
 name = "sc-executor-common"
 version = "0.35.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#c9211527a90f053f9a58be4c1d6001ccfefbfd5f"
 dependencies = [
  "polkavm",
- "sc-allocator",
- "sp-maybe-compressed-blob",
+ "sc-allocator 29.0.0",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
+ "thiserror 1.0.69",
+ "wasm-instrument",
+]
+
+[[package]]
+name = "sc-executor-common"
+version = "0.36.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "polkavm",
+ "sc-allocator 30.0.0",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "thiserror 1.0.69",
  "wasm-instrument",
 ]
@@ -12575,8 +12622,19 @@ source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#c
 dependencies = [
  "log",
  "polkavm",
- "sc-executor-common",
+ "sc-executor-common 0.35.0",
  "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
+]
+
+[[package]]
+name = "sc-executor-polkavm"
+version = "0.33.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "log",
+ "polkavm",
+ "sc-executor-common 0.36.0",
+ "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
 ]
 
 [[package]]
@@ -12590,10 +12648,28 @@ dependencies = [
  "log",
  "parking_lot 0.12.3",
  "rustix 0.36.17",
- "sc-allocator",
- "sc-executor-common",
+ "sc-allocator 29.0.0",
+ "sc-executor-common 0.35.0",
  "sp-runtime-interface 28.0.0",
  "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
+ "wasmtime",
+]
+
+[[package]]
+name = "sc-executor-wasmtime"
+version = "0.36.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "anyhow",
+ "cfg-if",
+ "libc",
+ "log",
+ "parking_lot 0.12.3",
+ "rustix 0.36.17",
+ "sc-allocator 30.0.0",
+ "sc-executor-common 0.36.0",
+ "sp-runtime-interface 29.0.0",
+ "sp-wasm-interface 21.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "wasmtime",
 ]
 
@@ -13027,7 +13103,7 @@ dependencies = [
  "sc-client-api",
  "sc-client-db",
  "sc-consensus",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sc-informant",
  "sc-keystore",
  "sc-network",
@@ -13948,7 +14024,7 @@ dependencies = [
  "polkadot-primitives 16.0.0",
  "rocksdb",
  "sc-client-api",
- "sc-executor",
+ "sc-executor 0.41.0",
  "sc-network",
  "sc-service",
  "serde",
@@ -15422,6 +15498,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-maybe-compressed-blob"
+version = "11.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "thiserror 1.0.69",
+ "zstd 0.12.4",
+]
+
+[[package]]
 name = "sp-metadata-ir"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -16223,6 +16308,7 @@ dependencies = [
  "impl-trait-for-tuples",
  "log",
  "parity-scale-codec",
+ "wasmtime",
 ]
 
 [[package]]
@@ -16552,7 +16638,7 @@ dependencies = [
  "sc-consensus",
  "sc-consensus-aura",
  "sc-consensus-manual-seal",
- "sc-executor",
+ "sc-executor 0.41.0",
  "sc-network",
  "sc-network-sync",
  "sc-offchain",
@@ -16897,10 +16983,10 @@ dependencies = [
  "parity-scale-codec",
  "parity-wasm",
  "polkavm-linker",
- "sc-executor",
+ "sc-executor 0.40.1",
  "sp-core 34.0.0",
  "sp-io 38.0.0",
- "sp-maybe-compressed-blob",
+ "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-version 37.0.0",
  "strum 0.26.3",
