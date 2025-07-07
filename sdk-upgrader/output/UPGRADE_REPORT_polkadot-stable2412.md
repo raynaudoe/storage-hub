@@ -536,3 +536,30 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - pallet-bags-list and pallet-nomination-pools not used in Storage Hub project - no action needed
 - Use explicit version specification to avoid ambiguous package errors when multiple versions exist
 - Workspace dependencies already configured for stable2412 - no manual updates needed
+
+## cumulus-pallet-session-benchmarking, pallet-authority-discovery, pallet-babe, pallet-beefy, pallet-bounties, pallet-collator-selection, pallet-grandpa, pallet-nomination-pools-runtime-api, pallet-staking, pallet-tips, pallet-xcm-benchmarks, pallet-xcm, polkadot-node-jaeger, sc-authority-discovery, sc-mixnet, sc-network-light, sc-network-sync, sc-offchain, sc-telemetry
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all directly-used assigned crates building correctly - workspace dependencies were already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *No compilation errors found for directly-used assigned crates*
+- 🟢 *All used crates (cumulus-pallet-session-benchmarking, pallet-xcm, pallet-collator-selection, sc-offchain, sc-network-sync, sc-telemetry) compile successfully*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml*
+
+- 🔴 *Multiple package version ambiguity errors like `pallet-authority-discovery@29.0.1` vs `pallet-authority-discovery@39.0.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available via dependency tree*
+- ✅ *Use explicit version specification: `cargo check -p pallet-authority-discovery@39.0.0` to target stable2412*
+
+- 🔴 *Assignment included unused crates: `pallet-nomination-pools-runtime-api`, `pallet-xcm-benchmarks`, `polkadot-node-jaeger`*
+- 🟢 *These crates are not used in this Storage Hub project*
+- ✅ *No action required - crates not present in any Cargo.toml dependencies*
+
+### Optimisations & tips
+
+- Directly-used crates successfully upgraded: cumulus-pallet-session-benchmarking, pallet-xcm, pallet-collator-selection, sc-offchain, sc-network-sync, sc-telemetry
+- Transitive dependency crates successfully verified: pallet-authority-discovery@39.0.0, pallet-babe@39.1.0, pallet-beefy, pallet-bounties, pallet-grandpa, pallet-staking@39.1.0, pallet-tips, sc-authority-discovery, sc-mixnet, sc-network-light
+- pallet-nomination-pools-runtime-api, pallet-xcm-benchmarks, polkadot-node-jaeger not used in Storage Hub project - no action needed
+- Use explicit version specification to avoid ambiguous package errors when multiple versions exist
+- Workspace dependencies already configured for stable2412 - no manual updates needed
