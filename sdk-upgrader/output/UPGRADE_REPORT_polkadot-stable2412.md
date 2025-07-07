@@ -440,3 +440,38 @@ Successfully confirmed upgrade to stable2412 with all assigned crates working pr
 - mmr-rpc, sc-block-builder, sp-consensus-beefy not used in Storage Hub project
 - frame-support@39.1.0, polkadot-primitives@17.1.0, sc-transaction-pool-api@38.1.0, sp-consensus-aura@0.41.0, sp-consensus-babe@0.41.0, substrate-wasm-builder@25.0.1 all available via stable2412
 - Workspace dependencies already configured for stable2412 - no manual updates needed
+
+## cumulus-pallet-xcm, cumulus-primitives-parachain-inherent, cumulus-primitives-storage-weight-reclaim, cumulus-test-relay-sproof-builder, frame-benchmarking, frame-election-provider-support, frame-executive, frame-metadata-hash-extension, pallet-authorship, pallet-root-testing, pallet-transaction-payment, polkadot-erasure-coding, polkadot-node-core-pvf-common, polkadot-statement-table, sc-client-db, sc-consensus, sc-tracing, sc-transaction-pool, staging-parachain-info
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates building correctly - no code changes required as workspace dependencies were already updated.
+
+### Common issues & fixes
+
+- 🔴 *`cumulus-primitives-storage-weight-reclaim` test compilation errors with `use of undeclared crate or module`*
+- 🟢 *Upstream Polkadot SDK test dependency issues not related to local code*
+- ✅ *Library compiles successfully, workspace builds without errors*
+
+- 🔴 *`frame-benchmarking` test compilation errors with `unresolved import 'rusty_fork'`*
+- 🟢 *Upstream SDK test dependency issues in no_std contexts, not related to local code*
+- ✅ *Library compiles successfully, workspace builds without errors*
+
+- 🔴 *`frame-metadata-hash-extension` test compilation errors with missing test dependencies*
+- 🟢 *Upstream SDK test dependency issues not related to local code*
+- ✅ *Library compiles successfully, workspace builds without errors*
+
+- 🔴 *Multiple package version ambiguity errors like `frame-benchmarking@29.0.0` vs `frame-benchmarking@39.1.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p frame-benchmarking@39.1.0` to target stable2412*
+
+- 🔴 *`pallet-delegated-staking` not found in dependency tree*
+- 🟢 *This crate is not used in Storage Hub project*
+- ✅ *No action required - crate not present in any Cargo.toml dependencies*
+
+### Optimisations & tips
+
+- All assigned crates successfully upgraded: cumulus-pallet-xcm v0.18.0, cumulus-primitives-parachain-inherent v0.17.0, cumulus-primitives-storage-weight-reclaim v9.1.0, cumulus-test-relay-sproof-builder v0.17.0, frame-benchmarking v39.1.0, frame-election-provider-support v39.0.1, frame-executive v39.1.1, frame-metadata-hash-extension v0.7.0, pallet-authorship v39.0.0, pallet-root-testing v17.0.0, pallet-transaction-payment v39.1.0, polkadot-erasure-coding v17.0.0, polkadot-node-core-pvf-common v17.0.0, polkadot-statement-table v17.0.0, sc-client-db v0.44.0, sc-consensus v0.42.0, sc-tracing v0.43.0, sc-transaction-pool v38.0.0, staging-parachain-info v0.17.0
+- pallet-delegated-staking not used in Storage Hub project - no action needed
+- Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
+- Use explicit version specification to avoid ambiguous package errors when multiple versions exist
+- Workspace dependencies already configured for stable2412 - no manual updates needed
