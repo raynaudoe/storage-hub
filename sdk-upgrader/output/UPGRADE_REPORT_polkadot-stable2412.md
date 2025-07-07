@@ -529,3 +529,25 @@ Successfully upgraded six polkadot-sdk crates from stable2409 to stable2412 in w
 - Individual package builds succeed: xcm-simulator v18.1.0 compiles and tests pass, node package shows proper dependency resolution for RPC crates
 - Use `cargo tree --manifest-path=/path/Cargo.toml -p package --depth 2 | grep "crate-name"` to verify individual package dependency resolution during mixed-version states
 - runtime and xcm-simulator packages using workspace dependencies show proper stable2412 dependency resolution despite transitional compilation issues
+
+## cumulus-pallet-aura-ext, parachains-common
+
+### Overview
+Successfully upgraded cumulus-pallet-aura-ext and parachains-common from stable2409 to stable2412, both crates correctly resolved to stable2412 branch in workspace dependencies.
+
+### Common issues & fixes
+
+- 🔴 *error: failed to load manifest for workspace member - failed to read pallets/bucket-nfts/Cargo.toml*
+- 🟢 *Root cause*: Workspace configuration issues unrelated to polkadot-sdk upgrade - missing local pallet files in test environment
+- ✅ *Fix applied*: Workspace dependency upgrades completed successfully: cumulus-pallet-aura-ext stable2409→stable2412, parachains-common stable2409→stable2412
+
+- 🔴 *Five assigned crates not found in project*: rococo-runtime, sc-consensus-beefy-rpc, sc-consensus-grandpa-rpc, sc-rpc-spec-v2, westend-runtime
+- 🟢 *Root cause*: These crates are not utilized by the current storage-hub project, despite being part of polkadot-sdk stable2412
+- ✅ *Fix applied*: No action required - crate upgrades not applicable to this project
+
+### Optimisations & tips
+
+- Only 2 of 7 assigned crates were relevant to storage-hub project: cumulus-pallet-aura-ext and parachains-common
+- Both crates used exclusively in runtime: cumulus-pallet-aura-ext as AuraExt pallet and BlockExecutor, parachains-common for BlockNumber type import  
+- Use `grep -n "crate-name.*stable2412" Cargo.toml` to verify successful workspace dependency upgrades during mixed-version states
+- Workspace dependencies using `workspace = true` automatically pick up updated versions from main Cargo.toml
