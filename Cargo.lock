@@ -8158,19 +8158,19 @@ dependencies = [
 
 [[package]]
 name = "pallet-nfts"
-version = "32.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+version = "33.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
  "enumflags2",
- "frame-benchmarking 38.1.0",
- "frame-support 38.2.0",
- "frame-system 38.0.0",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
  "log",
  "parity-scale-codec",
  "scale-info",
- "sp-core 34.0.0",
- "sp-io 38.0.2",
- "sp-runtime 39.0.5",
+ "sp-core 35.0.0",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
 ]
 
 [[package]]

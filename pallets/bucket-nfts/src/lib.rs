@@ -22,7 +22,7 @@ mod tests;
 pub mod pallet {
     use crate::weights::WeightInfo;
     use frame_support::{dispatch::DispatchResult, pallet_prelude::*};
-    use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
+    use frame_system::pallet_prelude::OriginFor;
     use frame_system::ensure_signed;
     #[cfg(feature = "runtime-benchmarks")]
     use sp_core::H256;
