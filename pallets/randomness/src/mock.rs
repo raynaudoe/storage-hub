@@ -90,6 +90,7 @@ impl pallet_balances::Config for Test {
     type FreezeIdentifier = ();
     type MaxFreezes = ();
     type RuntimeFreezeReason = ();
+    type DoneSlashHandler = ();
 }
 
 pub struct BabeDataGetter;

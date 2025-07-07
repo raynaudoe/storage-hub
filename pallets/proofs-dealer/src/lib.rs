@@ -19,6 +19,11 @@ pub mod weights;
 
 #[frame_support::pallet]
 pub mod pallet {
+    extern crate alloc;
+    #[cfg(feature = "std")]
+    use std;
+    #[cfg(not(feature = "std"))]
+    use sp_std as std;
     use codec::FullCodec;
     use frame_support::{
         dispatch::DispatchResultWithPostInfo,

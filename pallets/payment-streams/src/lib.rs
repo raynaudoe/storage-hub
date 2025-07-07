@@ -30,6 +30,11 @@ use types::*;
 
 #[frame_support::pallet]
 pub mod pallet {
+    extern crate alloc;
+    #[cfg(feature = "std")]
+    use std;
+    #[cfg(not(feature = "std"))]
+    use sp_runtime::sp_std as std;
     use super::{types::*, weights::WeightInfo, Vec};
     use codec::HasCompact;
     use frame_support::{
