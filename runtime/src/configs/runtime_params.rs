@@ -24,7 +24,7 @@ pub mod dynamic_params {
         ///
         ///  This can be interpreted as "a Provider with 10k UNITs of stake would get the minimum challenge period".
         pub static StakeToChallengePeriod: Balance =
-            10_000 * UNIT * Into::<u128>::into(MinChallengePeriod::get());
+            10_000 * UNIT * Into::<u128>::into(MinChallengePeriod);
 
         #[codec(index = 2)]
         #[allow(non_upper_case_globals)]
@@ -32,7 +32,7 @@ pub mod dynamic_params {
         /// (i.e. the [`StakeToChallengePeriod`] divided by the [`SpMinDeposit`]).
         ///
         // 300k UNITs / 100 UNITs + 50 + 1 = ~3k ticks (i.e. ~5 hours with 6 seconds per tick)
-        pub static CheckpointChallengePeriod: BlockNumber = (StakeToChallengePeriod::get()
+        pub static CheckpointChallengePeriod: BlockNumber = (StakeToChallengePeriod
             / SpMinDeposit::get()).saturating_add(ChallengeTicksTolerance::get() as u128).saturating_add(1)
         .try_into()
         .expect(
@@ -65,12 +65,12 @@ pub mod dynamic_params {
         #[codec(index = 7)]
         #[allow(non_upper_case_globals)]
         /// [`MostlyStablePrice`] * 10 = 500 [`NANOUNIT`]s
-        pub static MaxPrice: Balance = MostlyStablePrice::get() * 10;
+        pub static MaxPrice: Balance = MostlyStablePrice * 10;
 
         #[codec(index = 8)]
         #[allow(non_upper_case_globals)]
         /// [`MostlyStablePrice`] / 5 = 10 [`NANOUNIT`]s
-        pub static MinPrice: Balance = MostlyStablePrice::get() / 5;
+        pub static MinPrice: Balance = MostlyStablePrice / 5;
 
         #[codec(index = 9)]
         #[allow(non_upper_case_globals)]
@@ -129,7 +129,7 @@ pub mod dynamic_params {
         /// for a BSP that has lost this file, it should be more convenient to voluntarily
         /// show up and pay this penalty in good faith, rather than risking being slashed for
         /// being unable to submit a proof that should include this file.
-        pub static BspStopStoringFilePenalty: Balance = SlashAmountPerMaxFileSize::get() / 2;
+        pub static BspStopStoringFilePenalty: Balance = SlashAmountPerMaxFileSize / 2;
 
         /// Time-to-live for a provider to top up their deposit to cover a capacity deficit.
         /// Set to 14_400 relay blocks = 1 day with 6 second timeslots.
@@ -208,7 +208,7 @@ pub mod dynamic_params {
         #[codec(index = 23)]
         #[allow(non_upper_case_globals)]
         pub static MaxReplicationTarget: ReplicationTargetType =
-            UltraHighSecurityReplicationTarget::get()
+            UltraHighSecurityReplicationTarget
                 .saturating_mul(150)
                 .saturating_div(100);
 
@@ -228,7 +228,7 @@ pub mod dynamic_params {
         /// expire before arriving at its maximum threshold for volunteering.
         #[codec(index = 25)]
         #[allow(non_upper_case_globals)]
-        pub static StorageRequestTtl: BlockNumber = TickRangeToMaximumThreshold::get()
+        pub static StorageRequestTtl: BlockNumber = TickRangeToMaximumThreshold
             .saturating_mul(110)
             .saturating_div(100);
 
@@ -239,7 +239,7 @@ pub mod dynamic_params {
         /// challenges by stopping storing a file key right before the challenge period ends in case they lost it.
         #[codec(index = 26)]
         #[allow(non_upper_case_globals)]
-        pub static MinWaitForStopStoring: BlockNumber = CheckpointChallengePeriod::get()
+        pub static MinWaitForStopStoring: BlockNumber = CheckpointChallengePeriod
             .saturating_mul(110)
             .saturating_div(100);
 
@@ -254,7 +254,7 @@ pub mod dynamic_params {
         ///
         ///  This can be interpreted as "a Provider with 10k UNITs of stake would get the minimum seed period".
         pub static StakeToSeedPeriod: Balance =
-            10_000 * UNIT * Into::<u128>::into(MinSeedPeriod::get());
+            10_000 * UNIT * Into::<u128>::into(MinSeedPeriod);
 
         #[codec(index = 29)]
         #[allow(non_upper_case_globals)]

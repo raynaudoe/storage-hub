@@ -52,7 +52,7 @@ shp-traits = { workspace = true }
 shp-treasury-funding = { workspace = true }
 
 # Substrate
-frame-support = { workspace = true }
+frame-support = { workspace = true, features = ["experimental"] }
 frame-benchmarking = { workspace = true, optional = true }
 frame-executive = { workspace = true }
 frame-metadata-hash-extension = { workspace = true }

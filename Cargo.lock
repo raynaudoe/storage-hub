@@ -832,7 +832,7 @@ checksum = "33415e24172c1b7d6066f6d999545375ab8e1d95421d6784bdfff9496f292387"
 dependencies = [
  "bitcoin_hashes",
  "rand 0.8.5",
- "rand_core 0.5.1",
+ "rand_core 0.6.4",
  "serde",
  "unicode-normalization",
 ]
@@ -1424,6 +1424,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "const-hex"
+version = "1.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "83e22e0ed40b96a48d3db274f72fd365bd78f67af39b6bbd47e8a15e1c6207ff"
+dependencies = [
+ "cfg-if",
+ "cpufeatures",
+ "hex",
+ "proptest",
+ "serde",
+]
+
+[[package]]
 name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1836,7 +1849,7 @@ dependencies = [
  "polkadot-overseer",
  "polkadot-primitives 16.0.0",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-consensus-aura",
  "sc-consensus-babe",
  "sc-consensus-slots",
@@ -1875,7 +1888,7 @@ dependencies = [
  "parity-scale-codec",
  "polkadot-primitives 16.0.0",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-consensus-babe",
  "schnellru",
  "sp-blockchain 37.0.1",
@@ -1897,7 +1910,7 @@ source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b
 dependencies = [
  "anyhow",
  "async-trait",
- "cumulus-primitives-parachain-inherent",
+ "cumulus-primitives-parachain-inherent 0.16.0",
  "sp-consensus 0.40.0",
  "sp-inherents 34.0.0",
  "sp-runtime 39.0.5",
@@ -1938,7 +1951,7 @@ source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b
 dependencies = [
  "async-trait",
  "cumulus-primitives-core 0.16.0",
- "cumulus-primitives-parachain-inherent",
+ "cumulus-primitives-parachain-inherent 0.16.0",
  "cumulus-relay-chain-interface",
  "cumulus-test-relay-sproof-builder",
  "parity-scale-codec",
@@ -1970,7 +1983,7 @@ dependencies = [
  "polkadot-primitives 16.0.0",
  "rand 0.8.5",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sp-api 34.0.0",
  "sp-consensus 0.40.0",
  "sp-maybe-compressed-blob 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
@@ -1990,14 +2003,14 @@ dependencies = [
  "cumulus-client-network",
  "cumulus-client-pov-recovery",
  "cumulus-primitives-core 0.16.0",
- "cumulus-primitives-proof-size-hostfunction",
+ "cumulus-primitives-proof-size-hostfunction 0.10.0",
  "cumulus-relay-chain-inprocess-interface",
  "cumulus-relay-chain-interface",
  "cumulus-relay-chain-minimal-node",
  "futures",
  "polkadot-primitives 16.0.0",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-network",
  "sc-network-sync",
  "sc-network-transactions",
@@ -2005,7 +2018,7 @@ dependencies = [
  "sc-service",
  "sc-sysinfo",
  "sc-telemetry",
- "sc-transaction-pool",
+ "sc-transaction-pool 37.0.0",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
@@ -2041,8 +2054,8 @@ dependencies = [
  "bytes",
  "cumulus-pallet-parachain-system-proc-macro",
  "cumulus-primitives-core 0.16.0",
- "cumulus-primitives-parachain-inherent",
- "cumulus-primitives-proof-size-hostfunction",
+ "cumulus-primitives-parachain-inherent 0.16.0",
+ "cumulus-primitives-proof-size-hostfunction 0.10.0",
  "environmental",
  "frame-benchmarking 38.1.0",
  "frame-support 38.2.0",
@@ -2095,17 +2108,17 @@ dependencies = [
 
 [[package]]
 name = "cumulus-pallet-xcm"
-version = "0.17.0"
-source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+version = "0.18.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
- "cumulus-primitives-core 0.16.0",
- "frame-support 38.2.0",
- "frame-system 38.0.0",
+ "cumulus-primitives-core 0.17.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
  "parity-scale-codec",
  "scale-info",
- "sp-io 38.0.2",
- "sp-runtime 39.0.5",
- "staging-xcm 14.2.2",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
+ "staging-xcm 15.1.0",
 ]
 
 [[package]]
@@ -2198,6 +2211,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "cumulus-primitives-parachain-inherent"
+version = "0.17.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "cumulus-primitives-core 0.17.0",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core 35.0.0",
+ "sp-inherents 35.0.0",
+ "sp-trie 38.0.0",
+]
+
+[[package]]
 name = "cumulus-primitives-proof-size-hostfunction"
 version = "0.10.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -2208,19 +2234,30 @@ dependencies = [
 ]
 
 [[package]]
-name = "cumulus-primitives-storage-weight-reclaim"
-version = "8.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+name = "cumulus-primitives-proof-size-hostfunction"
+version = "0.11.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
- "cumulus-primitives-core 0.16.0",
- "cumulus-primitives-proof-size-hostfunction",
+ "sp-externalities 0.30.0",
+ "sp-runtime-interface 29.0.0",
+ "sp-trie 38.0.0",
+]
+
+[[package]]
+name = "cumulus-primitives-storage-weight-reclaim"
+version = "9.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "cumulus-primitives-core 0.17.0",
+ "cumulus-primitives-proof-size-hostfunction 0.11.0",
  "docify",
- "frame-support 38.2.0",
- "frame-system 38.0.0",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
  "log",
  "parity-scale-codec",
  "scale-info",
- "sp-runtime 39.0.5",
+ "sp-runtime 40.1.0",
 ]
 
 [[package]]
@@ -2256,7 +2293,7 @@ dependencies = [
  "sc-client-api 37.0.0",
  "sc-sysinfo",
  "sc-telemetry",
- "sc-tracing",
+ "sc-tracing 37.0.1",
  "sp-api 34.0.0",
  "sp-consensus 0.40.0",
  "sp-core 34.0.0",
@@ -2306,7 +2343,7 @@ dependencies = [
  "sc-network",
  "sc-network-common",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 37.0.1",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
@@ -3578,6 +3615,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "frame-executive"
+version = "39.1.1"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "aquamarine",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "frame-try-runtime 0.45.0",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core 35.0.0",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
+ "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+]
+
+[[package]]
 name = "frame-metadata"
 version = "16.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3614,6 +3669,22 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "sp-runtime 39.0.5",
+]
+
+[[package]]
+name = "frame-metadata-hash-extension"
+version = "0.7.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "array-bytes",
+ "const-hex",
+ "docify",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime 40.1.0",
 ]
 
 [[package]]
@@ -4690,7 +4761,7 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
- "socket2 0.5.10",
+ "socket2 0.4.10",
  "tokio",
  "tower-service",
  "tracing",
@@ -6775,12 +6846,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e5ce46fe64a9d73be07dcbe690a38ce1b293be448fd8ce1e6c1b8062c9f72c6a"
 
 [[package]]
-name = "multimap"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "defc4c55412d89136f966bbb339008b474350e5e6e78d2714439c386b3137a03"
-
-[[package]]
 name = "multistream-select"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7445,6 +7510,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-authorship"
+version = "39.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "impl-trait-for-tuples",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "pallet-babe"
 version = "29.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7647,7 +7725,7 @@ dependencies = [
 name = "pallet-bucket-nfts"
 version = "0.1.0"
 dependencies = [
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "num-bigint",
@@ -7933,7 +8011,7 @@ dependencies = [
 name = "pallet-file-system"
 version = "0.1.0"
 dependencies = [
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "hex",
@@ -8296,7 +8374,7 @@ dependencies = [
 name = "pallet-payment-streams"
 version = "0.1.0"
 dependencies = [
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "pallet-balances 39.0.1",
@@ -8349,7 +8427,7 @@ dependencies = [
 name = "pallet-proofs-dealer"
 version = "0.1.0"
 dependencies = [
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "hex",
@@ -8404,7 +8482,7 @@ dependencies = [
 name = "pallet-randomness"
 version = "0.1.0"
 dependencies = [
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "log",
@@ -8672,7 +8750,7 @@ dependencies = [
 name = "pallet-storage-providers"
 version = "0.1.0"
 dependencies = [
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "log",
@@ -8839,7 +8917,7 @@ dependencies = [
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-core 34.0.0",
- "sp-rpc",
+ "sp-rpc 32.0.0",
  "sp-runtime 39.0.5",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
 ]
@@ -9032,7 +9110,7 @@ dependencies = [
  "sp-core 34.0.0",
  "sp-io 38.0.2",
  "sp-runtime 39.0.5",
- "staging-parachain-info",
+ "staging-parachain-info 0.17.0",
  "staging-xcm 14.2.2",
  "staging-xcm-executor 17.0.2",
  "substrate-wasm-builder 24.0.2",
@@ -9046,7 +9124,7 @@ checksum = "4e69bf016dc406eff7d53a7d3f7cf1c2e72c82b9088aac1118591e36dd2cd3e9"
 dependencies = [
  "bitcoin_hashes",
  "rand 0.8.5",
- "rand_core 0.5.1",
+ "rand_core 0.6.4",
  "serde",
  "unicode-normalization",
 ]
@@ -9465,7 +9543,7 @@ dependencies = [
  "sc-service",
  "sc-storage-monitor",
  "sc-sysinfo",
- "sc-tracing",
+ "sc-tracing 37.0.1",
  "sp-core 34.0.0",
  "sp-io 38.0.2",
  "sp-keyring 39.0.0",
@@ -9965,7 +10043,7 @@ dependencies = [
  "prioritized-metered-channel",
  "sc-cli",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 37.0.1",
  "substrate-prometheus-endpoint 0.17.0",
  "tracing-gum",
 ]
@@ -10535,7 +10613,7 @@ dependencies = [
  "async-trait",
  "frame-benchmarking 38.1.0",
  "frame-benchmarking-cli",
- "frame-metadata-hash-extension",
+ "frame-metadata-hash-extension 0.6.0",
  "frame-system 38.0.0",
  "frame-system-rpc-runtime-api 34.0.0",
  "futures",
@@ -10589,7 +10667,7 @@ dependencies = [
  "sc-basic-authorship",
  "sc-chain-spec",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-consensus-babe",
  "sc-consensus-beefy",
  "sc-consensus-grandpa",
@@ -10603,7 +10681,7 @@ dependencies = [
  "sc-sync-state-rpc",
  "sc-sysinfo",
  "sc-telemetry",
- "sc-transaction-pool",
+ "sc-transaction-pool 37.0.0",
  "sc-transaction-pool-api 37.0.0",
  "serde",
  "serde_json",
@@ -11091,6 +11169,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "proptest"
+version = "1.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14cae93065090804185d3b75f0bf93b8eeda30c7a9b4a33d3bdb3988d6229e50"
+dependencies = [
+ "bitflags 2.6.0",
+ "lazy_static",
+ "num-traits",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "rand_xorshift",
+ "regex-syntax 0.8.5",
+ "unarray",
+]
+
+[[package]]
 name = "prost"
 version = "0.11.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -11131,7 +11225,7 @@ dependencies = [
  "itertools 0.10.5",
  "lazy_static",
  "log",
- "multimap 0.8.3",
+ "multimap",
  "petgraph",
  "prettyplease 0.1.25",
  "prost 0.11.9",
@@ -11152,7 +11246,7 @@ dependencies = [
  "heck 0.5.0",
  "itertools 0.12.1",
  "log",
- "multimap 0.10.0",
+ "multimap",
  "once_cell",
  "petgraph",
  "prettyplease 0.2.25",
@@ -11172,7 +11266,7 @@ dependencies = [
  "heck 0.5.0",
  "itertools 0.12.1",
  "log",
- "multimap 0.10.0",
+ "multimap",
  "once_cell",
  "petgraph",
  "prettyplease 0.2.25",
@@ -11504,6 +11598,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rand_xorshift"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d25bf25ec5ae4a3f1b92f929810509a2f53d7dca2f50b794ff57e3face536c8f"
+dependencies = [
+ "rand_core 0.6.4",
+]
+
+[[package]]
 name = "raw-cpuid"
 version = "11.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -11763,8 +11866,8 @@ dependencies = [
  "binary-merkle-tree 15.0.1",
  "bitvec",
  "frame-benchmarking 38.1.0",
- "frame-executive",
- "frame-metadata-hash-extension",
+ "frame-executive 38.0.1",
+ "frame-metadata-hash-extension 0.6.0",
  "frame-support 38.2.0",
  "frame-system 38.0.0",
  "frame-system-benchmarking",
@@ -12351,7 +12454,7 @@ dependencies = [
  "sc-network",
  "sc-service",
  "sc-telemetry",
- "sc-tracing",
+ "sc-tracing 37.0.1",
  "sc-utils 17.0.0",
  "serde",
  "serde_json",
@@ -12471,6 +12574,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-consensus"
+version = "0.47.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "async-trait",
+ "futures",
+ "log",
+ "mockall 0.11.4",
+ "parking_lot 0.12.3",
+ "sc-client-api 38.0.0",
+ "sc-network-types 0.15.5",
+ "sc-utils 18.0.0",
+ "serde",
+ "sp-api 35.0.0",
+ "sp-blockchain 38.0.0",
+ "sp-consensus 0.41.0",
+ "sp-core 35.0.0",
+ "sp-runtime 40.1.0",
+ "sp-state-machine 0.44.0",
+ "substrate-prometheus-endpoint 0.17.1",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "sc-consensus-aura"
 version = "0.45.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -12481,7 +12608,7 @@ dependencies = [
  "parity-scale-codec",
  "sc-block-builder",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-consensus-slots",
  "sc-telemetry",
  "sp-api 34.0.0",
@@ -12514,7 +12641,7 @@ dependencies = [
  "parity-scale-codec",
  "parking_lot 0.12.3",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-consensus-epochs",
  "sc-consensus-slots",
  "sc-telemetry",
@@ -12571,7 +12698,7 @@ dependencies = [
  "parity-scale-codec",
  "parking_lot 0.12.3",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-network",
  "sc-network-gossip",
  "sc-network-sync",
@@ -12621,7 +12748,7 @@ dependencies = [
  "fork-tree",
  "parity-scale-codec",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sp-blockchain 37.0.1",
  "sp-runtime 39.0.5",
 ]
@@ -12646,7 +12773,7 @@ dependencies = [
  "sc-block-builder",
  "sc-chain-spec",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-network",
  "sc-network-common",
  "sc-network-gossip",
@@ -12703,11 +12830,11 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-consensus-aura",
  "sc-consensus-babe",
  "sc-consensus-epochs",
- "sc-transaction-pool",
+ "sc-transaction-pool 37.0.0",
  "sc-transaction-pool-api 37.0.0",
  "serde",
  "sp-api 34.0.0",
@@ -12736,7 +12863,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-telemetry",
  "sp-arithmetic 26.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-blockchain 37.0.1",
@@ -13000,7 +13127,7 @@ dependencies = [
  "libp2p-identity",
  "parity-scale-codec",
  "prost-build 0.12.6",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-network-types 0.12.1",
  "sp-consensus 0.40.0",
  "sp-consensus-grandpa",
@@ -13065,7 +13192,7 @@ dependencies = [
  "prost 0.12.6",
  "prost-build 0.12.6",
  "sc-client-api 37.0.0",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-network",
  "sc-network-common",
  "sc-network-types 0.12.1",
@@ -13195,7 +13322,7 @@ dependencies = [
  "sc-client-api 37.0.0",
  "sc-mixnet",
  "sc-rpc-api",
- "sc-tracing",
+ "sc-tracing 37.0.1",
  "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "serde_json",
@@ -13204,7 +13331,7 @@ dependencies = [
  "sp-core 34.0.0",
  "sp-keystore 0.40.0",
  "sp-offchain 34.0.0",
- "sp-rpc",
+ "sp-rpc 32.0.0",
  "sp-runtime 39.0.5",
  "sp-session 36.0.0",
  "sp-statement-store 18.0.0",
@@ -13226,7 +13353,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sp-core 34.0.0",
- "sp-rpc",
+ "sp-rpc 32.0.0",
  "sp-runtime 39.0.5",
  "sp-version 37.0.0",
  "thiserror 1.0.69",
@@ -13280,7 +13407,7 @@ dependencies = [
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-core 34.0.0",
- "sp-rpc",
+ "sp-rpc 32.0.0",
  "sp-runtime 39.0.5",
  "sp-version 37.0.0",
  "thiserror 1.0.69",
@@ -13307,7 +13434,7 @@ dependencies = [
  "sc-chain-spec",
  "sc-client-api 37.0.0",
  "sc-client-db",
- "sc-consensus",
+ "sc-consensus 0.44.0",
  "sc-executor 0.40.1",
  "sc-informant",
  "sc-keystore",
@@ -13322,8 +13449,8 @@ dependencies = [
  "sc-rpc-spec-v2",
  "sc-sysinfo",
  "sc-telemetry",
- "sc-tracing",
- "sc-transaction-pool",
+ "sc-tracing 37.0.1",
+ "sc-transaction-pool 37.0.0",
  "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "schnellru",
@@ -13451,14 +13578,42 @@ dependencies = [
  "parking_lot 0.12.3",
  "rustc-hash 1.1.0",
  "sc-client-api 37.0.0",
- "sc-tracing-proc-macro",
+ "sc-tracing-proc-macro 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "serde",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-core 34.0.0",
- "sp-rpc",
+ "sp-rpc 32.0.0",
  "sp-runtime 39.0.5",
  "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
+ "thiserror 1.0.69",
+ "tracing",
+ "tracing-log 0.2.0",
+ "tracing-subscriber 0.3.19",
+]
+
+[[package]]
+name = "sc-tracing"
+version = "38.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "chrono",
+ "console",
+ "is-terminal",
+ "libc",
+ "log",
+ "parity-scale-codec",
+ "parking_lot 0.12.3",
+ "rustc-hash 1.1.0",
+ "sc-client-api 38.0.0",
+ "sc-tracing-proc-macro 11.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "serde",
+ "sp-api 35.0.0",
+ "sp-blockchain 38.0.0",
+ "sp-core 35.0.0",
+ "sp-rpc 33.0.0",
+ "sp-runtime 40.1.0",
+ "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
  "thiserror 1.0.69",
  "tracing",
  "tracing-log 0.2.0",
@@ -13469,6 +13624,17 @@ dependencies = [
 name = "sc-tracing-proc-macro"
 version = "11.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+dependencies = [
+ "proc-macro-crate 3.2.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.94",
+]
+
+[[package]]
+name = "sc-tracing-proc-macro"
+version = "11.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
  "proc-macro-crate 3.2.0",
  "proc-macro2",
@@ -13501,6 +13667,37 @@ dependencies = [
  "sp-transaction-pool 34.0.0",
  "substrate-prometheus-endpoint 0.17.0",
  "thiserror 1.0.69",
+]
+
+[[package]]
+name = "sc-transaction-pool"
+version = "38.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "async-trait",
+ "futures",
+ "futures-timer",
+ "indexmap 2.10.0",
+ "itertools 0.11.0",
+ "linked-hash-map",
+ "log",
+ "parity-scale-codec",
+ "parking_lot 0.12.3",
+ "sc-client-api 38.0.0",
+ "sc-transaction-pool-api 38.1.0",
+ "sc-utils 18.0.0",
+ "serde",
+ "sp-api 35.0.0",
+ "sp-blockchain 38.0.0",
+ "sp-core 35.0.0",
+ "sp-crypto-hashing 0.1.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-runtime 40.1.0",
+ "sp-tracing 17.0.1 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-transaction-pool 35.0.0",
+ "substrate-prometheus-endpoint 0.17.1",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-stream",
 ]
 
 [[package]]
@@ -13917,9 +14114,9 @@ dependencies = [
  "cumulus-primitives-core 0.17.0",
  "cumulus-primitives-storage-weight-reclaim",
  "cumulus-primitives-utility",
- "frame-benchmarking 38.1.0",
- "frame-executive",
- "frame-metadata-hash-extension",
+ "frame-benchmarking 39.1.0",
+ "frame-executive 39.1.1",
+ "frame-metadata-hash-extension 0.7.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "frame-system-benchmarking",
@@ -13929,7 +14126,7 @@ dependencies = [
  "log",
  "num-bigint",
  "pallet-aura",
- "pallet-authorship 38.0.0",
+ "pallet-authorship 39.0.0",
  "pallet-balances 39.0.1",
  "pallet-bucket-nfts",
  "pallet-collator-selection",
@@ -13949,7 +14146,7 @@ dependencies = [
  "pallet-storage-providers-runtime-api",
  "pallet-sudo",
  "pallet-timestamp 37.0.0",
- "pallet-transaction-payment 38.0.2",
+ "pallet-transaction-payment 39.1.0",
  "pallet-transaction-payment-rpc-runtime-api",
  "pallet-uniques",
  "pallet-xcm",
@@ -13985,7 +14182,7 @@ dependencies = [
  "sp-trie 38.0.0",
  "sp-version 38.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "staging-parachain-info",
+ "staging-parachain-info 0.18.0",
  "staging-xcm 15.1.0",
  "staging-xcm-builder 18.2.1",
  "staging-xcm-executor 18.0.3",
@@ -14101,7 +14298,7 @@ dependencies = [
  "bincode",
  "futures",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 38.0.0",
  "sc-utils 18.0.0",
  "serde",
  "serde_json",
@@ -14119,7 +14316,7 @@ dependencies = [
  "async-trait",
  "cumulus-primitives-core 0.17.0",
  "cumulus-primitives-storage-weight-reclaim",
- "frame-metadata-hash-extension",
+ "frame-metadata-hash-extension 0.7.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "futures",
@@ -14133,7 +14330,7 @@ dependencies = [
  "pallet-proofs-dealer-runtime-api",
  "pallet-storage-providers",
  "pallet-storage-providers-runtime-api",
- "pallet-transaction-payment 38.0.2",
+ "pallet-transaction-payment 39.1.0",
  "parity-scale-codec",
  "polkadot-primitives 17.1.0",
  "polkadot-runtime-common 17.0.1",
@@ -14141,7 +14338,7 @@ dependencies = [
  "sc-client-api 38.0.0",
  "sc-network",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 38.0.0",
  "sc-utils 18.0.0",
  "serde",
  "serde_json",
@@ -14172,7 +14369,7 @@ dependencies = [
  "async-channel 1.9.0",
  "async-trait",
  "chrono",
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-benchmarking-cli",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
@@ -14191,7 +14388,7 @@ dependencies = [
  "pallet-proofs-dealer",
  "pallet-proofs-dealer-runtime-api",
  "pallet-storage-providers",
- "pallet-transaction-payment 38.0.2",
+ "pallet-transaction-payment 39.1.0",
  "parity-scale-codec",
  "polkadot-primitives 17.1.0",
  "priority-queue",
@@ -14200,7 +14397,7 @@ dependencies = [
  "sc-client-api 38.0.0",
  "sc-network",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 38.0.0",
  "serde",
  "serde_json",
  "shc-actors-derive",
@@ -14232,7 +14429,7 @@ dependencies = [
  "anyhow",
  "bincode",
  "cumulus-client-service",
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "lazy_static",
@@ -14306,7 +14503,7 @@ dependencies = [
  "sc-network",
  "sc-network-types 0.15.5",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 38.0.0",
  "sc-utils 18.0.0",
  "shc-actors-derive",
  "shc-actors-framework",
@@ -14386,14 +14583,14 @@ dependencies = [
  "pallet-randomness",
  "pallet-storage-providers",
  "pallet-storage-providers-runtime-api",
- "pallet-transaction-payment 38.0.2",
+ "pallet-transaction-payment 39.1.0",
  "parity-scale-codec",
  "polkadot-primitives 17.1.0",
  "polkadot-runtime-common 17.0.1",
  "sc-client-api 38.0.0",
  "sc-network",
  "sc-service",
- "sc-tracing",
+ "sc-tracing 38.0.0",
  "sc-utils 18.0.0",
  "serde",
  "serde_json",
@@ -15978,6 +16175,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-rpc"
+version = "33.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "rustc-hash 1.1.0",
+ "serde",
+ "sp-core 35.0.0",
+]
+
+[[package]]
 name = "sp-runtime"
 version = "32.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -16813,6 +17020,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "staging-parachain-info"
+version = "0.18.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "cumulus-primitives-core 0.17.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime 40.1.0",
+]
+
+[[package]]
 name = "staging-xcm"
 version = "8.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -17054,10 +17274,10 @@ dependencies = [
  "cumulus-client-parachain-inherent",
  "cumulus-client-service",
  "cumulus-primitives-core 0.17.0",
- "cumulus-primitives-parachain-inherent",
+ "cumulus-primitives-parachain-inherent 0.17.0",
  "cumulus-primitives-storage-weight-reclaim",
  "cumulus-relay-chain-interface",
- "frame-benchmarking 38.1.0",
+ "frame-benchmarking 39.1.0",
  "frame-benchmarking-cli",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
@@ -17077,7 +17297,7 @@ dependencies = [
  "pallet-proofs-dealer",
  "pallet-proofs-dealer-runtime-api",
  "pallet-storage-providers",
- "pallet-transaction-payment 38.0.2",
+ "pallet-transaction-payment 39.1.0",
  "pallet-transaction-payment-rpc",
  "parity-scale-codec",
  "polkadot-cli",
@@ -17090,7 +17310,7 @@ dependencies = [
  "sc-chain-spec",
  "sc-cli",
  "sc-client-api 38.0.0",
- "sc-consensus",
+ "sc-consensus 0.47.0",
  "sc-consensus-aura",
  "sc-consensus-manual-seal",
  "sc-executor 0.41.0",
@@ -17101,8 +17321,8 @@ dependencies = [
  "sc-service",
  "sc-sysinfo",
  "sc-telemetry",
- "sc-tracing",
- "sc-transaction-pool",
+ "sc-tracing 38.0.0",
+ "sc-transaction-pool 38.1.0",
  "sc-transaction-pool-api 38.1.0",
  "sc-utils 18.0.0",
  "serde",
@@ -17158,9 +17378,9 @@ dependencies = [
  "cumulus-primitives-storage-weight-reclaim",
  "cumulus-primitives-utility",
  "docify",
- "frame-benchmarking 38.1.0",
- "frame-executive",
- "frame-metadata-hash-extension",
+ "frame-benchmarking 39.1.0",
+ "frame-executive 39.1.1",
+ "frame-metadata-hash-extension 0.7.0",
  "frame-support 39.1.0",
  "frame-system 39.1.0",
  "frame-system-benchmarking",
@@ -17170,7 +17390,7 @@ dependencies = [
  "log",
  "num-bigint",
  "pallet-aura",
- "pallet-authorship 38.0.0",
+ "pallet-authorship 39.0.0",
  "pallet-balances 39.0.1",
  "pallet-bucket-nfts",
  "pallet-collator-selection",
@@ -17190,7 +17410,7 @@ dependencies = [
  "pallet-storage-providers-runtime-api",
  "pallet-sudo",
  "pallet-timestamp 37.0.0",
- "pallet-transaction-payment 38.0.2",
+ "pallet-transaction-payment 39.1.0",
  "pallet-transaction-payment-rpc-runtime-api",
  "pallet-xcm",
  "parachains-common",
@@ -17221,7 +17441,7 @@ dependencies = [
  "sp-trie 38.0.0",
  "sp-version 38.0.0",
  "sp-weights 31.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
- "staging-parachain-info",
+ "staging-parachain-info 0.18.0",
  "staging-xcm 15.1.0",
  "staging-xcm-builder 18.2.1",
  "staging-xcm-executor 18.0.3",
@@ -18403,6 +18623,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "unarray"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaea85b334db583fe3274d12b4cd1880032beab409c0d774be044d4480ab9a94"
+
+[[package]]
 name = "unicode-bidi"
 version = "0.3.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -19068,8 +19294,8 @@ dependencies = [
  "bitvec",
  "frame-benchmarking 38.1.0",
  "frame-election-provider-support 38.0.0",
- "frame-executive",
- "frame-metadata-hash-extension",
+ "frame-executive 38.0.1",
+ "frame-metadata-hash-extension 0.6.0",
  "frame-support 38.2.0",
  "frame-system 38.0.0",
  "frame-system-benchmarking",
