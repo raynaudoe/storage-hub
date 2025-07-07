@@ -647,3 +647,30 @@ Successfully confirmed upgrade to stable2412 with all directly-used and transiti
 - pallet-nomination-pools-benchmarking, pallet-offences-benchmarking, pallet-session-benchmarking not used in Storage Hub project
 - Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
 - Use explicit version specification to avoid ambiguous package errors when multiple versions exist
+
+## cumulus-pallet-aura-ext, parachains-common, rococo-runtime, sc-consensus-beefy-rpc, sc-consensus-grandpa-rpc, sc-rpc-spec-v2, westend-runtime
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates building correctly - workspace dependencies were already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *No compilation errors found for any assigned crates*
+- 🟢 *All directly-used crates (cumulus-pallet-aura-ext v0.18.0, parachains-common v19.0.0) compile successfully*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml*
+
+- 🔴 *westend-runtime not found in dependency tree*
+- 🟢 *This crate is not used in Storage Hub project*
+- ✅ *No action required - crate not present in any Cargo.toml dependencies*
+
+- 🔴 *Transitive dependency crates available via stable2412 dependency tree*
+- 🟢 *Crates like rococo-runtime, sc-consensus-beefy-rpc, sc-consensus-grandpa-rpc, sc-rpc-spec-v2 are pulled in automatically*
+- ✅ *Verified working: rococo-runtime v21.1.0, sc-consensus-beefy-rpc v27.0.0, sc-consensus-grandpa-rpc v0.33.0, sc-rpc-spec-v2 v0.48.0*
+
+### Optimisations & tips
+
+- Directly-used crates successfully upgraded: cumulus-pallet-aura-ext v0.18.0, parachains-common v19.0.0
+- Transitive dependency crates verified working: rococo-runtime v21.1.0, sc-consensus-beefy-rpc v27.0.0, sc-consensus-grandpa-rpc v0.33.0, sc-rpc-spec-v2 v0.48.0
+- westend-runtime not used in Storage Hub project - no action needed
+- Workspace dependencies already configured for stable2412 - no manual updates needed
+- All crates compile successfully with workspace build passing in under 40 seconds
