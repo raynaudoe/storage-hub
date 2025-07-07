@@ -42,7 +42,7 @@ pub mod pallet {
     use frame_system::pallet_prelude::{BlockNumberFor, *};
     use polkadot_parachain_primitives::primitives::RelayChainBlockNumber;
     use shp_session_keys::{InherentError, INHERENT_IDENTIFIER};
-    use sp_runtime::traits::{BlockNumberProvider, Hash};
+    use sp_runtime::traits::{BlockNumberProvider};
 
     #[pallet::pallet]
     pub struct Pallet<T>(PhantomData<T>);
@@ -241,7 +241,6 @@ pub mod pallet {
 use frame_support::traits::Randomness as RandomnessT;
 use frame_system::pallet_prelude::BlockNumberFor;
 use scale_info::prelude::vec::Vec;
-use sp_runtime::traits::Hash;
 pub struct RandomnessFromOneEpochAgo<T>(core::marker::PhantomData<T>);
 
 impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for RandomnessFromOneEpochAgo<T> {
@@ -252,6 +251,7 @@ impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for RandomnessFromOneEpo
     /// The subject is a byte array that is hashed (to make it a fixed size) and then concatenated with
     /// the latest BABE randomness. The result is then hashed again to provide the final randomness.
     fn random(subject: &[u8]) -> (T::Hash, BlockNumberFor<T>) {
+        use sp_runtime::traits::Hash;
         // If there's randomness available
         if let Some((babe_randomness, latest_valid_block)) = LatestOneEpochAgoRandomness::<T>::get()
         {
@@ -283,6 +283,7 @@ impl<T: Config> RandomnessT<T::Hash, BlockNumberFor<T>> for ParentBlockRandomnes
     /// The subject is a byte array that is hashed (to make it a fixed size) and then concatenated with
     /// the latest parent block randomness. The result is then hashed again to provide the final randomness.
     fn random(subject: &[u8]) -> (T::Hash, BlockNumberFor<T>) {
+        use sp_runtime::traits::Hash;
         // If there's randomness available
         if let Some((parent_block_randomness, latest_valid_block)) =
             LatestParentBlockRandomness::<T>::get()
