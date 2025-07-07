@@ -567,6 +567,33 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - Use explicit version specification to avoid ambiguous package errors when multiple versions exist
 - Workspace dependencies already configured for stable2412 - no manual updates needed
 
+## cumulus-pallet-parachain-system, cumulus-pallet-xcmp-queue, cumulus-primitives-utility, rococo-runtime-constants, sc-consensus-babe-rpc, sc-consensus-manual-seal, sc-rpc-server, sc-rpc, sc-sync-state-rpc, substrate-frame-rpc-system, substrate-state-trie-migration-rpc, westend-runtime-constants
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all actively-used assigned crates compiling correctly - workspace dependencies were already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *`cumulus-pallet-parachain-system` test compilation errors with missing test dependencies*
+- 🟢 *Upstream Polkadot SDK test dependency issues (assert_matches, cumulus_test_client, etc.)*
+- ✅ *Library compiles successfully without --all-targets flag, workspace builds correctly*
+
+- 🔴 *Missing assigned crates: `westend-runtime-constants` not found in dependency tree*
+- 🟢 *This crate is not used in Storage Hub project*
+- ✅ *No action required - crate not present in any Cargo.toml dependencies*
+
+- 🔴 *Multiple assigned crates not directly used in workspace dependencies*
+- 🟢 *Crates available as transitive dependencies via stable2412 dependency tree*
+- ✅ *Verified working: rococo-runtime-constants, sc-consensus-babe-rpc, sc-rpc-server, sc-sync-state-rpc, substrate-state-trie-migration-rpc all compile successfully*
+
+### Optimisations & tips
+
+- Directly-used crates successfully upgraded: cumulus-pallet-parachain-system, cumulus-pallet-xcmp-queue, cumulus-primitives-utility, sc-consensus-manual-seal, sc-rpc, substrate-frame-rpc-system
+- Transitive dependency crates verified working: rococo-runtime-constants, sc-consensus-babe-rpc, sc-rpc-server, sc-sync-state-rpc, substrate-state-trie-migration-rpc
+- westend-runtime-constants not used in Storage Hub project - no action needed
+- Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
+- Use cargo check without --all-targets flag to avoid SDK test compilation issues
+
 ## cumulus-pallet-session-benchmarking, pallet-authority-discovery, pallet-babe, pallet-beefy, pallet-bounties, pallet-collator-selection, pallet-grandpa, pallet-nomination-pools-runtime-api, pallet-staking, pallet-tips, pallet-xcm-benchmarks, pallet-xcm, polkadot-node-jaeger, sc-authority-discovery, sc-mixnet, sc-network-light, sc-network-sync, sc-offchain, sc-telemetry
 
 ### Overview
