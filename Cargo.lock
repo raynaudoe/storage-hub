@@ -1853,7 +1853,7 @@ dependencies = [
  "sc-consensus-aura",
  "sc-consensus-babe",
  "sc-consensus-slots",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-utils 17.0.0",
  "schnellru",
  "sp-api 34.0.0",
@@ -2027,12 +2027,12 @@ dependencies = [
  "sc-client-api 37.0.0",
  "sc-consensus 0.44.0",
  "sc-network 0.45.6",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sc-network-transactions",
  "sc-rpc",
  "sc-service",
  "sc-sysinfo",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-transaction-pool 37.0.0",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
@@ -2110,15 +2110,15 @@ dependencies = [
 
 [[package]]
 name = "cumulus-pallet-session-benchmarking"
-version = "19.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+version = "20.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
- "frame-benchmarking 38.1.0",
- "frame-support 38.2.0",
- "frame-system 38.0.0",
- "pallet-session 38.0.0",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "pallet-session 39.0.0",
  "parity-scale-codec",
- "sp-runtime 39.0.5",
+ "sp-runtime 40.1.0",
 ]
 
 [[package]]
@@ -2308,7 +2308,7 @@ dependencies = [
  "sc-cli",
  "sc-client-api 37.0.0",
  "sc-sysinfo",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-tracing 37.0.1",
  "sp-api 34.0.0",
  "sp-consensus 0.40.0",
@@ -3402,6 +3402,14 @@ checksum = "00b0228411908ca8685dba7fc2cdd70ec9990a6e753e89b6ac91a84c40fbaf4b"
 name = "fork-tree"
 version = "13.0.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
+dependencies = [
+ "parity-scale-codec",
+]
+
+[[package]]
+name = "fork-tree"
+version = "13.0.1"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
 dependencies = [
  "parity-scale-codec",
 ]
@@ -4816,6 +4824,7 @@ dependencies = [
  "pin-project-lite",
  "smallvec",
  "tokio",
+ "want",
 ]
 
 [[package]]
@@ -4835,19 +4844,40 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyper-rustls"
+version = "0.27.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3c93eb611681b207e1fe55d5a71ecf91572ec8a6705cdb6857f7d8d5242cf58"
+dependencies = [
+ "http 1.2.0",
+ "hyper 1.5.2",
+ "hyper-util",
+ "log",
+ "rustls 0.23.20",
+ "rustls-native-certs 0.8.1",
+ "rustls-pki-types",
+ "tokio",
+ "tokio-rustls 0.26.1",
+ "tower-service",
+]
+
+[[package]]
 name = "hyper-util"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df2dcfbe0677734ab2f3ffa7fa7bfd4706bfdc1ef393f2ee30184aed67e631b4"
 dependencies = [
  "bytes",
+ "futures-channel",
  "futures-util",
  "http 1.2.0",
  "http-body 1.0.1",
  "hyper 1.5.2",
  "pin-project-lite",
+ "socket2 0.5.10",
  "tokio",
  "tower-service",
+ "tracing",
 ]
 
 [[package]]
@@ -6638,7 +6668,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "sc-client-api 37.0.0",
- "sc-offchain",
+ "sc-offchain 40.0.0",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
  "sp-consensus 0.40.0",
@@ -7846,6 +7876,25 @@ dependencies = [
  "scale-info",
  "sp-runtime 39.0.5",
  "sp-staking 36.0.0",
+]
+
+[[package]]
+name = "pallet-collator-selection"
+version = "20.1.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "log",
+ "pallet-authorship 39.0.0",
+ "pallet-balances 40.1.0",
+ "pallet-session 39.0.0",
+ "parity-scale-codec",
+ "rand 0.8.5",
+ "scale-info",
+ "sp-runtime 40.1.0",
+ "sp-staking 37.0.0",
 ]
 
 [[package]]
@@ -9250,6 +9299,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-xcm"
+version = "18.1.2"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "bounded-collections",
+ "frame-benchmarking 39.1.0",
+ "frame-support 39.1.0",
+ "frame-system 39.1.0",
+ "pallet-balances 40.1.0",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-core 35.0.0",
+ "sp-io 39.0.1",
+ "sp-runtime 40.1.0",
+ "staging-xcm 15.1.0",
+ "staging-xcm-builder 18.2.1",
+ "staging-xcm-executor 18.0.3",
+ "tracing",
+ "xcm-runtime-apis 0.5.3",
+]
+
+[[package]]
 name = "pallet-xcm-benchmarks"
 version = "17.0.1"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -9280,9 +9352,9 @@ dependencies = [
  "pallet-assets",
  "pallet-authorship 38.0.0",
  "pallet-balances 39.0.1",
- "pallet-collator-selection",
+ "pallet-collator-selection 19.0.0",
  "pallet-message-queue 41.0.2",
- "pallet-xcm",
+ "pallet-xcm 17.0.3",
  "parity-scale-codec",
  "polkadot-primitives 16.0.0",
  "scale-info",
@@ -10855,12 +10927,12 @@ dependencies = [
  "sc-executor 0.40.1",
  "sc-keystore",
  "sc-network 0.45.6",
- "sc-network-sync",
- "sc-offchain",
+ "sc-network-sync 0.44.1",
+ "sc-offchain 40.0.0",
  "sc-service",
  "sc-sync-state-rpc",
  "sc-sysinfo",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-transaction-pool 37.0.0",
  "sc-transaction-pool-api 37.0.0",
  "serde",
@@ -12098,7 +12170,7 @@ dependencies = [
  "pallet-utility",
  "pallet-vesting 38.0.0",
  "pallet-whitelist",
- "pallet-xcm",
+ "pallet-xcm 17.0.3",
  "pallet-xcm-benchmarks",
  "parity-scale-codec",
  "polkadot-parachain-primitives 14.0.0",
@@ -12544,7 +12616,7 @@ dependencies = [
  "parity-scale-codec",
  "sc-block-builder",
  "sc-proposer-metrics",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-blockchain 37.0.1",
@@ -12584,7 +12656,7 @@ dependencies = [
  "sc-client-api 37.0.0",
  "sc-executor 0.40.1",
  "sc-network 0.45.6",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "serde",
  "serde_json",
  "sp-blockchain 37.0.1",
@@ -12633,7 +12705,7 @@ dependencies = [
  "sc-mixnet",
  "sc-network 0.45.6",
  "sc-service",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-tracing 37.0.1",
  "sc-utils 17.0.0",
  "serde",
@@ -12790,7 +12862,7 @@ dependencies = [
  "sc-client-api 37.0.0",
  "sc-consensus 0.44.0",
  "sc-consensus-slots",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sp-api 34.0.0",
  "sp-application-crypto 38.0.0",
  "sp-block-builder 34.0.0",
@@ -12812,7 +12884,7 @@ version = "0.45.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
 dependencies = [
  "async-trait",
- "fork-tree",
+ "fork-tree 13.0.0",
  "futures",
  "log",
  "num-bigint",
@@ -12824,7 +12896,7 @@ dependencies = [
  "sc-consensus 0.44.0",
  "sc-consensus-epochs",
  "sc-consensus-slots",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-transaction-pool-api 37.0.0",
  "sp-api 34.0.0",
  "sp-application-crypto 38.0.0",
@@ -12881,7 +12953,7 @@ dependencies = [
  "sc-consensus 0.44.0",
  "sc-network 0.45.6",
  "sc-network-gossip",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sc-network-types 0.12.1",
  "sc-utils 17.0.0",
  "sp-api 34.0.0",
@@ -12925,7 +12997,7 @@ name = "sc-consensus-epochs"
 version = "0.44.0"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
 dependencies = [
- "fork-tree",
+ "fork-tree 13.0.0",
  "parity-scale-codec",
  "sc-client-api 37.0.0",
  "sc-consensus 0.44.0",
@@ -12943,7 +13015,7 @@ dependencies = [
  "async-trait",
  "dyn-clone",
  "finality-grandpa",
- "fork-tree",
+ "fork-tree 13.0.0",
  "futures",
  "futures-timer",
  "log",
@@ -12957,9 +13029,9 @@ dependencies = [
  "sc-network 0.45.6",
  "sc-network-common 0.44.0",
  "sc-network-gossip",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sc-network-types 0.12.1",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-transaction-pool-api 37.0.0",
  "sc-utils 17.0.0",
  "serde_json",
@@ -13044,7 +13116,7 @@ dependencies = [
  "parity-scale-codec",
  "sc-client-api 37.0.0",
  "sc-consensus 0.44.0",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sp-arithmetic 26.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409)",
  "sp-blockchain 37.0.1",
  "sp-consensus 0.40.0",
@@ -13197,7 +13269,7 @@ dependencies = [
  "sc-client-api 37.0.0",
  "sc-network 0.45.6",
  "sc-network-common 0.44.0",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sp-blockchain 37.0.1",
  "sp-runtime 39.0.5",
 ]
@@ -13394,7 +13466,7 @@ dependencies = [
  "log",
  "sc-network 0.45.6",
  "sc-network-common 0.44.0",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sc-network-types 0.12.1",
  "schnellru",
  "sp-runtime 39.0.5",
@@ -13431,7 +13503,7 @@ dependencies = [
  "array-bytes",
  "async-channel 1.9.0",
  "async-trait",
- "fork-tree",
+ "fork-tree 13.0.0",
  "futures",
  "futures-timer",
  "libp2p",
@@ -13461,6 +13533,42 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-network-sync"
+version = "0.47.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "array-bytes",
+ "async-channel 1.9.0",
+ "async-trait",
+ "fork-tree 13.0.1",
+ "futures",
+ "futures-timer",
+ "log",
+ "mockall 0.11.4",
+ "parity-scale-codec",
+ "prost 0.12.6",
+ "prost-build 0.13.5",
+ "sc-client-api 38.0.0",
+ "sc-consensus 0.47.0",
+ "sc-network 0.48.5",
+ "sc-network-common 0.47.0",
+ "sc-network-types 0.15.5",
+ "sc-utils 18.0.0",
+ "schnellru",
+ "smallvec",
+ "sp-arithmetic 26.0.0 (git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412)",
+ "sp-blockchain 38.0.0",
+ "sp-consensus 0.41.0",
+ "sp-consensus-grandpa 22.0.0",
+ "sp-core 35.0.0",
+ "sp-runtime 40.1.0",
+ "substrate-prometheus-endpoint 0.17.1",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-stream",
+]
+
+[[package]]
 name = "sc-network-transactions"
 version = "0.44.1"
 source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2409#b40a00a7c30f5f368e80f1ae6e6af1a546729f78"
@@ -13471,7 +13579,7 @@ dependencies = [
  "parity-scale-codec",
  "sc-network 0.45.6",
  "sc-network-common 0.44.0",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sc-network-types 0.12.1",
  "sc-utils 17.0.0",
  "sp-consensus 0.40.0",
@@ -13524,7 +13632,7 @@ dependencies = [
  "futures",
  "futures-timer",
  "hyper 0.14.32",
- "hyper-rustls",
+ "hyper-rustls 0.24.2",
  "log",
  "num_cpus",
  "once_cell",
@@ -13543,6 +13651,43 @@ dependencies = [
  "sp-keystore 0.40.0",
  "sp-offchain 34.0.0",
  "sp-runtime 39.0.5",
+ "threadpool",
+ "tracing",
+]
+
+[[package]]
+name = "sc-offchain"
+version = "43.0.1"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "array-bytes",
+ "bytes",
+ "fnv",
+ "futures",
+ "futures-timer",
+ "http-body-util",
+ "hyper 1.5.2",
+ "hyper-rustls 0.27.7",
+ "hyper-util",
+ "log",
+ "num_cpus",
+ "once_cell",
+ "parity-scale-codec",
+ "parking_lot 0.12.3",
+ "rand 0.8.5",
+ "rustls 0.23.20",
+ "sc-client-api 38.0.0",
+ "sc-network 0.48.5",
+ "sc-network-common 0.47.0",
+ "sc-network-types 0.15.5",
+ "sc-transaction-pool-api 38.1.0",
+ "sc-utils 18.0.0",
+ "sp-api 35.0.0",
+ "sp-core 35.0.0",
+ "sp-externalities 0.30.0",
+ "sp-keystore 0.41.0",
+ "sp-offchain 35.0.0",
+ "sp-runtime 40.1.0",
  "threadpool",
  "tracing",
 ]
@@ -13690,14 +13835,14 @@ dependencies = [
  "sc-network 0.45.6",
  "sc-network-common 0.44.0",
  "sc-network-light",
- "sc-network-sync",
+ "sc-network-sync 0.44.1",
  "sc-network-transactions",
  "sc-network-types 0.12.1",
  "sc-rpc",
  "sc-rpc-server",
  "sc-rpc-spec-v2",
  "sc-sysinfo",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "sc-tracing 37.0.1",
  "sc-transaction-pool 37.0.0",
  "sc-transaction-pool-api 37.0.0",
@@ -13783,7 +13928,7 @@ dependencies = [
  "rand 0.8.5",
  "rand_pcg",
  "regex",
- "sc-telemetry",
+ "sc-telemetry 25.0.0",
  "serde",
  "serde_json",
  "sp-core 34.0.0",
@@ -13806,6 +13951,26 @@ dependencies = [
  "rand 0.8.5",
  "sc-network 0.45.6",
  "sc-utils 17.0.0",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "wasm-timer",
+]
+
+[[package]]
+name = "sc-telemetry"
+version = "28.0.0"
+source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=stable2412#dc5153c62481eb7803e9e8941fd4088723e5e0c9"
+dependencies = [
+ "chrono",
+ "futures",
+ "libp2p",
+ "log",
+ "parking_lot 0.12.3",
+ "pin-project",
+ "rand 0.8.5",
+ "sc-network 0.48.5",
+ "sc-utils 18.0.0",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
@@ -14378,7 +14543,7 @@ dependencies = [
  "pallet-authorship 39.0.0",
  "pallet-balances 40.1.0",
  "pallet-bucket-nfts",
- "pallet-collator-selection",
+ "pallet-collator-selection 20.1.0",
  "pallet-cr-randomness",
  "pallet-file-system",
  "pallet-file-system-runtime-api",
@@ -14398,7 +14563,7 @@ dependencies = [
  "pallet-transaction-payment 39.1.0",
  "pallet-transaction-payment-rpc-runtime-api 39.0.0",
  "pallet-uniques",
- "pallet-xcm",
+ "pallet-xcm 18.1.2",
  "parachains-common",
  "parity-scale-codec",
  "polkadot-core-primitives 16.0.0",
@@ -17581,12 +17746,12 @@ dependencies = [
  "sc-consensus-manual-seal",
  "sc-executor 0.41.0",
  "sc-network 0.48.5",
- "sc-network-sync",
- "sc-offchain",
+ "sc-network-sync 0.47.0",
+ "sc-offchain 43.0.1",
  "sc-rpc",
  "sc-service",
  "sc-sysinfo",
- "sc-telemetry",
+ "sc-telemetry 28.0.0",
  "sc-tracing 38.0.0",
  "sc-transaction-pool 38.1.0",
  "sc-transaction-pool-api 38.1.0",
@@ -17659,7 +17824,7 @@ dependencies = [
  "pallet-authorship 39.0.0",
  "pallet-balances 40.1.0",
  "pallet-bucket-nfts",
- "pallet-collator-selection",
+ "pallet-collator-selection 20.1.0",
  "pallet-cr-randomness",
  "pallet-file-system",
  "pallet-file-system-runtime-api",
@@ -17678,7 +17843,7 @@ dependencies = [
  "pallet-timestamp 38.0.0",
  "pallet-transaction-payment 39.1.0",
  "pallet-transaction-payment-rpc-runtime-api 39.0.0",
- "pallet-xcm",
+ "pallet-xcm 18.1.2",
  "parachains-common",
  "parity-scale-codec",
  "polkadot-parachain-primitives 15.0.0",
@@ -19618,7 +19783,7 @@ dependencies = [
  "pallet-utility",
  "pallet-vesting 38.0.0",
  "pallet-whitelist",
- "pallet-xcm",
+ "pallet-xcm 17.0.3",
  "pallet-xcm-benchmarks",
  "parity-scale-codec",
  "polkadot-parachain-primitives 14.0.0",

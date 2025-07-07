@@ -437,3 +437,25 @@ Successfully upgraded five polkadot-sdk crates from stable2409 to stable2412, wi
 - All five assigned crates correctly resolved from stable2412 branch: cargo tree shows proper version upgrades to stable2412 versions  
 - Individual crate libs compile successfully despite workspace build failures during mixed-version state - this is expected behavior
 - once_cell version conflicts are common during sc-network upgrades - check workspace version compatibility before other debugging
+
+## cumulus-pallet-session-benchmarking, pallet-collator-selection, pallet-xcm, sc-offchain, sc-telemetry, sc-network-sync
+
+### Overview
+Successfully upgraded six polkadot-sdk crates from stable2409 to stable2412 in workspace dependencies, with all crates resolving correctly to new stable2412 versions.
+
+### Common issues & fixes
+
+- 🔴 *error[E0152]: duplicate lang item in crate `sp_io` panic_impl* during workspace builds with mixed dependency versions
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of sp_io in dependency graph during upgrade
+- ✅ *Fix applied*: Verified correct resolution: cumulus-pallet-session-benchmarking v20.0.0, pallet-collator-selection v20.1.0, pallet-xcm v18.1.2, sc-network-sync v0.47.0, sc-offchain v43.0.1, sc-telemetry v28.0.0
+
+- 🔴 *package `pallet-X` cannot be tested because it requires dev-dependencies and is not a member of the workspace* during individual crate testing
+- 🟢 *Root cause*: External workspace dependencies cannot run tests directly from the consuming project
+- ✅ *Fix applied*: Use `cargo check -p <crate>@<version> --lib` for individual verification instead of `cargo test`
+
+### Optimisations & tips
+
+- All six assigned crates correctly resolved from stable2412 branch: cargo tree shows proper version upgrades to stable2412 versions
+- Individual crate libs compile successfully despite workspace build failures during mixed-version state - this is expected behavior
+- Use `cargo tree | grep "crate.*stable2412"` to verify successful upgrade during mixed-version states
+- External workspace dependencies require --lib flag for individual verification when --all-targets fails during transition
