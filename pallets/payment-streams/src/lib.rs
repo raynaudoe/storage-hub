@@ -35,7 +35,6 @@ pub mod pallet {
     use std;
     #[cfg(not(feature = "std"))]
     use sp_std as std;
-    use scale_info::prelude::string;
     use super::{types::*, weights::WeightInfo, Vec};
     use codec::HasCompact;
     use frame_support::{
