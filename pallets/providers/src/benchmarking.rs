@@ -4,7 +4,7 @@
 
 use super::*;
 use frame_benchmarking::v2::*;
-use sp_runtime::Saturating;
+use sp_runtime::{traits::Hash, Saturating};
 
 pub trait BenchmarkHelpers<T: crate::Config> {
     type ProviderId: From<<T as crate::Config>::ProviderId>;
@@ -282,7 +282,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -371,7 +371,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -549,7 +549,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -647,7 +647,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -740,7 +740,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -853,7 +853,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -973,7 +973,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1093,7 +1093,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1213,7 +1213,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1335,7 +1335,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1456,7 +1456,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1560,7 +1560,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1855,7 +1855,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -1996,7 +1996,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -2128,7 +2128,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -2247,7 +2247,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -2365,7 +2365,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(msp_request_sign_up_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -2483,7 +2483,7 @@ mod benchmarks {
         .map_err(|_| BenchmarkError::Stop("Failed to request BSP sign up."))?;
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -2553,7 +2553,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(expected_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,
@@ -2711,7 +2711,7 @@ mod benchmarks {
         frame_system::Pallet::<T>::assert_last_event(msp_request_sign_up_event.into());
 
         // Advance enough blocks to set up a valid random seed
-        let random_seed = <T as frame_system::Config>::Hashing::hash(b"random_seed");
+        let random_seed = <T as frame_system::Config>::Hashing::hash_of(&b"random_seed");
         run_to_block::<T>(10u32.into());
         pallet_randomness::LatestOneEpochAgoRandomness::<T>::set(Some((
             random_seed,

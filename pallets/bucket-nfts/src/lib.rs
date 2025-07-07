@@ -22,7 +22,8 @@ mod tests;
 pub mod pallet {
     use crate::weights::WeightInfo;
     use frame_support::{dispatch::DispatchResult, pallet_prelude::*};
-    use frame_system::pallet_prelude::*;
+    use frame_system::pallet_prelude::{BlockNumberFor, OriginFor};
+    use frame_system::ensure_signed;
     #[cfg(feature = "runtime-benchmarks")]
     use sp_core::H256;
 
@@ -51,7 +52,7 @@ pub mod pallet {
 
         /// The trait for reading storage bucket data.
         type Buckets: shp_traits::ReadBucketsInterface<
-            AccountId = Self::AccountId,
+            AccountId = <Self as frame_system::Config>::AccountId,
             ReadAccessGroupId = <Self as pallet_nfts::Config>::CollectionId,
         >;
 
@@ -68,18 +69,18 @@ pub mod pallet {
     pub enum Event<T: Config> {
         /// Notifies that access to a bucket has been shared with another account.
         AccessShared {
-            issuer: T::AccountId,
+            issuer: <T as frame_system::Config>::AccountId,
             recipient: AccountIdLookupTargetOf<T>,
         },
         /// Notifies that the read access for an item has been updated.
         ItemReadAccessUpdated {
-            admin: T::AccountId,
+            admin: <T as frame_system::Config>::AccountId,
             bucket: BucketIdFor<T>,
             item_id: T::ItemId,
         },
         /// Notifies that an item has been burned.
         ItemBurned {
-            account: T::AccountId,
+            account: <T as frame_system::Config>::AccountId,
             bucket: BucketIdFor<T>,
             item_id: T::ItemId,
         },

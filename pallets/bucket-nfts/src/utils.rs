@@ -21,14 +21,14 @@ where
 {
     /// Share access by issuing an item for a given bucket to the `recipient` account.
     pub(crate) fn do_share_access(
-        issuer: &T::AccountId,
+        issuer: &<T as frame_system::Config>::AccountId,
         recipient: AccountIdLookupSourceOf<T>,
         bucket: BucketIdFor<T>,
         item_id: T::ItemId,
         read_access_regex: Option<ReadAccessRegex<T>>,
     ) -> Result<AccountIdLookupTargetOf<T>, DispatchError> {
         // Convert the lookup source to a target account.
-        let recipient_account = T::Lookup::lookup(recipient.clone())?;
+        let recipient_account = <T as frame_system::Config>::Lookup::lookup(recipient.clone())?;
 
         // Check if the bucket is private.
         ensure!(
@@ -64,7 +64,7 @@ where
 
     /// Update the read access regex for an item.
     pub(crate) fn do_update_read_access(
-        account: &T::AccountId,
+        account: &<T as frame_system::Config>::AccountId,
         bucket: BucketIdFor<T>,
         item_id: T::ItemId,
         read_access_regex: Option<ReadAccessRegex<T>>,
@@ -98,7 +98,7 @@ where
     }
 
     /// Helper function to create a signed `RuntimeOrigin(RawOrigin)`.
-    fn sign(account: &T::AccountId) -> OriginFor<T> {
+    fn sign(account: &<T as frame_system::Config>::AccountId) -> OriginFor<T> {
         OriginFor::<T>::from(RawOrigin::Signed(account.clone()))
     }
 }

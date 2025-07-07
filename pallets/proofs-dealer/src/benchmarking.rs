@@ -1,6 +1,7 @@
 //! Benchmarking setup for pallet-proofs-dealer
 
 use frame_benchmarking::v2::*;
+use sp_runtime::traits::Hash;
 
 #[benchmarks(
     where
@@ -462,8 +463,8 @@ mod benchmarks {
             BoundedBTreeSet::<ProviderIdFor<T>, T::MaxSubmittersPerTick>::new();
         let max_submitters_per_tick: u32 = T::MaxSubmittersPerTick::get();
         for i in 0..max_submitters_per_tick {
-            let provider_id = <T as frame_system::Config>::Hashing::hash(
-                sp_runtime::format!("provider_id_{:?}", i).as_bytes(),
+            let provider_id = <T as frame_system::Config>::Hashing::hash_of(
+                &sp_runtime::format!("provider_id_{:?}", i).as_bytes(),
             );
             proof_submitters.try_insert(provider_id).expect("Failed to insert provider ID. This shouldn't happen because we're iterating until the maximum size.");
         }
@@ -548,8 +549,8 @@ mod benchmarks {
     #[benchmark]
     fn force_initialise_challenge_cycle() -> Result<(), BenchmarkError> {
         // Setup initial conditions.
-        let provider_id = <T as frame_system::Config>::Hashing::hash(
-            sp_runtime::format!("provider_id_{:?}", 0u32).as_bytes(),
+        let provider_id = <T as frame_system::Config>::Hashing::hash_of(
+            &sp_runtime::format!("provider_id_{:?}", 0u32).as_bytes(),
         );
         register_providers::<T>(1u32)?;
 
@@ -820,8 +821,8 @@ mod benchmarks {
             ));
 
             // Register caller as a Provider in Providers pallet.
-            let provider_id = <T as frame_system::Config>::Hashing::hash(
-                sp_runtime::format!("provider_id_{:?}", i).as_bytes(),
+            let provider_id = <T as frame_system::Config>::Hashing::hash_of(
+                &sp_runtime::format!("provider_id_{:?}", i).as_bytes(),
             );
             pallet_storage_providers::AccountIdToBackupStorageProviderId::<T>::insert(
                 &provider_account,
