@@ -280,3 +280,29 @@ Successfully confirmed upgrade to stable2412 with workspace dependencies already
 - sc-executor-polkavm v0.33.0 and sc-executor-wasmtime v0.36.0 available as transitive deps
 - Remove duplicate std imports in pallet modules to avoid conflicts with #[pallet::genesis_build]
 - Add explicit sp-std dependency when using `use sp_std as std` in pallet code
+
+## sc-keystore, sp-runtime
+
+### Overview
+Successfully confirmed upgrade to stable2412 with both crates working properly - no local code changes required as workspace dependencies were already updated.
+
+### Common issues & fixes
+
+- 🔴 *`unused import: 'scale_info::prelude::string'` warnings in pallet modules*
+- 🟢 *Previous upgrade iterations added string imports for genesis_build compatibility but are no longer needed*
+- ✅ *Removed unused `use scale_info::prelude::string;` imports from pallet-proofs-dealer and pallet-payment-streams*
+
+- 🔴 *`sp-runtime` individual crate compilation errors with missing dependencies (serde_json, sp_tracing, etc.)*
+- 🟢 *Upstream Polkadot SDK test dependency issues in no_std contexts, not related to local code*
+- ✅ *Individual crate checks fail but workspace compilation succeeds - no action required*
+
+- 🔴 *Multiple `sp-runtime` packages (v32.0.0 and v40.1.0) causing ambiguous specification errors*
+- 🟢 *Workspace dependencies properly configured to use stable2412 version (v40.1.0)*
+- ✅ *Workspace compilation uses correct version automatically via dependency resolution*
+
+### Optimisations & tips
+
+- sc-keystore v0.41.0 and sp-runtime v40.1.0 successfully upgraded with workspace dependencies
+- Both crates are primarily used as transitive dependencies - no direct code changes needed
+- Individual crate checks may fail due to upstream SDK issues but workspace build succeeds
+- Clean up unused scale_info::prelude::string imports left from previous upgrade iterations

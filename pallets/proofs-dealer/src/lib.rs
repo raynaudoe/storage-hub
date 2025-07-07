@@ -42,7 +42,6 @@ pub mod pallet {
         Perbill, SaturatedConversion,
     };
     use sp_std::vec::Vec;
-    use scale_info::prelude::string;
     use types::{KeyFor, ProviderIdFor};
 
     use crate::*;
