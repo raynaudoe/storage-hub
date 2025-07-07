@@ -1,6 +1,9 @@
 use codec::Encode;
 use sp_inherents::{InherentIdentifier, IsFatalError};
-use sp_runtime::RuntimeString;
+#[cfg(feature = "std")]
+use std::borrow::Cow;
+#[cfg(not(feature = "std"))]
+use alloc::borrow::Cow;
 
 #[cfg(feature = "std")]
 use codec::Decode;
@@ -10,7 +13,7 @@ use sp_inherents::{Error, InherentData};
 #[derive(Encode)]
 #[cfg_attr(feature = "std", derive(Debug, Decode))]
 pub enum InherentError {
-    Other(RuntimeString),
+    Other(Cow<'static, str>),
 }
 
 impl IsFatalError for InherentError {

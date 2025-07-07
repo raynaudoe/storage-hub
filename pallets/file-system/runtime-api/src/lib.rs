@@ -1,11 +1,15 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 use codec::{Codec, Decode, Encode};
 use scale_info::prelude::vec::Vec;
 use scale_info::TypeInfo;
 use sp_core::H256;
 use sp_runtime::RuntimeDebug;
 use sp_std::collections::btree_map::BTreeMap;
+use sp_std::result::Result;
 
 /// Error type for the `is_storage_request_open_to_volunteers` runtime API call.
 #[derive(Eq, PartialEq, Encode, Decode, RuntimeDebug, TypeInfo)]

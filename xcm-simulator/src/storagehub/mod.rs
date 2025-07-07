@@ -1,5 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(dead_code)]
+
+extern crate alloc;
 pub mod apis;
 pub mod configs;
 mod weights;
@@ -150,7 +152,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
     impl_version: 0,
     apis: apis::RUNTIME_API_VERSIONS,
     transaction_version: 1,
-    state_version: 1,
+    system_version: 1,
 };
 
 /// Blocks will be produced at a minimum duration defined by `SLOT_DURATION`.
