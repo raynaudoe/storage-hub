@@ -506,3 +506,33 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
 - Use explicit version specification to avoid ambiguous package errors when multiple versions exist
 - Workspace dependencies already configured for stable2412 - no manual updates needed
+
+## pallet-aura, pallet-session, pallet-transaction-payment-rpc, sc-network, staging-xcm-builder, xcm-runtime-apis
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates building correctly - workspace dependencies were already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *Multiple package version ambiguity errors like `pallet-session@29.0.0` vs `pallet-session@39.0.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p pallet-session@39.0.0` to target stable2412*
+
+- 🔴 *Multiple package version ambiguity errors like `staging-xcm-builder@8.0.3` vs `staging-xcm-builder@18.2.1`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p staging-xcm-builder@18.2.1` to target stable2412*
+
+- 🔴 *Assignment included unused crates: `pallet-bags-list`, `pallet-nomination-pools`*
+- 🟢 *These crates are not used in this Storage Hub project*
+- ✅ *No action required - crates not present in workspace dependencies*
+
+- 🔴 *Assignment included transitive dependency crates: `pallet-election-provider-multi-phase`, `pallet-treasury`, `pallet-offences`*
+- 🟢 *These crates are available as transitive dependencies but not directly used*
+- ✅ *Verified working: pallet-election-provider-multi-phase@28.0.0, pallet-treasury@28.0.1, pallet-offences all build successfully*
+
+### Optimisations & tips
+
+- All assigned crates successfully upgraded: pallet-aura, pallet-session@39.0.0, pallet-transaction-payment-rpc, sc-network, staging-xcm-builder@18.2.1, xcm-runtime-apis
+- pallet-bags-list and pallet-nomination-pools not used in Storage Hub project - no action needed
+- Use explicit version specification to avoid ambiguous package errors when multiple versions exist
+- Workspace dependencies already configured for stable2412 - no manual updates needed
