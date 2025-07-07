@@ -306,3 +306,29 @@ Successfully confirmed upgrade to stable2412 with both crates working properly -
 - Both crates are primarily used as transitive dependencies - no direct code changes needed
 - Individual crate checks may fail due to upstream SDK issues but workspace build succeeds
 - Clean up unused scale_info::prelude::string imports left from previous upgrade iterations
+
+## bp-xcm-bridge-hub-router, polkadot-parachain-primitives, sp-api, sp-consensus, sp-timestamp, sp-transaction-storage-proof
+
+### Overview
+Successfully confirmed stable2412 upgrade with all actually-used crates building correctly - no code changes required as workspace dependencies were already updated.
+
+### Common issues & fixes
+
+- 🔴 *Multiple package version ambiguity errors like `sp-api@27.0.1` vs `sp-api@35.0.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p sp-api@35.0.0` to target stable2412*
+
+- 🔴 *Assignment included unused crates: `bp-xcm-bridge-hub-router`, `sp-consensus`, `sp-transaction-storage-proof`*
+- 🟢 *These crates are not used in this Storage Hub project*
+- ✅ *No action required - crates not present in any Cargo.toml dependencies*
+
+- 🔴 *`sp-consensus` vs `sp-consensus-aura`/`sp-consensus-babe` confusion*
+- 🟢 *Project uses specific consensus implementations instead of base sp-consensus*
+- ✅ *Verified sp-consensus-aura@35.0.0 builds successfully from stable2412*
+
+### Optimisations & tips
+
+- Use `cargo check -p <crate>@<version>` to target specific stable2412 versions when multiple exist
+- bp-xcm-bridge-hub-router, sp-consensus, sp-transaction-storage-proof not used in Storage Hub project
+- sp-api@35.0.0, sp-timestamp@35.0.0, polkadot-parachain-primitives@15.0.0 all build successfully
+- Workspace dependencies already configured for stable2412 - no manual updates needed
