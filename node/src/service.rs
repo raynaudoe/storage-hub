@@ -1,7 +1,7 @@
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 
 // std
-use futures::{Stream, StreamExt};
+use futures::{Stream, StreamExt, FutureExt};
 use log::info;
 use shc_blockchain_service::capacity_manager::CapacityConfig;
 use shc_indexer_db::DbPool;
@@ -43,16 +43,16 @@ use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
 
 // Substrate Imports
 use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
-use sc_client_api::Backend;
+use sc_client_api::{Backend, HeaderBackend};
 use sc_consensus::LongestChain;
 use sc_executor::{HeapAllocStrategy, DEFAULT_HEAP_ALLOC_STRATEGY};
 use sc_network::{
-    config::IncomingRequest, service::traits::NetworkService, NetworkBackend,
+    config::IncomingRequest, service::traits::NetworkService, NetworkBackend, NetworkBlock,
     ProtocolName,
 };
-use sc_service::{Configuration, PartialComponents, RpcHandlers, TFullBackend, TaskManager};
+use sc_service::{Configuration, PartialComponents, RpcHandlers, TFullBackend, TaskManager, ImportQueue};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
-use sc_transaction_pool_api::OffchainTransactionPoolFactory;
+use sc_transaction_pool_api::{OffchainTransactionPoolFactory, TransactionPool};
 use shc_client::{
     builder::{Buildable, StorageHubBuilder, StorageLayerBuilder},
     handler::{RunnableTasks, StorageHubHandler},
@@ -88,7 +88,7 @@ pub type Service = PartialComponents<
     ParachainBackend,
     MaybeSelectChain,
     sc_consensus::DefaultImportQueue<Block>,
-    sc_transaction_pool::BasicPool<Block, ParachainClient>,
+    sc_transaction_pool::TransactionPoolHandle<Block, ParachainClient>,
     (
         ParachainBlockImport,
         Option<Telemetry>,
@@ -148,12 +148,15 @@ pub fn new_partial(
         telemetry
     });
 
-    let transaction_pool = sc_transaction_pool::BasicPool::new_full(
-        config.transaction_pool.clone(),
-        config.role.is_authority().into(),
-        config.prometheus_registry(),
-        task_manager.spawn_essential_handle(),
-        client.clone(),
+    let transaction_pool = Arc::from(
+        sc_transaction_pool::Builder::new(
+            task_manager.spawn_essential_handle(),
+            client.clone(),
+            config.role.is_authority().into(),
+        )
+        .with_options(config.transaction_pool.clone())
+        .with_prometheus(config.prometheus_registry())
+        .build(),
     );
 
     let block_import = ParachainBlockImport::new(client.clone(), backend.clone());
@@ -467,7 +470,7 @@ where
                 is_validator: config.role.is_authority(),
                 enable_http_requests: false,
                 custom_extensions: move |_| vec![],
-            })
+            })?
             .run(client.clone(), task_manager.spawn_handle())
             .boxed(),
         );
@@ -481,8 +484,6 @@ where
                 Box::new(
                     // This bit cribbed from the implementation of instant seal.
                     transaction_pool
-                        .pool()
-                        .validated_pool()
                         .import_notification_stream()
                         .map(|_| EngineCommand::SealNewBlock {
                             create_empty: false,
@@ -1067,7 +1068,7 @@ where
                 is_validator: parachain_config.role.is_authority(),
                 enable_http_requests: false,
                 custom_extensions: move |_| vec![],
-            })
+            })?
             .run(client.clone(), task_manager.spawn_handle())
             .boxed(),
         );
@@ -1436,7 +1437,7 @@ fn start_consensus(
     telemetry: Option<TelemetryHandle>,
     task_manager: &TaskManager,
     relay_chain_interface: Arc<dyn RelayChainInterface>,
-    transaction_pool: Arc<sc_transaction_pool::BasicPool<Block, ParachainClient>>,
+    transaction_pool: Arc<sc_transaction_pool::TransactionPoolHandle<Block, ParachainClient>>,
     keystore: KeystorePtr,
     relay_chain_slot_duration: Duration,
     para_id: ParaId,

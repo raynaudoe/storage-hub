@@ -62,6 +62,52 @@ Successfully upgraded all Polkadot SDK dependencies from stable2409 to stable241
 - When upgrading XCM APIs, check parameter count changes in error messages for quick fixes
 - Use `--all-targets` flag with cargo check to catch test compilation issues early
 
+## frame-support-procedural, sp-externalities
+
+### Overview
+Successfully upgraded transitive dependencies and fixed transaction pool API changes from FullPool/BasicPool to TransactionPoolHandle in stable2412.
+
+### Common issues & fixes
+
+- 🔴 *`sc_transaction_pool::BasicPool<Block, ParachainClient>` type mismatch*
+- 🟢 *Transaction pool API changed from BasicPool/FullPool to TransactionPoolHandle*
+- ✅ *Replaced with `sc_transaction_pool::TransactionPoolHandle<Block, ParachainClient>`*
+
+- 🔴 *`sc_transaction_pool::BasicPool::new_full()` method not found*
+- 🟢 *Transaction pool creation API changed to Builder pattern*
+- ✅ *Replaced with `Arc::from(sc_transaction_pool::Builder::new().with_options().with_prometheus().build())`*
+
+- 🔴 *`sc_offchain::OffchainWorkers::new().run()` method not found on Result*
+- 🟢 *OffchainWorkers::new() now returns Result that needs unwrapping*
+- ✅ *Added `?` operator: `sc_offchain::OffchainWorkers::new(options)?.run()`*
+
+- 🔴 *`transaction_pool.pool().validated_pool().import_notification_stream()` not found*
+- 🟢 *New transaction pool API removed .pool() method*
+- ✅ *Use directly: `transaction_pool.import_notification_stream()` with TransactionPool trait import*
+
+- 🔴 *`no method named 'announce_block'` trait not in scope*
+- 🟢 *NetworkBlock trait needs explicit import*
+- ✅ *Added `use sc_network::NetworkBlock;` import*
+
+- 🔴 *`no method named 'expect_header'` trait not in scope*
+- 🟢 *HeaderBackend trait needs explicit import*
+- ✅ *Added `use sc_client_api::HeaderBackend;` import*
+
+- 🔴 *`no method named 'service'` trait not in scope*
+- 🟢 *ImportQueue trait needs explicit import*
+- ✅ *Added `use sc_service::ImportQueue;` import*
+
+- 🔴 *`.boxed()` method not found on Future*
+- 🟢 *FutureExt trait needs explicit import*
+- ✅ *Added `use futures::FutureExt;` import*
+
+### Optimisations & tips
+
+- Transaction pool changes: Replace BasicPool/FullPool with TransactionPoolHandle and Builder pattern
+- Add `?` operator to OffchainWorkers::new() since it now returns Result<T, E>
+- Import required traits explicitly: NetworkBlock, HeaderBackend, ImportQueue, TransactionPool, FutureExt
+- frame-support-procedural and sp-externalities are transitive deps - no direct changes needed
+
 ## frame-support-procedural-tools, pallet-staking-reward-fn, sc-proposer-metrics, sc-utils, sp-crypto-hashing-proc-macro, sp-storage, sp-weights
 
 ### Overview
