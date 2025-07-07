@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(comm:*)",
+      "Bash(cargo tree:*)",
+      "Bash(cargo metadata:*)",
+      "Bash(chmod:*)",
+      "Bash(./check-substrate-deps.sh:*)",
+      "Bash(./check-substrate-deps-v2.sh:*)",
+      "Bash(./check-substrate-dependencies.sh:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(rm:*)",
+      "mcp__perplexity-ask__perplexity_ask",
+      "Bash(mv:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(true)",
+      "Bash(./sdk-upgrader/tools/weaver.sh:*)",
+      "Bash(./sdk-upgrader/tools/weaver_debug.sh:*)",
+      "Bash(./sdk-upgrader/tools/weaver_debug2.sh:*)",
+      "Bash(./sdk-upgrader/tools/weaver_debug3.sh:*)",
+      "Bash(./sdk-upgrader/tools/weaver_debug4.sh:*)",
+      "Bash(./sdk-upgrader/tools/weaver_debug5.sh:*)",
+      "Bash(./sdk-upgrader/tools/weaver_debug6.sh:*)"
+    ],
+    "deny": []
+  }
+}
