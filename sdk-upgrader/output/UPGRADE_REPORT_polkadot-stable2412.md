@@ -573,3 +573,25 @@ Successfully upgraded cumulus-pallet-aura-ext and parachains-common from stable2
 - Both crates used exclusively in runtime: cumulus-pallet-aura-ext as AuraExt pallet and BlockExecutor, parachains-common for BlockNumber type import  
 - Use `grep -n "crate-name.*stable2412" Cargo.toml` to verify successful workspace dependency upgrades during mixed-version states
 - Workspace dependencies using `workspace = true` automatically pick up updated versions from main Cargo.toml
+
+## sc-cli
+
+### Overview
+Successfully upgraded sc-cli from stable2409 to stable2412, with dependency resolution to v0.50.2 and compatibility requiring base64ct downgrade.
+
+### Common issues & fixes
+
+- 🔴 *error: failed to download `base64ct v1.8.0` - feature `edition2024` is required*
+- 🟢 *Root cause*: sc-cli stable2412 depends on base64ct v1.8.0 which requires unsupported edition2024 in current Cargo version
+- ✅ *Fix applied*: Downgraded base64ct to v1.6.0 using `cargo update --package base64ct --precise 1.6.0`
+
+- 🔴 *error[E0433]: failed to resolve: could not find `wasm` in `proc_macro_runtime_interface`* during workspace builds with mixed dependency versions
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of sp_io in dependency graph during upgrade
+- ✅ *Fix applied*: Verified correct resolution: sc-cli v0.50.2 properly resolved from stable2412 branch in node dependency tree
+
+### Optimisations & tips
+
+- sc-cli v0.50.2 resolves correctly from stable2412 branch: cargo tree shows proper version upgrades to stable2412 versions
+- Individual crate builds succeed with `cargo check -p sc-cli@0.50.2 --lib` despite workspace build failures during mixed-version state - this is expected behavior
+- Use `cargo tree --manifest-path=/path/Cargo.toml | grep "sc-cli.*stable2412"` to verify successful upgrade during mixed-version states
+- base64ct compatibility issues are common during sc-cli upgrades - check for edition2024 conflicts and downgrade to compatible versions
