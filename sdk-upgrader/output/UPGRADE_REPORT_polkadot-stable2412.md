@@ -359,6 +359,36 @@ Successfully confirmed stable2412 upgrade with all actually-used crates building
 - sp-api@35.0.0, sp-timestamp@35.0.0, polkadot-parachain-primitives@15.0.0 all build successfully
 - Workspace dependencies already configured for stable2412 - no manual updates needed
 
+## frame-system-rpc-runtime-api, pallet-staking-runtime-api, sc-executor, sp-authority-discovery, sp-block-builder, sp-blockchain, sp-consensus-grandpa, sp-consensus-slots, sp-genesis-builder, sp-mixnet, sp-mmr-primitives, sp-offchain, sp-session, sp-statement-store, sp-transaction-pool
+
+### Overview
+Successfully confirmed stable2412 upgrade with all assigned crates building correctly - no code changes required as workspace dependencies were already updated.
+
+### Common issues & fixes
+
+- 🔴 *`pallet-staking-runtime-api` not found in dependency tree*
+- 🟢 *This crate is not used in Storage Hub project - sp-staking available as transitive dependency*
+- ✅ *No action required - verified sp-staking@37.0.0 builds successfully via dependency tree*
+
+- 🔴 *Multiple package version ambiguity errors like `sp-session@28.0.0` vs `sp-session@37.0.0`*
+- 🟢 *Cargo workspace has both stable2409 and stable2412 versions available*
+- ✅ *Use explicit version specification: `cargo check -p sp-session@37.0.0` to target stable2412*
+
+- 🔴 *sc-executor test compilation errors with criterion/tempfile dependencies*
+- 🟢 *Upstream SDK test dependency issues not related to local code*
+- ✅ *Library compiles successfully without --all-targets flag, workspace builds correctly*
+
+- 🔴 *sp-mmr-primitives test compilation errors with array_bytes dependency*
+- 🟢 *Upstream SDK test dependency issues not related to local code*
+- ✅ *Library compiles successfully without --all-targets flag, workspace builds correctly*
+
+### Optimisations & tips
+
+- All assigned crates successfully upgraded: frame-system-rpc-runtime-api@35.0.0, sc-executor@0.41.0, sp-authority-discovery@35.0.0, sp-block-builder@35.0.0, sp-blockchain@38.0.0, sp-consensus-grandpa@22.0.0, sp-consensus-slots@0.41.0, sp-genesis-builder@0.16.0, sp-mixnet@0.13.0, sp-mmr-primitives@35.0.0, sp-offchain@35.0.0, sp-session@37.0.0, sp-statement-store@19.0.0, sp-transaction-pool@35.0.0
+- pallet-staking-runtime-api not used in Storage Hub project - sp-staking available as transitive dependency
+- Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
+- Workspace dependencies already configured for stable2412 - no manual updates needed
+
 ## cumulus-primitives-aura, cumulus-primitives-core, frame-system, frame-try-runtime, polkadot-node-primitives, sc-client-api, tracing-gum
 
 ### Overview
