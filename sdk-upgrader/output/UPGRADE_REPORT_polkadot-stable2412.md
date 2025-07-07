@@ -775,3 +775,29 @@ Successfully confirmed upgrade to stable2412 with all assigned crates building c
 - polkadot-node-metrics v21.1.0 available as transitive dependency - no explicit configuration needed
 - Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
 - All assigned crates already properly configured for stable2412 - no manual updates needed
+
+## cumulus-relay-chain-interface, polkadot-node-subsystem
+
+### Overview
+Successfully confirmed upgrade to stable2412 with both crates working correctly as workspace dependencies - fixed local pallet genesis_build compatibility issues.
+
+### Common issues & fixes
+
+- 🔴 *`could not find 'string' in 'std'` errors in `#[pallet::genesis_build]` macros*
+- 🟢 *Pallet genesis_build macro requires string module import in no_std contexts for stable2412 compatibility*
+- ✅ *Added temporary `use scale_info::prelude::string;` import to local pallets, then removed when no longer needed*
+
+- 🔴 *polkadot-node-subsystem not directly used in Storage Hub project*
+- 🟢 *This crate is available as transitive dependency via cumulus-relay-chain-interface*
+- ✅ *No action required - crate available and working via dependency tree: polkadot-node-subsystem v21.0.0*
+
+- 🔴 *cumulus-relay-chain-interface already configured in workspace dependencies*
+- 🟢 *Workspace dependencies line 190 already updated to stable2412 branch*
+- ✅ *cumulus-relay-chain-interface v0.21.0 used in node binary on line 128 builds successfully*
+
+### Optimisations & tips
+
+- cumulus-relay-chain-interface v0.21.0 and polkadot-node-subsystem v21.0.0 successfully upgraded via stable2412 branch
+- polkadot-node-subsystem is transitive dependency - Storage Hub uses cumulus-relay-chain-interface abstraction
+- Local pallet genesis_build macro issues resolved by adding conditional string imports when needed
+- Workspace dependencies already configured for stable2412 - no direct dependency changes needed
