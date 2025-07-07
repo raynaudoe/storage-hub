@@ -24,6 +24,7 @@ pub mod pallet {
     use std;
     #[cfg(not(feature = "std"))]
     use sp_std as std;
+    use scale_info::prelude::string;
     use codec::FullCodec;
     use frame_support::{
         dispatch::DispatchResultWithPostInfo,
