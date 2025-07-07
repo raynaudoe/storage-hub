@@ -726,3 +726,30 @@ Successfully confirmed upgrade to stable2412 with sc-cli already properly config
 - Node binary uses standard sc-cli traits without deprecated API usage
 - All CLI functionality (SubstrateCli, CliConfiguration, command parsing) works without modification
 - Workspace compilation succeeds despite some local pallet genesis_build issues unrelated to sc-cli
+
+## cumulus-client-cli, frame-benchmarking-cli, polkadot-node-metrics
+
+### Overview
+Successfully confirmed upgrade to stable2412 with all assigned crates building correctly - workspace dependencies already configured and no code changes required.
+
+### Common issues & fixes
+
+- 🔴 *`frame-benchmarking-cli` test compilation errors with undeclared crate modules (westend_runtime, cumulus_test_runtime, substrate_test_runtime)*
+- 🟢 *Upstream Polkadot SDK test dependency issues in benchmarking CLI not related to local code*
+- ✅ *Library compiles successfully, workspace builds without errors*
+
+- 🔴 *`polkadot-node-metrics` not explicitly listed in workspace dependencies*
+- 🟢 *This crate is available as transitive dependency via polkadot-sdk stable2412*
+- ✅ *Verified working: polkadot-node-metrics v21.1.0 builds successfully*
+
+- 🔴 *No compilation errors found for directly-used assigned crates*
+- 🟢 *All used crates (cumulus-client-cli v0.21.1, frame-benchmarking-cli v46.2.0) compile successfully*
+- ✅ *Workspace dependencies already updated to stable2412 branch in main Cargo.toml*
+
+### Optimisations & tips
+
+- cumulus-client-cli v0.21.1 actively used in node binary - builds successfully with stable2412
+- frame-benchmarking-cli v46.2.0 used in node and client packages - library compiles despite test issues
+- polkadot-node-metrics v21.1.0 available as transitive dependency - no explicit configuration needed
+- Individual crate checks may fail due to upstream SDK test issues but workspace build succeeds
+- All assigned crates already properly configured for stable2412 - no manual updates needed
