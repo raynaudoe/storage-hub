@@ -530,6 +530,28 @@ Successfully upgraded six polkadot-sdk crates from stable2409 to stable2412 in w
 - Use `cargo tree --manifest-path=/path/Cargo.toml -p package --depth 2 | grep "crate-name"` to verify individual package dependency resolution during mixed-version states
 - runtime and xcm-simulator packages using workspace dependencies show proper stable2412 dependency resolution despite transitional compilation issues
 
+## polkadot-rpc, sc-service
+
+### Overview
+Verified that sc-service was already upgraded to stable2412 by previous agents, while polkadot-rpc is not used by this project and requires no action.
+
+### Common issues & fixes
+
+- 🔴 *polkadot-rpc crate not found in project dependencies or source code*
+- 🟢 *Root cause*: polkadot-rpc is not utilized by the current storage-hub project, only appears as transitive dependency
+- ✅ *Fix applied*: No action required - crate upgrade not applicable to this project
+
+- 🔴 *sc-service workspace dependency already points to stable2412 branch*
+- 🟢 *Root cause*: Previous agents had already upgraded sc-service from stable2409 to stable2412 in workspace Cargo.toml
+- ✅ *Fix applied*: Verified upgrade is correct - sc-service v0.49.0 properly resolved from stable2412 branch in Cargo.lock
+
+### Optimisations & tips
+
+- Only 1 of 2 assigned crates relevant to storage-hub: sc-service used by node package, polkadot-rpc absent from codebase
+- sc-service upgrade already completed by previous agents - workspace dependency correctly points to stable2412 branch
+- Verify existing upgrade with `grep -n "sc-service.*stable2412" Cargo.toml` and `grep -A5 "name = \"sc-service\"" Cargo.lock`
+- sc-service v0.49.0 correctly resolved from stable2412 branch with proper git source reference
+
 ## cumulus-pallet-aura-ext, parachains-common
 
 ### Overview
