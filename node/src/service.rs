@@ -43,11 +43,11 @@ use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
 
 // Substrate Imports
 use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
-use sc_client_api::{Backend, HeaderBackend};
-use sc_consensus::{ImportQueue, LongestChain};
+use sc_client_api::Backend;
+use sc_consensus::LongestChain;
 use sc_executor::{HeapAllocStrategy, DEFAULT_HEAP_ALLOC_STRATEGY};
 use sc_network::{
-    config::IncomingRequest, service::traits::NetworkService, NetworkBackend, NetworkBlock,
+    config::IncomingRequest, service::traits::NetworkService, NetworkBackend,
     ProtocolName,
 };
 use sc_service::{Configuration, PartialComponents, RpcHandlers, TFullBackend, TaskManager};
@@ -88,7 +88,7 @@ pub type Service = PartialComponents<
     ParachainBackend,
     MaybeSelectChain,
     sc_consensus::DefaultImportQueue<Block>,
-    sc_transaction_pool::FullPool<Block, ParachainClient>,
+    sc_transaction_pool::BasicPool<Block, ParachainClient>,
     (
         ParachainBlockImport,
         Option<Telemetry>,
@@ -452,7 +452,6 @@ where
         })?;
 
     if config.offchain_worker.enabled {
-        use futures::FutureExt;
 
         task_manager.spawn_handle().spawn(
             "offchain-workers-runner",
@@ -593,7 +592,7 @@ where
         }
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: sc_telemetry::TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -715,6 +714,7 @@ where
                                 relay_blocks_per_para_block: 2,
                                 para_blocks_per_relay_epoch: 0,
                                 relay_randomness_config: (),
+                                upgrade_go_ahead: None,
                                 xcm_config: MockXcmConfig::new(
                                     &*client_for_xcm,
                                     block,
@@ -909,7 +909,7 @@ where
         sc_sysinfo::print_hwbench(&hwbench);
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: sc_telemetry::TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1053,8 +1053,6 @@ where
         .await?;
 
     if parachain_config.offchain_worker.enabled {
-        use futures::FutureExt;
-
         task_manager.spawn_handle().spawn(
             "offchain-workers-runner",
             "offchain-work",
@@ -1152,7 +1150,7 @@ where
         }
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: sc_telemetry::TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1381,7 +1379,7 @@ where
         sc_sysinfo::print_hwbench(&hwbench);
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: sc_telemetry::TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1438,7 +1436,7 @@ fn start_consensus(
     telemetry: Option<TelemetryHandle>,
     task_manager: &TaskManager,
     relay_chain_interface: Arc<dyn RelayChainInterface>,
-    transaction_pool: Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
+    transaction_pool: Arc<sc_transaction_pool::BasicPool<Block, ParachainClient>>,
     keystore: KeystorePtr,
     relay_chain_slot_duration: Duration,
     para_id: ParaId,

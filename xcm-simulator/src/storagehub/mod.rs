@@ -9,10 +9,11 @@ mod weights;
 use crate::mock_message_queue;
 use smallvec::smallvec;
 use sp_runtime::{
-    create_runtime_str, generic, impl_opaque_keys,
+    generic, impl_opaque_keys,
     traits::{BlakeTwo256, IdentifyAccount, Verify},
     MultiSignature,
 };
+use alloc::borrow::Cow;
 
 use sp_std::prelude::*;
 use sp_version::RuntimeVersion;
@@ -145,8 +146,8 @@ impl_opaque_keys! {
 
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: create_runtime_str!("storage-hub-runtime"),
-    impl_name: create_runtime_str!("storage-hub-runtime"),
+    spec_name: Cow::Borrowed("storage-hub-runtime"),
+    impl_name: Cow::Borrowed("storage-hub-runtime"),
     authoring_version: 1,
     spec_version: 1,
     impl_version: 0,

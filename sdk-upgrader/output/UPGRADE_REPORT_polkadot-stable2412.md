@@ -18,39 +18,39 @@ Successfully upgraded all Polkadot SDK dependencies from stable2409 to stable241
 ### Common issues & fixes
 
 - =4 *`sp_runtime::RuntimeString::Borrowed("message")` compilation error*
-- =â *RuntimeString type deprecated in favor of String/Cow*
+- =ï¿½ *RuntimeString type deprecated in favor of String/Cow*
 -  *Replaced with `"message".into()` or `Cow::Borrowed("message")`*
 
 - =4 *`state_version: 1` field error in RuntimeVersion*
-- =â *Field renamed from state_version to system_version*
+- =ï¿½ *Field renamed from state_version to system_version*
 -  *Updated to `system_version: 1`*
 
 - =4 *Missing SelectCore trait implementation in cumulus-pallet-parachain-system*
-- =â *New required associated type in stable2412*
+- =ï¿½ *New required associated type in stable2412*
 -  *Added `type SelectCore = cumulus_pallet_parachain_system::DefaultCoreSelector<Runtime>;`*
 
 - =4 *Missing DoneSlashHandler in pallet-balances config*
-- =â *New required associated type for balance slashing*
+- =ï¿½ *New required associated type for balance slashing*
 -  *Added `type DoneSlashHandler = ();`*
 
 - =4 *Missing WeightInfo in pallet-transaction-payment config*
-- =â *WeightInfo became required associated type*
+- =ï¿½ *WeightInfo became required associated type*
 -  *Added `type WeightInfo = pallet_transaction_payment::weights::SubstrateWeight<Runtime>;`*
 
 - =4 *dry_run_call function signature mismatch (2 vs 3 parameters)*
-- =â *XCM API updated to include result_xcms_version parameter*
+- =ï¿½ *XCM API updated to include result_xcms_version parameter*
 -  *Updated to `fn dry_run_call(origin, call, result_xcms_version: xcm::Version)`*
 
 - =4 *DispatchEventInfo vs DispatchInfo type mismatch*
-- =â *System events now emit DispatchEventInfo instead of DispatchInfo*
+- =ï¿½ *System events now emit DispatchEventInfo instead of DispatchInfo*
 -  *Convert manually: `DispatchInfo { call_weight: info.weight, extension_weight: Default::default(), class: info.class, pays_fee: info.pays_fee }`*
 
 - =4 *`use of undeclared crate or module 'std'` in runtime-api crates*
-- =â *Runtime APIs need explicit sp_std imports for no_std compatibility*
+- =ï¿½ *Runtime APIs need explicit sp_std imports for no_std compatibility*
 -  *Added `extern crate alloc;` and `use sp_std::{vec::Vec, result::Result};` with proper feature flags*
 
 - =4 *create_runtime_str! macro deprecation warnings*
-- =â *Macro deprecated in favor of Cow::Borrowed*
+- =ï¿½ *Macro deprecated in favor of Cow::Borrowed*
 -  *Replaced `create_runtime_str!("name")` with `alloc::borrow::Cow::Borrowed("name")`*
 
 ### Optimisations & tips
@@ -61,3 +61,37 @@ Successfully upgraded all Polkadot SDK dependencies from stable2409 to stable241
 - For runtime APIs, always add both `extern crate alloc` and proper sp_std imports with feature flags
 - When upgrading XCM APIs, check parameter count changes in error messages for quick fixes
 - Use `--all-targets` flag with cargo check to catch test compilation issues early
+
+## frame-support-procedural-tools, pallet-staking-reward-fn, sc-proposer-metrics, sc-utils, sp-crypto-hashing-proc-macro, sp-storage, sp-weights
+
+### Overview
+Addressed deprecated macro usage, runtime API std compatibility issues, and telemetry type annotations for stable2412 upgrade.
+
+### Common issues & fixes
+
+- ðŸ”´ *`create_runtime_str!("name")` deprecated macro usage*
+- ðŸŸ¢ *RuntimeString macros deprecated in favor of Cow::Borrowed*
+- âœ… *Replaced with `Cow::Borrowed("name")` and added `use alloc::borrow::Cow;`*
+
+- ðŸ”´ *`use of undeclared crate or module 'std'` in runtime API macros*
+- ðŸŸ¢ *sp_api::decl_runtime_apis! macro needs explicit std mapping in no_std contexts*  
+- âœ… *Added `#[cfg(feature = "std")] use std; #[cfg(not(feature = "std"))] use sp_std as std;` before sp_api macro*
+
+- ðŸ”´ *`sp_runtime::Vec<T>` not found in runtime APIs*
+- ðŸŸ¢ *Need explicit Vec import from sp_std for runtime APIs*
+- âœ… *Added `use sp_std::{result::Result, vec::Vec};` and replaced `sp_runtime::Vec` with `Vec`*
+
+- ðŸ”´ *`let telemetry_handle = telemetry.handle();` type inference failed*
+- ðŸŸ¢ *Telemetry handle type needs explicit annotation in stable2412*
+- âœ… *Added explicit type: `let telemetry_handle: sc_telemetry::TelemetryHandle = telemetry.handle();`*
+
+- ðŸ”´ *`missing field 'upgrade_go_ahead' in MockValidationDataInherentDataProvider`*
+- ðŸŸ¢ *New required field added to MockValidationDataInherentDataProvider struct*
+- âœ… *Added `upgrade_go_ahead: None,` to struct initialization*
+
+### Optimisations & tips
+
+- Use `rg "create_runtime_str|sp_runtime::Vec"` to find deprecated runtime API patterns quickly
+- For runtime APIs, add std mapping before sp_api macro: `use sp_std as std` when no_std
+- MockValidationDataInherentDataProvider requires upgrade_go_ahead field in stable2412
+- Transaction pool API changes from FullPool to BasicPool require deeper investigation

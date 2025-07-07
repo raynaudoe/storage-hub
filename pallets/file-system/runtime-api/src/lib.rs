@@ -11,6 +11,12 @@ use sp_runtime::RuntimeDebug;
 use sp_std::collections::btree_map::BTreeMap;
 use sp_std::result::Result;
 
+#[cfg(feature = "std")]
+use std;
+
+#[cfg(not(feature = "std"))]
+use sp_std as std;
+
 /// Error type for the `is_storage_request_open_to_volunteers` runtime API call.
 #[derive(Eq, PartialEq, Encode, Decode, RuntimeDebug, TypeInfo)]
 pub enum IsStorageRequestOpenToVolunteersError {

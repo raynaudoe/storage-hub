@@ -8,6 +8,12 @@ use scale_info::TypeInfo;
 use sp_runtime::RuntimeDebug;
 use sp_std::{vec::Vec, result::Result};
 
+#[cfg(feature = "std")]
+use std;
+
+#[cfg(not(feature = "std"))]
+use sp_std as std;
+
 sp_api::decl_runtime_apis! {
     #[api_version(1)]
     pub trait ProofsDealerApi<ProviderId, BlockNumber, Key, RandomnessOutput, CustomChallenge>
