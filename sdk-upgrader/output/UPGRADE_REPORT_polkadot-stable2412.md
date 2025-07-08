@@ -725,3 +725,25 @@ Successfully upgraded cumulus-client-collator from stable2409 to stable2412 with
 - cumulus-client-collator v0.21.0 correctly resolved from stable2412 branch with all dependencies properly upgraded
 - Also upgraded related cumulus client crates: cumulus-client-consensus-aura, cumulus-client-service, polkadot-cli to stable2412
 - Only 1 of 2 assigned crates relevant to parachain projects: cumulus-client-collator used by node, polkadot-service absent from Cumulus-based projects
+
+## cumulus-client-consensus-aura, cumulus-relay-chain-minimal-node, polkadot-cli
+
+### Overview
+Successfully verified that cumulus-client-consensus-aura and polkadot-cli are already upgraded to stable2412 with correct dependency resolution; cumulus-relay-chain-minimal-node not applicable to parachain projects.
+
+### Common issues & fixes
+
+- 🔴 *cumulus-relay-chain-minimal-node crate not found in project dependencies or source code*
+- 🟢 *Root cause*: cumulus-relay-chain-minimal-node is not used by Cumulus-based parachain projects, only relevant for minimal relay chain setups
+- ✅ *Fix applied*: No action required - crate upgrade not applicable to this storage-hub parachain project
+
+- 🔴 *Previous agents have already upgraded cumulus-client-consensus-aura and polkadot-cli to stable2412*
+- 🟢 *Root cause*: Both crates were upgraded by previous agents and are correctly resolved from stable2412 branch
+- ✅ *Fix applied*: Verified upgrade is correct - cumulus-client-consensus-aura v0.21.1 and polkadot-cli v22.0.1 properly resolved from stable2412 branch
+
+### Optimisations & tips
+
+- Only 2 of 3 assigned crates relevant to storage-hub: cumulus-client-consensus-aura used by node package, polkadot-cli used by node for rococo-native features
+- Both crates correctly resolved from stable2412 branch: `cargo tree | grep -E "(cumulus-client-consensus-aura|polkadot-cli).*stable2412"`
+- cumulus-relay-chain-minimal-node absent from Cumulus-based projects - focus on cumulus-client-* and cumulus-primitives-* crates instead
+- Workspace compiles successfully with `cargo check --workspace` - no additional changes needed for assigned crates
