@@ -765,3 +765,25 @@ cumulus-relay-chain-inprocess-interface is not used in this codebase - no depend
 - cumulus-relay-chain-inprocess-interface is an alternative to cumulus-relay-chain-interface for in-process relay chain access
 - Storage-hub project uses cumulus-relay-chain-interface (already upgraded to stable2412) instead of the inprocess variant
 - Cumulus-based projects typically choose between interface variants based on their specific relay chain connection requirements
+
+## cumulus-client-service
+
+### Overview
+cumulus-client-service was already upgraded to stable2412 by previous agents, with proper dependency resolution to v0.22.0 and successful workspace compilation.
+
+### Common issues & fixes
+
+- 🔴 *cumulus-client-service workspace dependency already points to stable2412 branch*
+- 🟢 *Root cause*: Previous agents had already upgraded cumulus-client-service from stable2409 to stable2412 in workspace Cargo.toml
+- ✅ *Fix applied*: Verified upgrade is correct - cumulus-client-service v0.22.0 properly resolved from stable2412 branch in dependency tree
+
+- 🔴 *Workspace and individual package compilation successful despite being part of mixed-version transition*
+- 🟢 *Root cause*: cumulus-client-service upgrade was completed correctly by previous agents with proper dependency resolution
+- ✅ *Fix applied*: No changes needed - cargo check --workspace passes, confirming successful upgrade and compatibility
+
+### Optimisations & tips
+
+- cumulus-client-service v0.22.0 correctly resolved from stable2412 branch: `cargo tree -p cumulus-client-service` shows proper version
+- Workspace compiles successfully with `cargo check --workspace` - no additional changes needed for this crate
+- Used by node package via workspace dependencies - proper dependency chain resolution from workspace configuration  
+- Verify existing upgrade with `grep -n "cumulus-client-service.*stable2412" Cargo.toml` and dependency tree inspection
