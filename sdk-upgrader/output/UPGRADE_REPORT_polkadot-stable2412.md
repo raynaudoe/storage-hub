@@ -595,3 +595,25 @@ Successfully upgraded sc-cli from stable2409 to stable2412, with dependency reso
 - Individual crate builds succeed with `cargo check -p sc-cli@0.50.2 --lib` despite workspace build failures during mixed-version state - this is expected behavior
 - Use `cargo tree --manifest-path=/path/Cargo.toml | grep "sc-cli.*stable2412"` to verify successful upgrade during mixed-version states
 - base64ct compatibility issues are common during sc-cli upgrades - check for edition2024 conflicts and downgrade to compatible versions
+
+## cumulus-client-cli, frame-benchmarking-cli, polkadot-node-metrics
+
+### Overview
+Successfully upgraded cumulus-client-cli and frame-benchmarking-cli from stable2409 to stable2412, with polkadot-node-metrics automatically brought in as transitive dependency.
+
+### Common issues & fixes
+
+- 🔴 *error[E0152]: duplicate lang item in crate `sp_io` panic_impl* during workspace builds with mixed dependency versions
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of sp_io in dependency graph during upgrade
+- ✅ *Fix applied*: Verified correct resolution: cumulus-client-cli v0.21.1, frame-benchmarking-cli v46.2.0, polkadot-node-metrics v21.1.0 from stable2412 branch
+
+- 🔴 *There are multiple `crate-name` packages in your project* errors during individual package checks
+- 🟢 *Root cause*: Mixed dependency graph with multiple versions from different branches during upgrade transition
+- ✅ *Fix applied*: Use specific version notation `cargo check -p <crate>@<version> --lib` to target stable2412 versions
+
+### Optimisations & tips
+
+- All three assigned crates correctly resolved from stable2412 branch despite workspace build failures during mixed-version state
+- Individual crate libs compile successfully with `cargo check -p <crate>@<version> --lib` during transition - this is expected behavior
+- Use `cargo tree -p <crate>` to identify version ambiguity and select specific stable2412 versions for verification  
+- polkadot-node-metrics brought in automatically as transitive dependency - no direct workspace specification needed

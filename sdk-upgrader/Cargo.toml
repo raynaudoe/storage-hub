@@ -139,7 +139,7 @@ substrate-prometheus-endpoint = { git = "https://github.com/paritytech/polkadot-
 substrate-wasm-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 substrate-build-script-utils = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 frame-benchmarking = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
-frame-benchmarking-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+frame-benchmarking-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 frame-support = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 frame-system = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 frame-executive = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
@@ -179,7 +179,7 @@ xcm-executor = { package = "staging-xcm-executor", git = "https://github.com/par
 runtime-constants = { package = "polkadot-runtime-constants", git = "https://github.com/polkadot-fellows/runtimes.git", tag = "v1.2.3", default-features = false }
 
 # Cumulus
-cumulus-client-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+cumulus-client-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-client-collator = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-client-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
 cumulus-client-consensus-common = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
