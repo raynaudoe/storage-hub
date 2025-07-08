@@ -676,3 +676,29 @@ Successfully upgraded cumulus-relay-chain-interface from stable2409 to stable241
 - cumulus-relay-chain-interface v0.21.0 correctly resolved from stable2412 branch with proper dependency resolution to stable2412 versions
 - Use `cargo tree -p cumulus-relay-chain-interface@0.21.0` to verify successful upgrade during mixed-version states  
 - parachain projects using Cumulus framework typically exclude polkadot node subsystem crates - focus on cumulus-client-* and cumulus-primitives-* crates instead
+
+## cumulus-client-consensus-common
+
+### Overview
+Successfully upgraded cumulus-client-consensus-common from stable2409 to stable2412, with proper dependency resolution to v0.21.0 and all polkadot-node-* crates confirmed as not applicable to parachain projects.
+
+### Common issues & fixes
+
+- 🔴 *There are multiple `cumulus-client-consensus-common` packages in your project* error during individual package checks
+- 🟢 *Root cause*: Mixed dependency graph with multiple versions from different branches (v0.18.0 from stable2409, v0.21.0 from stable2412) during upgrade transition
+- ✅ *Fix applied*: Use specific version notation `cargo check -p cumulus-client-consensus-common@0.21.0 --lib` to target stable2412 version
+
+- 🔴 *error[E0152]: duplicate lang item in crate `sp_io` panic_impl* and *cannot find macro `thread_local` in scope* during workspace builds
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of polkadot-sdk dependencies coexisting during upgrade
+- ✅ *Fix applied*: Updated workspace dependency from stable2409 to stable2412 - cargo tree confirms cumulus-client-consensus-common v0.21.0 correctly resolved from stable2412 branch
+
+- 🔴 *All 19 polkadot-node-* crates not found in project dependencies or source code*
+- 🟢 *Root cause*: polkadot-node-* crates are specific to Polkadot relay chain node infrastructure and not relevant for Cumulus-based parachain nodes
+- ✅ *Fix applied*: No action required - these crate upgrades not applicable to this storage-hub parachain project
+
+### Optimisations & tips
+
+- Only 1 of 20 assigned crates relevant to storage-hub: cumulus-client-consensus-common used by node package, all polkadot-node-* crates absent from Cumulus-based projects
+- cumulus-client-consensus-common v0.21.0 correctly resolved from stable2412 branch with proper dependency resolution including polkadot-node-subsystem v21.0.0 as transitive dependency
+- Use `cargo tree -p cumulus-client-consensus-common@0.21.0` to verify successful upgrade during mixed-version states
+- Parachain projects using Cumulus framework exclude polkadot node subsystem crates - focus on cumulus-client-* and cumulus-primitives-* crates instead
