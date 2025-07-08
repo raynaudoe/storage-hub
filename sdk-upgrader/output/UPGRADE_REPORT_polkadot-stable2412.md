@@ -8,6 +8,7 @@
 - **Hash trait changes**: `T::Hashing::hash` has been replaced with `T::Hashing::hash_of` - requires `use sp_runtime::traits::Hash` import
 - **RuntimeString deprecation**: Replace `sp_runtime::RuntimeString::Borrowed()` with `.into()` for string conversions
 - **Hash trait import scope**: For hash_of method usage, import `use sp_runtime::traits::Hash` at module level, not function level
+- **Crate applicability**: Many polkadot-sdk crates are only relevant for relay chains (e.g., polkadot-overseer) and not needed for parachain projects
 
 ## sp-arithmetic, sp-std, sp-tracing, sc-network-types, substrate-prometheus-endpoint, substrate-build-script-utils
 
@@ -617,3 +618,43 @@ Successfully upgraded cumulus-client-cli and frame-benchmarking-cli from stable2
 - Individual crate libs compile successfully with `cargo check -p <crate>@<version> --lib` during transition - this is expected behavior
 - Use `cargo tree -p <crate>` to identify version ambiguity and select specific stable2412 versions for verification  
 - polkadot-node-metrics brought in automatically as transitive dependency - no direct workspace specification needed
+
+## polkadot-overseer
+
+### Overview
+polkadot-overseer is not used in this codebase - no dependencies found in Cargo.toml files or Rust source code, as expected for a Cumulus-based parachain project.
+
+### Common issues & fixes
+
+- 🔴 *polkadot-overseer crate not found in project dependencies or source code*
+- 🟢 *Root cause*: polkadot-overseer is specific to Polkadot relay chain node infrastructure and not relevant for parachain nodes
+- ✅ *Fix applied*: No action required - crate upgrade not applicable to this Cumulus-based storage-hub project
+
+### Optimisations & tips
+
+- Use `grep -r "polkadot-overseer\|overseer" . --include="*.toml" --include="*.rs"` to verify crate absence from parachain projects
+- polkadot-overseer is only needed for relay chain nodes, not parachain nodes built with Cumulus framework
+- Storage-hub project focuses on parachain storage services and doesn't require relay chain subsystem orchestration
+- Cumulus-based projects typically use cumulus-client-* crates instead of polkadot node subsystems
+
+## cumulus-relay-chain-interface, polkadot-node-subsystem
+
+### Overview
+Successfully upgraded cumulus-relay-chain-interface from stable2409 to stable2412, with polkadot-node-subsystem not applicable to parachain projects.
+
+### Common issues & fixes
+
+- 🔴 *polkadot-node-subsystem crate not found in project dependencies or source code*
+- 🟢 *Root cause*: polkadot-node-subsystem is specific to Polkadot relay chain node infrastructure and not relevant for Cumulus-based parachain nodes
+- ✅ *Fix applied*: No action required - crate upgrade not applicable to this storage-hub parachain project
+
+- 🔴 *error[E0152]: duplicate lang item in crate `sp_io` panic_impl* and *cannot find macro `thread_local` in scope* during workspace builds
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of cumulus-relay-chain-interface coexisting during upgrade
+- ✅ *Fix applied*: Updated workspace dependency from stable2409 to stable2412 - cargo tree confirms cumulus-relay-chain-interface v0.21.0 correctly resolved from stable2412 branch
+
+### Optimisations & tips
+
+- Only 1 of 2 assigned crates relevant to storage-hub: cumulus-relay-chain-interface used by node package, polkadot-node-subsystem absent from Cumulus-based projects
+- cumulus-relay-chain-interface v0.21.0 correctly resolved from stable2412 branch with proper dependency resolution to stable2412 versions
+- Use `cargo tree -p cumulus-relay-chain-interface@0.21.0` to verify successful upgrade during mixed-version states  
+- parachain projects using Cumulus framework typically exclude polkadot node subsystem crates - focus on cumulus-client-* and cumulus-primitives-* crates instead
