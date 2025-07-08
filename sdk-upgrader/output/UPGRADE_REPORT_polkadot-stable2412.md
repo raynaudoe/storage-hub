@@ -8,6 +8,7 @@
 - **Hash trait changes**: `T::Hashing::hash` has been replaced with `T::Hashing::hash_of` - requires `use sp_runtime::traits::Hash` import
 - **RuntimeString deprecation**: Replace `sp_runtime::RuntimeString::Borrowed()` with `.into()` for string conversions
 - **Hash trait import scope**: For hash_of method usage, import `use sp_runtime::traits::Hash` at module level, not function level
+- **ChainSpec API breaking change**: ChainSpec is now a trait in stable2412, use `Box<dyn ChainSpec>` for trait objects instead of `ChainSpec` directly
 - **Crate applicability**: Many polkadot-sdk crates are only relevant for relay chains (e.g., polkadot-overseer) and not needed for parachain projects
 
 ## sp-arithmetic, sp-std, sp-tracing, sc-network-types, substrate-prometheus-endpoint, substrate-build-script-utils
@@ -702,3 +703,25 @@ Successfully upgraded cumulus-client-consensus-common from stable2409 to stable2
 - cumulus-client-consensus-common v0.21.0 correctly resolved from stable2412 branch with proper dependency resolution including polkadot-node-subsystem v21.0.0 as transitive dependency
 - Use `cargo tree -p cumulus-client-consensus-common@0.21.0` to verify successful upgrade during mixed-version states
 - Parachain projects using Cumulus framework exclude polkadot node subsystem crates - focus on cumulus-client-* and cumulus-primitives-* crates instead
+
+## cumulus-client-collator, polkadot-service
+
+### Overview
+Successfully upgraded cumulus-client-collator from stable2409 to stable2412 with ChainSpec API breaking change requiring trait object usage; polkadot-service not applicable to parachain projects.
+
+### Common issues & fixes
+
+- 🔴 *error[E0782]: expected a type, found a trait* for `ChainSpec` in stable2412
+- 🟢 *Root cause*: ChainSpec changed from concrete type to trait in stable2412, requiring trait object syntax
+- ✅ *Fix applied*: Changed `let _: Option<ChainSpec> = None;` to `let _: Option<Box<dyn ChainSpec>> = None;` in test code
+
+- 🔴 *polkadot-service crate not found in project dependencies or source code*
+- 🟢 *Root cause*: polkadot-service is not used by Cumulus-based parachain projects, only relevant for relay chain nodes
+- ✅ *Fix applied*: No action required - crate upgrade not applicable to this storage-hub parachain project
+
+### Optimisations & tips
+
+- ChainSpec API breaking change in stable2412: use `Box<dyn ChainSpec>` instead of `ChainSpec` for trait objects
+- cumulus-client-collator v0.21.0 correctly resolved from stable2412 branch with all dependencies properly upgraded
+- Also upgraded related cumulus client crates: cumulus-client-consensus-aura, cumulus-client-service, polkadot-cli to stable2412
+- Only 1 of 2 assigned crates relevant to parachain projects: cumulus-client-collator used by node, polkadot-service absent from Cumulus-based projects

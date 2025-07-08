@@ -162,7 +162,7 @@ pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/parityt
 pallet-uniques = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 
 # Polkadot
-polkadot-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", features = [
+polkadot-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", features = [
 	"rococo-native",
 ], default-features = false }
 polkadot-core-primitives = { git = "https://github.com/paritytech/polkadot-sdk", branch = "stable2412", default-features = false }
@@ -180,12 +180,12 @@ runtime-constants = { package = "polkadot-runtime-constants", git = "https://git
 
 # Cumulus
 cumulus-client-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
-cumulus-client-collator = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
-cumulus-client-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+cumulus-client-collator = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
+cumulus-client-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-client-consensus-common = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-client-consensus-proposer = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-client-parachain-inherent = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
-cumulus-client-service = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = false }
+cumulus-client-service = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-primitives-parachain-inherent = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-relay-chain-interface = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
 cumulus-pallet-aura-ext = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2412", default-features = false }
