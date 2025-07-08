@@ -637,6 +637,24 @@ polkadot-overseer is not used in this codebase - no dependencies found in Cargo.
 - Storage-hub project focuses on parachain storage services and doesn't require relay chain subsystem orchestration
 - Cumulus-based projects typically use cumulus-client-* crates instead of polkadot node subsystems
 
+## cumulus-client-parachain-inherent
+
+### Overview
+Successfully upgraded cumulus-client-parachain-inherent from stable2409 to stable2412, with proper dependency resolution to v0.15.0 from stable2412 branch.
+
+### Common issues & fixes
+
+- 🔴 *error[E0152]: duplicate lang item in crate `sp_io` panic_impl* and *cannot find macro `thread_local` in scope* during workspace builds
+- 🟢 *Root cause*: Expected transitional state with both stable2409 and stable2412 versions of cumulus-client-parachain-inherent coexisting during upgrade
+- ✅ *Fix applied*: Updated workspace dependency from stable2409 to stable2412 - cargo tree confirms cumulus-client-parachain-inherent v0.15.0 correctly resolved from stable2412 branch
+
+### Optimisations & tips
+
+- Only 1 of 10 assigned crates relevant to storage-hub: cumulus-client-parachain-inherent used by node package, other polkadot-node-* crates absent from Cumulus-based projects
+- cumulus-client-parachain-inherent v0.15.0 correctly resolved from stable2412 branch with proper dependency resolution
+- Use `cargo tree -p cumulus-client-parachain-inherent@0.15.0` to verify successful upgrade during mixed-version states
+- Parachain projects using Cumulus framework typically exclude polkadot node subsystem crates - focus on cumulus-client-* and cumulus-primitives-* crates instead
+
 ## cumulus-relay-chain-interface, polkadot-node-subsystem
 
 ### Overview
