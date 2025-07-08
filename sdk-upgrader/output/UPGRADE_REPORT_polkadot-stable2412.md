@@ -747,3 +747,21 @@ Successfully verified that cumulus-client-consensus-aura and polkadot-cli are al
 - Both crates correctly resolved from stable2412 branch: `cargo tree | grep -E "(cumulus-client-consensus-aura|polkadot-cli).*stable2412"`
 - cumulus-relay-chain-minimal-node absent from Cumulus-based projects - focus on cumulus-client-* and cumulus-primitives-* crates instead
 - Workspace compiles successfully with `cargo check --workspace` - no additional changes needed for assigned crates
+
+## cumulus-relay-chain-inprocess-interface
+
+### Overview
+cumulus-relay-chain-inprocess-interface is not used in this codebase - no dependencies found in Cargo.toml files or Rust source code, as expected for a Cumulus-based parachain project.
+
+### Common issues & fixes
+
+- 🔴 *cumulus-relay-chain-inprocess-interface crate not found in project dependencies or source code*
+- 🟢 *Root cause*: This crate is not utilized by the current storage-hub project, which only uses cumulus-relay-chain-interface instead
+- ✅ *Fix applied*: No action required - crate upgrade not applicable to this project
+
+### Optimisations & tips
+
+- Use `grep -r "cumulus.*relay.*chain.*inprocess" . --include="*.toml" --include="*.rs"` to verify crate absence from parachain projects
+- cumulus-relay-chain-inprocess-interface is an alternative to cumulus-relay-chain-interface for in-process relay chain access
+- Storage-hub project uses cumulus-relay-chain-interface (already upgraded to stable2412) instead of the inprocess variant
+- Cumulus-based projects typically choose between interface variants based on their specific relay chain connection requirements
