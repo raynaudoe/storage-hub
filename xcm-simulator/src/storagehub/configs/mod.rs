@@ -205,6 +205,8 @@ impl cumulus_pallet_parachain_system::Config for Runtime {
     type ReservedXcmpWeight = ReservedXcmpWeight;
     type CheckAssociatedRelayNumber = RelayNumberMonotonicallyIncreases;
     type ConsensusHook = ConsensusHook;
+    // Fixed based on PR-5372
+    type SelectCore = cumulus_pallet_parachain_system::DefaultCoreSelector<Runtime>;
 }
 pub(crate) type ConsensusHook = cumulus_pallet_aura_ext::FixedVelocityConsensusHook<
     Runtime,
