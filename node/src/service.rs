@@ -36,7 +36,7 @@ use cumulus_client_service::{
     BuildNetworkParams, CollatorSybilResistance, DARecoveryProfile, StartRelayChainTasksParams,
 };
 use cumulus_primitives_core::{
-    relay_chain::{well_known_keys as RelayChainWellKnownKeys, CollatorPair, ValidationCode},
+    relay_chain::{well_known_keys as RelayChainWellKnownKeys, CollatorPair, ValidationCode, UpgradeGoAhead},
     ParaId,
 };
 use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
@@ -724,6 +724,7 @@ where
                                 raw_downward_messages: vec![],
                                 raw_horizontal_messages: vec![],
                                 additional_key_values: Some(additional_keys),
+                                upgrade_go_ahead: None,
                             }
                         };
 
