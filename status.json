@@ -573,7 +573,7 @@
           "column": 31
         }
       ],
-      "status": "pending",
+      "status": "completed",
       "files": [
         "node/src/service.rs"
       ]

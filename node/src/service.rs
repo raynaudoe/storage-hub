@@ -1047,7 +1047,7 @@ where
 
     let (network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
         build_network(BuildNetworkParams {
-            parachain_config: &parachain_config,
+            config: &parachain_config,
             net_config,
             client: client.clone(),
             transaction_pool: transaction_pool.clone(),
@@ -1309,7 +1309,7 @@ where
 
     let (network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
         build_network(BuildNetworkParams {
-            parachain_config: &parachain_config,
+            config: &parachain_config,
             net_config,
             client: client.clone(),
             transaction_pool: transaction_pool.clone(),
