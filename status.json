@@ -2,124 +2,162 @@
   "strategy": "error_based_sequential",
   "created_at": "2025-07-17T22:56:40.040574+00:00",
   "iteration": 0,
-  "completed_groups": 0,
+  "completed_groups": 5,
   "error_groups": [
     {
       "id": "error_group_001",
       "symbol": "unknown",
-      "error_count": 2,
+      "error_count": 5,
       "errors": [
         {
-          "message": "this function takes 3 arguments but 2 arguments were supplied",
-          "code": "E0061",
-          "file": "xcm-simulator/src/storagehub/apis.rs",
-          "line": 223,
-          "column": 13
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 394,
+          "column": 20
         },
         {
-          "message": "this function takes 3 arguments but 2 arguments were supplied",
-          "code": "E0061",
-          "file": "xcm-simulator/src/storagehub/apis.rs",
-          "line": 43,
-          "column": 1
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 445,
+          "column": 48
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 463,
+          "column": 38
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 596,
+          "column": 46
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 786,
+          "column": 20
         }
       ],
-      "status": "pending",
+      "status": "completed",
       "files": [
-        "xcm-simulator/src/storagehub/apis.rs"
+        "node/src/service.rs"
       ]
     },
     {
       "id": "error_group_002",
-      "symbol": "RuntimeVersion",
-      "error_count": 1,
+      "symbol": "unknown",
+      "error_count": 5,
       "errors": [
         {
-          "message": "struct `RuntimeVersion` has no field named `state_version`",
-          "code": "E0560",
-          "file": "xcm-simulator/src/storagehub/mod.rs",
-          "line": 153,
-          "column": 5
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 833,
+          "column": 48
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 887,
+          "column": 26
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 912,
+          "column": 46
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 1155,
+          "column": 46
+        },
+        {
+          "message": "type annotations needed",
+          "code": "E0282",
+          "file": "node/src/service.rs",
+          "line": 1384,
+          "column": 46
         }
       ],
       "status": "pending",
       "files": [
-        "xcm-simulator/src/storagehub/mod.rs"
+        "node/src/service.rs"
       ]
     },
     {
       "id": "error_group_003",
-      "symbol": "dry_run_call",
+      "symbol": "unknown",
       "error_count": 1,
       "errors": [
         {
-          "message": "method `dry_run_call` has 2 parameters but the declaration in trait `DryRunApiV2::dry_run_call` has 3",
-          "code": "E0050",
-          "file": "xcm-simulator/src/storagehub/apis.rs",
-          "line": 222,
-          "column": 33
+          "message": "mismatched types",
+          "code": "E0308",
+          "file": "node/src/service.rs",
+          "line": 152,
+          "column": 9
         }
       ],
-      "status": "pending",
+      "status": "completed",
       "files": [
-        "xcm-simulator/src/storagehub/apis.rs"
+        "node/src/service.rs"
       ]
     },
     {
       "id": "error_group_004",
-      "symbol": "DoneSlashHandler",
-      "error_count": 1,
+      "symbol": "FullPool",
+      "error_count": 2,
       "errors": [
         {
-          "message": "not all trait items implemented, missing: `DoneSlashHandler`",
-          "code": "E0046",
-          "file": "xcm-simulator/src/storagehub/configs/mod.rs",
-          "line": 145,
-          "column": 1
+          "message": "cannot find type `FullPool` in crate `sc_transaction_pool`",
+          "code": "E0412",
+          "file": "node/src/service.rs",
+          "line": 91,
+          "column": 26
+        },
+        {
+          "message": "cannot find type `FullPool` in crate `sc_transaction_pool`",
+          "code": "E0412",
+          "file": "node/src/service.rs",
+          "line": 1441,
+          "column": 48
         }
       ],
       "status": "pending",
       "files": [
-        "xcm-simulator/src/storagehub/configs/mod.rs"
+        "node/src/service.rs"
       ]
     },
     {
       "id": "error_group_005",
-      "symbol": "WeightInfo",
+      "symbol": "upgrade_go_ahead",
       "error_count": 1,
       "errors": [
         {
-          "message": "not all trait items implemented, missing: `WeightInfo`",
-          "code": "E0046",
-          "file": "xcm-simulator/src/storagehub/configs/mod.rs",
-          "line": 168,
-          "column": 1
+          "message": "missing field `upgrade_go_ahead` in initializer of `MockValidationDataInherentDataProvider<_>`",
+          "code": "E0063",
+          "file": "node/src/service.rs",
+          "line": 710,
+          "column": 29
         }
       ],
       "status": "pending",
       "files": [
-        "xcm-simulator/src/storagehub/configs/mod.rs"
-      ]
-    },
-    {
-      "id": "error_group_006",
-      "symbol": "SelectCore",
-      "error_count": 1,
-      "errors": [
-        {
-          "message": "not all trait items implemented, missing: `SelectCore`",
-          "code": "E0046",
-          "file": "xcm-simulator/src/storagehub/configs/mod.rs",
-          "line": 194,
-          "column": 1
-        }
-      ],
-      "status": "pending",
-      "files": [
-        "xcm-simulator/src/storagehub/configs/mod.rs"
+        "node/src/service.rs"
       ]
     }
   ],
-  "total_errors": 7,
-  "last_check": "2025-07-17T22:56:58.161577+00:00"
+  "total_errors": 14,
+  "last_check": "2025-07-18T10:48:55.041906+00:00"
 }
