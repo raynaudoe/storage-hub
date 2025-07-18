@@ -227,14 +227,26 @@ where
                     },
                 ) => {
                     return Ok(ExtrinsicResult::Failure {
-                        dispatch_info,
+                        dispatch_info: frame_support::dispatch::DispatchInfo {
+                            call_weight: dispatch_info.weight,
+                            extension_weight: frame_support::weights::Weight::zero(),
+                            class: dispatch_info.class,
+                            pays_fee: dispatch_info.pays_fee,
+                        },
                         dispatch_error,
                     });
                 }
                 storage_hub_runtime::RuntimeEvent::System(
                     frame_system::Event::ExtrinsicSuccess { dispatch_info },
                 ) => {
-                    return Ok(ExtrinsicResult::Success { dispatch_info });
+                    return Ok(ExtrinsicResult::Success { 
+                        dispatch_info: frame_support::dispatch::DispatchInfo {
+                            call_weight: dispatch_info.weight,
+                            extension_weight: frame_support::weights::Weight::zero(),
+                            class: dispatch_info.class,
+                            pays_fee: dispatch_info.pays_fee,
+                        },
+                    });
                 }
                 _ => {}
             }

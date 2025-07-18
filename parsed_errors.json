@@ -1,0 +1,425 @@
+{
+  "error_count": 60,
+  "errors": [
+    {
+      "message": "cannot find trait `OffchainStorage` in crate `sc_offchain`",
+      "code": "E0405",
+      "file": "node/src/service.rs",
+      "line": 464,
+      "column": 88
+    },
+    {
+      "message": "cannot find trait `OffchainStorage` in crate `sc_offchain`",
+      "code": "E0405",
+      "file": "node/src/service.rs",
+      "line": 1068,
+      "column": 88
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 106,
+      "column": 13
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 106,
+      "column": 13
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1445,
+      "column": 27
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1445,
+      "column": 27
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 374,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 374,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 374,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 374,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 446,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 446,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 442,
+      "column": 35
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 442,
+      "column": 35
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 767,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 767,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 767,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 767,
+      "column": 9
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 837,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 837,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 833,
+      "column": 35
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 833,
+      "column": 35
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 868,
+      "column": 32
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 868,
+      "column": 32
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 873,
+      "column": 23
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 873,
+      "column": 23
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 878,
+      "column": 37
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 878,
+      "column": 37
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 887,
+      "column": 27
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 887,
+      "column": 27
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 884,
+      "column": 48
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 884,
+      "column": 48
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 977,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 977,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 977,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 977,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1042,
+      "column": 28
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1042,
+      "column": 28
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1050,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1050,
+      "column": 31
+    },
+    {
+      "message": "mismatched types",
+      "code": "E0308",
+      "file": "node/src/service.rs",
+      "line": 1050,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1239,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1239,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1239,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1239,
+      "column": 18
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1305,
+      "column": 28
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1305,
+      "column": 28
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1312,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1312,
+      "column": 31
+    },
+    {
+      "message": "mismatched types",
+      "code": "E0308",
+      "file": "node/src/service.rs",
+      "line": 1312,
+      "column": 31
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1340,
+      "column": 32
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1340,
+      "column": 32
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1345,
+      "column": 23
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1345,
+      "column": 23
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1350,
+      "column": 37
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1350,
+      "column": 37
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1359,
+      "column": 27
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1359,
+      "column": 27
+    },
+    {
+      "message": "the trait bound `sc_service::client::client::Client<sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, LocalCallExecutor<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sc_client_db::Backend<sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>>, WasmExecutor<(cumulus_client_service::storage_proof_size::HostFunctions, (sp_io::storage::HostFunctions, sp_io::default_child_storage::HostFunctions, sp_io::misc::HostFunctions, sp_io::wasm_tracing::HostFunctions, sp_io::offchain::HostFunctions, sp_io::crypto::HostFunctions, sp_io::hashing::HostFunctions, sp_io::allocator::HostFunctions, sp_io::panic_handler::HostFunctions, sp_io::logging::HostFunctions, sp_io::trie::HostFunctions, sp_io::offchain_index::HostFunctions, sp_io::transaction_index::HostFunctions))>>, sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>, storage_hub_runtime::apis::RuntimeApi>: BlockT` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1356,
+      "column": 48
+    },
+    {
+      "message": "the trait bound `sp_runtime::generic::Block<sp_runtime::generic::Header<u32, BlakeTwo256>, OpaqueExtrinsic>: ChainApi` is not satisfied",
+      "code": "E0277",
+      "file": "node/src/service.rs",
+      "line": 1356,
+      "column": 48
+    }
+  ]
+}
