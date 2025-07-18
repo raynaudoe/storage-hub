@@ -486,7 +486,6 @@ where
                 Box::new(
                     // This bit cribbed from the implementation of instant seal.
                     transaction_pool
-                        .pool()
                         .validated_pool()
                         .import_notification_stream()
                         .map(|_| EngineCommand::SealNewBlock {
