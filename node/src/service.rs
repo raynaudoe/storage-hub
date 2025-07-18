@@ -166,7 +166,7 @@ pub fn new_partial(
         )
     } else {
         build_import_queue(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             block_import.clone(),
             config,
             telemetry.as_ref().map(|telemetry| telemetry.handle()),
@@ -304,7 +304,7 @@ where
     // Spawn the Blockchain Service if node is running as a Storage Provider
     sh_builder
         .with_blockchain(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             keystore.clone(),
             Arc::new(rpc_handlers),
             rocks_db_path.clone(),
@@ -391,7 +391,7 @@ where
         let task_spawner = TaskSpawner::new(task_manager.spawn_handle(), "indexer-service");
         spawn_indexer_service(
             &task_spawner,
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             maybe_db_pool.clone().expect(
                 "Indexer is enabled but no database URL is provided (via CLI using --database-url or setting DATABASE_URL environment variable)",
             ),
@@ -427,7 +427,7 @@ where
     let mut file_transfer_request_protocol = None;
     if provider_options.is_some() {
         file_transfer_request_protocol = Some(configure_file_transfer_network(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             &config,
             &mut net_config,
         ));
@@ -442,7 +442,7 @@ where
             config: &config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone(),
+            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
             spawn_handle: task_manager.spawn_handle(),
             import_queue,
             block_announce_validator_builder: None,
@@ -460,7 +460,7 @@ where
             sc_offchain::OffchainWorkers::new(sc_offchain::OffchainWorkerOptions {
                 runtime_api_provider: client.clone(),
                 keystore: Some(keystore_container.keystore()),
-                offchain_db: backend.offchain_storage(),
+                offchain_db: backend.offchain_storage() as Option<Arc<dyn sc_offchain::OffchainStorage>>,
                 transaction_pool: Some(OffchainTransactionPoolFactory::new(
                     transaction_pool.clone(),
                 )),
@@ -568,7 +568,7 @@ where
     if let Some(_) = provider_options {
         finish_sh_builder_and_run_tasks(
             sh_builder.expect("StorageHubBuilder should already be initialised."),
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             rpc_handlers,
             keystore.clone(),
             base_path,
@@ -593,7 +593,7 @@ where
         }
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -633,7 +633,7 @@ where
     if collator {
         let proposer = sc_basic_authorship::ProposerFactory::with_proof_recording(
             task_manager.spawn_handle(),
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             transaction_pool.clone(),
             prometheus_registry.as_ref(),
             telemetry.as_ref().map(|x| x.handle()),
@@ -654,7 +654,7 @@ where
                 commands_stream,
                 select_chain,
                 consensus_data_provider: Some(Box::new(AuraConsensusDataProvider::new(
-                    client.clone(),
+                    client.clone() as Arc<ParachainClient>,
                 ))),
                 create_inherent_data_providers: move |block: Hash, ()| {
                     let current_para_block = client_for_cidp
@@ -783,7 +783,7 @@ where
         let task_spawner = TaskSpawner::new(task_manager.spawn_handle(), "indexer-service");
         spawn_indexer_service(
             &task_spawner,
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             maybe_db_pool.clone().expect(
                 "Indexer is enabled but no database URL is provided (via CLI using --database-url or setting DATABASE_URL environment variable)",
             ),
@@ -815,7 +815,7 @@ where
     let mut file_transfer_request_protocol = None;
     if provider_options.is_some() {
         file_transfer_request_protocol = Some(configure_file_transfer_network(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             &config,
             &mut net_config,
         ));
@@ -830,7 +830,7 @@ where
             config: &config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone(),
+            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
             spawn_handle: task_manager.spawn_handle(),
             import_queue,
             block_announce_validator_builder: None,
@@ -896,7 +896,7 @@ where
     if let Some(_) = provider_options {
         finish_sh_builder_and_run_tasks(
             sh_builder.expect("StorageHubBuilder should already be initialised."),
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             rpc_handlers,
             keystore.clone(),
             base_path,
@@ -909,7 +909,7 @@ where
         sc_sysinfo::print_hwbench(&hwbench);
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1004,7 +1004,7 @@ where
         let task_spawner = TaskSpawner::new(task_manager.spawn_handle(), "indexer-service");
         spawn_indexer_service(
             &task_spawner,
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             maybe_db_pool.clone().expect(
                 "Indexer is enabled but no database URL is provided (via CLI using --database-url or setting DATABASE_URL environment variable)",
             ),
@@ -1016,7 +1016,7 @@ where
     let mut file_transfer_request_protocol = None;
     if provider_options.is_some() {
         file_transfer_request_protocol = Some(configure_file_transfer_network(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             &parachain_config,
             &mut net_config,
         ));
@@ -1043,7 +1043,7 @@ where
             parachain_config: &parachain_config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone(),
+            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
             para_id,
             spawn_handle: task_manager.spawn_handle(),
             relay_chain_interface: relay_chain_interface.clone(),
@@ -1061,7 +1061,7 @@ where
             sc_offchain::OffchainWorkers::new(sc_offchain::OffchainWorkerOptions {
                 runtime_api_provider: client.clone(),
                 keystore: Some(params.keystore_container.keystore()),
-                offchain_db: backend.offchain_storage(),
+                offchain_db: backend.offchain_storage() as Option<Arc<dyn sc_offchain::OffchainStorage>>,
                 transaction_pool: Some(OffchainTransactionPoolFactory::new(
                     transaction_pool.clone(),
                 )),
@@ -1127,7 +1127,7 @@ where
     if let Some(_) = provider_options {
         finish_sh_builder_and_run_tasks(
             sh_builder.expect("StorageHubBuilder should already be initialised."),
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             rpc_handlers,
             keystore.clone(),
             base_path,
@@ -1152,7 +1152,7 @@ where
         }
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1191,7 +1191,7 @@ where
 
     if validator {
         start_consensus(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             backend.clone(),
             block_import,
             prometheus_registry.as_ref(),
@@ -1268,7 +1268,7 @@ where
         let task_spawner = TaskSpawner::new(task_manager.spawn_handle(), "indexer-service");
         spawn_indexer_service(
             &task_spawner,
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             maybe_db_pool.clone().expect(
                 "Indexer is enabled but no database URL is provided (via CLI using --database-url or setting DATABASE_URL environment variable)",
             ),
@@ -1280,7 +1280,7 @@ where
     let mut file_transfer_request_protocol = None;
     if provider_options.is_some() {
         file_transfer_request_protocol = Some(configure_file_transfer_network(
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             &parachain_config,
             &mut net_config,
         ));
@@ -1305,7 +1305,7 @@ where
             parachain_config: &parachain_config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone(),
+            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
             para_id,
             spawn_handle: task_manager.spawn_handle(),
             relay_chain_interface: relay_chain_interface.clone(),
@@ -1368,7 +1368,7 @@ where
     if let Some(_) = provider_options {
         finish_sh_builder_and_run_tasks(
             sh_builder.expect("StorageHubBuilder should already be initialised."),
-            client.clone(),
+            client.clone() as Arc<ParachainClient>,
             rpc_handlers,
             keystore.clone(),
             base_path,
@@ -1381,7 +1381,7 @@ where
         sc_sysinfo::print_hwbench(&hwbench);
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle = telemetry.handle();
+            let telemetry_handle: TelemetryHandle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
