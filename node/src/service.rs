@@ -88,7 +88,7 @@ pub type Service = PartialComponents<
     ParachainBackend,
     MaybeSelectChain,
     sc_consensus::DefaultImportQueue<Block>,
-    sc_transaction_pool::FullPool<Block, ParachainClient>,
+    sc_transaction_pool::BasicPool<Block, ParachainClient>,
     (
         ParachainBlockImport,
         Option<Telemetry>,
@@ -442,7 +442,7 @@ where
             config: &config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
+            transaction_pool: transaction_pool.clone(),
             spawn_handle: task_manager.spawn_handle(),
             import_queue,
             block_announce_validator_builder: None,
@@ -593,7 +593,7 @@ where
         }
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle: TelemetryHandle = telemetry.handle();
+            let telemetry_handle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -763,6 +763,8 @@ where
         transaction_pool,
         other: (_, mut telemetry, _),
     } = new_partial(&config, true)?;
+    
+    let backend: Arc<ParachainBackend> = backend;
 
     let maybe_database_url = indexer_config
         .database_url
@@ -830,7 +832,7 @@ where
             config: &config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
+            transaction_pool: transaction_pool.clone(),
             spawn_handle: task_manager.spawn_handle(),
             import_queue,
             block_announce_validator_builder: None,
@@ -909,7 +911,7 @@ where
         sc_sysinfo::print_hwbench(&hwbench);
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle: TelemetryHandle = telemetry.handle();
+            let telemetry_handle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1043,7 +1045,7 @@ where
             parachain_config: &parachain_config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
+            transaction_pool: transaction_pool.clone(),
             para_id,
             spawn_handle: task_manager.spawn_handle(),
             relay_chain_interface: relay_chain_interface.clone(),
@@ -1152,7 +1154,7 @@ where
         }
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle: TelemetryHandle = telemetry.handle();
+            let telemetry_handle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1305,7 +1307,7 @@ where
             parachain_config: &parachain_config,
             net_config,
             client: client.clone(),
-            transaction_pool: transaction_pool.clone() as Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
+            transaction_pool: transaction_pool.clone(),
             para_id,
             spawn_handle: task_manager.spawn_handle(),
             relay_chain_interface: relay_chain_interface.clone(),
@@ -1381,7 +1383,7 @@ where
         sc_sysinfo::print_hwbench(&hwbench);
 
         if let Some(ref mut telemetry) = telemetry {
-            let telemetry_handle: TelemetryHandle = telemetry.handle();
+            let telemetry_handle = telemetry.handle();
             task_manager.spawn_handle().spawn(
                 "telemetry_hwbench",
                 None,
@@ -1438,7 +1440,7 @@ fn start_consensus(
     telemetry: Option<TelemetryHandle>,
     task_manager: &TaskManager,
     relay_chain_interface: Arc<dyn RelayChainInterface>,
-    transaction_pool: Arc<sc_transaction_pool::FullPool<Block, ParachainClient>>,
+    transaction_pool: Arc<sc_transaction_pool::BasicPool<Block, ParachainClient>>,
     keystore: KeystorePtr,
     relay_chain_slot_duration: Duration,
     para_id: ParaId,
