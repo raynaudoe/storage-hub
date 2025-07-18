@@ -148,13 +148,14 @@ pub fn new_partial(
         telemetry
     });
 
-    let transaction_pool = sc_transaction_pool::BasicPool::new_full(
-        config.transaction_pool.clone(),
-        config.role.is_authority().into(),
-        config.prometheus_registry(),
+    let transaction_pool = sc_transaction_pool::Builder::new(
         task_manager.spawn_essential_handle(),
         client.clone(),
-    );
+        config.role.is_authority().into(),
+    )
+    .with_options(config.transaction_pool.clone())
+    .with_prometheus(config.prometheus_registry())
+    .build();
 
     let block_import = ParachainBlockImport::new(client.clone(), backend.clone());
 
