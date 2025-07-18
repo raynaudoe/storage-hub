@@ -1047,6 +1047,7 @@ where
 
     let (network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
         build_network(BuildNetworkParams {
+            // Fixed based on PR-5666: BuildNetworkParams field renamed from config to parachain_config
             parachain_config: &parachain_config,
             net_config,
             client: client.clone(),
@@ -1309,6 +1310,7 @@ where
 
     let (network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
         build_network(BuildNetworkParams {
+            // Fixed based on PR-5666: BuildNetworkParams field renamed from config to parachain_config
             parachain_config: &parachain_config,
             net_config,
             client: client.clone(),
