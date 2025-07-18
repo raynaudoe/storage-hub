@@ -36,7 +36,7 @@ use cumulus_client_service::{
     BuildNetworkParams, CollatorSybilResistance, DARecoveryProfile, StartRelayChainTasksParams,
 };
 use cumulus_primitives_core::{
-    relay_chain::{well_known_keys as RelayChainWellKnownKeys, CollatorPair, ValidationCode, UpgradeGoAhead},
+    relay_chain::{well_known_keys as RelayChainWellKnownKeys, CollatorPair, ValidationCode},
     ParaId,
 };
 use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
@@ -52,8 +52,7 @@ use sc_network::{
 };
 use sc_service::{Configuration, PartialComponents, RpcHandlers, TFullBackend, TaskManager};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
-use sc_transaction_pool_api::OffchainTransactionPoolFactory;
-use sp_runtime::traits::Block as BlockT;
+use sc_transaction_pool_api::{OffchainTransactionPoolFactory, TransactionPool};
 use shc_client::{
     builder::{Buildable, StorageHubBuilder, StorageLayerBuilder},
     handler::{RunnableTasks, StorageHubHandler},
@@ -486,7 +485,6 @@ where
                 Box::new(
                     // This bit cribbed from the implementation of instant seal.
                     transaction_pool
-                        .validated_pool()
                         .import_notification_stream()
                         .map(|_| EngineCommand::SealNewBlock {
                             create_empty: false,

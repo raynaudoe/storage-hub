@@ -113,6 +113,7 @@ impl pallet_balances::Config for Test {
     type RuntimeFreezeReason = ();
     type FreezeIdentifier = ();
     type MaxFreezes = ConstU32<10>;
+    type DoneSlashHandler = ();
 }
 
 pub struct TreasuryAccount;
