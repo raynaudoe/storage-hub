@@ -1,0 +1,367 @@
+# Common Polkadot SDK Migration Patterns
+# Reference this file when upgrading between SDK versions
+
+# Weight System Migrations
+weight_migrations:
+  v1_to_v2:
+    description: "Weight::from_ref_time to Weight::from_parts"
+    pattern: 'Weight::from_ref_time($TIME)'
+    replacement: 'Weight::from_parts($TIME, 0)'
+    ast_grep_cmd: |
+      ast-grep --pattern 'Weight::from_ref_time($TIME)' --rewrite 'Weight::from_parts($TIME, 0)'
+    
+  weight_constants:
+    description: "Update weight constant declarations"
+    pattern: 'const $NAME: Weight = Weight::from_ref_time($TIME);'
+    replacement: 'const $NAME: Weight = Weight::from_parts($TIME, 0);'
+
+# Currency Trait Migrations
+currency_migrations:
+  currency_to_fungible:
+    description: "Migrate from Currency to Fungible traits"
+    changes:
+      - pattern: 'T::Currency::'
+        replacement: 'T::NativeBalance::'
+      - pattern: 'Currency<T::AccountId>'
+        replacement: 'fungible::Inspect<T::AccountId>'
+      - pattern: 'ReservableCurrency'
+        replacement: 'fungible::MutateHold'
+    imports_to_add:
+      - "use frame_support::traits::fungible::{Inspect, Mutate, MutateHold};"
+    
+  transfer_method:
+    description: "Update transfer method signatures"
+    pattern: 'T::Currency::transfer($FROM, $TO, $AMOUNT, ExistenceRequirement::$REQ)'
+    replacement: 'T::NativeBalance::transfer(&$FROM, &$TO, $AMOUNT, Preservation::$REQ)?'
+    
+  existence_to_preservation:
+    description: "ExistenceRequirement to Preservation enum"
+    changes:
+      - pattern: 'ExistenceRequirement::AllowDeath'
+        replacement: 'Preservation::Expendable'
+      - pattern: 'ExistenceRequirement::KeepAlive'
+        replacement: 'Preservation::Preserve'
+    
+  balance_methods:
+    description: "Balance query methods"
+    changes:
+      - pattern: 'T::Currency::free_balance($WHO)'
+        replacement: 'T::NativeBalance::balance(&$WHO)'
+      - pattern: 'T::Currency::total_balance($WHO)'
+        replacement: 'T::NativeBalance::total_balance(&$WHO)'
+      - pattern: 'T::Currency::reserved_balance($WHO)'
+        replacement: 'T::NativeBalance::balance_on_hold(&HoldReason::$REASON, &$WHO)'
+        
+  currency_config_trait:
+    description: "Update Config trait for Currency to NativeBalance"
+    pattern: 'type Currency: Currency<Self::AccountId>;'
+    replacement: 'type NativeBalance: fungible::Inspect<Self::AccountId> + fungible::Mutate<Self::AccountId> + fungible::MutateHold<Self::AccountId>;'
+
+# Storage Migrations
+storage_migrations:
+  storage_getters:
+    description: "Remove storage getters"
+    pattern: '#[pallet::getter(fn $NAME)]'
+    replacement: ''
+    note: "Access storage directly via MyPallet::<StorageItem<T>>::get()"
+    
+  storage_v2:
+    description: "Add explicit QueryKind to storage"
+    pattern: |
+      #[pallet::storage]
+      $ATTRS
+      type $NAME = StorageValue<_, $TYPE>;
+    replacement: |
+      #[pallet::storage]
+      $ATTRS
+      type $NAME = StorageValue<_, $TYPE, ValueQuery>;
+      
+  storage_map_v2:
+    pattern: 'StorageMap<_, $HASHER, $KEY, $VALUE>'
+    replacement: 'StorageMap<_, $HASHER, $KEY, $VALUE, ValueQuery>'
+    
+  storage_double_map:
+    description: "Add QueryKind to StorageDoubleMap"
+    pattern: 'StorageDoubleMap<_, $H1, $K1, $H2, $K2, $V>'
+    replacement: 'StorageDoubleMap<_, $H1, $K1, $H2, $K2, $V, ValueQuery>'
+    
+  counted_storage_map:
+    description: "Use CountedStorageMap for tracked collections"
+    pattern: 'StorageMap<_, $H, $K, Vec<$V>>'
+    replacement: 'CountedStorageMap<_, $H, $K, $V>'
+    note: "Provides automatic count tracking for better performance"
+
+# Event System Migrations
+event_migrations:
+  event_deposit:
+    description: "Update event deposit syntax"
+    pattern: 'Self::deposit_event(Event::$NAME($ARGS));'
+    replacement: 'Self::deposit_event(Event::<T>::$NAME($ARGS));'
+    
+  event_generic:
+    description: "Add generic parameter to Event enum"
+    pattern: 'Event::$NAME {'
+    replacement: 'Event::<T>::$NAME {'
+
+# Pallet Macro Migrations
+pallet_migrations:
+  config_trait:
+    description: "Update Config trait bounds"
+    pattern: 'Config: frame_system::Config'
+    replacement: 'Config: frame_system::Config + Send + Sync'
+    
+  runtime_event:
+    description: "RuntimeEvent type updates"
+    pattern: 'type Event: From<Event<Self>>'
+    replacement: 'type RuntimeEvent: From<Event<Self>>'
+    
+  pallet_index:
+    description: "Add explicit pallet index"
+    pattern: '#[pallet::pallet]'
+    replacement: '#[pallet::pallet]\n#[pallet::pallet_index($INDEX)]'
+    note: "Required for deterministic pallet ordering"
+    
+  call_index:
+    description: "Add explicit call indices"
+    pattern: '#[pallet::call]'
+    note: "Add #[pallet::call_index($N)] to each dispatchable for stable encoding"
+
+# Import Path Migrations
+import_migrations:
+  primitives_v2:
+    description: "Update primitive imports"
+    changes:
+      - pattern: 'use sp_runtime::traits::BlakeTwo256;'
+        replacement: 'use sp_runtime::traits::{BlakeTwo256, Block as BlockT};'
+      - pattern: 'use frame_support::traits::Currency;'
+        replacement: 'use frame_support::traits::fungible::{Inspect, Mutate};'
+      - pattern: 'use frame_support::unsigned::ValidateUnsigned;'
+        replacement: 'use frame_support::pallet_prelude::ValidateUnsigned;'
+      - pattern: 'use frame_system::ensure_signed;'
+        replacement: 'use frame_support::ensure_signed;'
+
+# Common Compilation Fixes
+compilation_fixes:
+  async_trait_bounds:
+    error_pattern: "the trait bound.*: Send is not satisfied"
+    fix: "Add + Send + Sync to trait bounds"
+    example: |
+      // Before
+      impl<T: Config> Pallet<T>
+      // After  
+      impl<T: Config + Send + Sync> Pallet<T>
+      
+  lifetime_bounds:
+    error_pattern: "lifetime may not live long enough"
+    fix: "Add explicit lifetime bounds"
+    example: |
+      // Before
+      fn example<T>(data: &T)
+      // After
+      fn example<'a, T: 'a>(data: &'a T)
+      
+  type_info_bounds:
+    error_pattern: "the trait `TypeInfo` is not implemented"
+    fix: "Add TypeInfo bound or derive"
+    example: |
+      // Add to trait bounds
+      T: Config + TypeInfo
+      // Or derive for structs
+      #[derive(TypeInfo)]
+      
+  max_encoded_len:
+    error_pattern: "the trait `MaxEncodedLen` is not implemented"
+    fix: "Derive MaxEncodedLen for storage items"
+    example: |
+      #[derive(Encode, Decode, TypeInfo, MaxEncodedLen)]
+      pub struct MyStruct { ... }
+
+# Testing Migrations
+test_migrations:
+  mock_runtime:
+    description: "Update mock runtime for tests"
+    changes:
+      - pattern: 'impl_outer_origin!'
+        replacement: 'frame_support::construct_runtime!'
+      - pattern: 'impl_outer_event!'
+        replacement: '// Events now in construct_runtime!'
+        
+  genesis_config:
+    description: "Update genesis config for tests"
+    pattern: 'GenesisConfig {
+      $PALLET: Some($PALLET_CONFIG),'
+    replacement: 'RuntimeGenesisConfig {
+      $PALLET: $PALLET_CONFIG,'
+    note: "Remove Some() wrapper and use RuntimeGenesisConfig"
+    
+  test_externalities:
+    description: "Update test externalities builder"
+    pattern: 'fn new_test_ext() -> sp_io::TestExternalities'
+    replacement: |
+      fn new_test_ext() -> sp_io::TestExternalities {
+        let mut storage = frame_system::GenesisConfig::<Test>::default()
+          .build_storage()
+          .unwrap();
+        // Add other pallet configs
+        let mut ext = sp_io::TestExternalities::new(storage);
+        ext.execute_with(|| System::set_block_number(1));
+        ext
+      }
+
+# Benchmarking Migrations
+benchmark_migrations:
+  v2_syntax:
+    description: "Update to benchmarking v2"
+    pattern: 'benchmarks! {'
+    replacement: '#[benchmarks]'
+    note: "Convert to attribute macro syntax"
+    
+  benchmark_impl:
+    description: "Update benchmark implementation blocks"
+    pattern: 'impl_benchmark_test_suite!($PALLET, $CONSTRUCT, $RUNTIME);'
+    replacement: |
+      #[cfg(test)]
+      mod benches {
+        use super::*;
+        use frame_benchmarking::impl_benchmark_test_suite;
+        impl_benchmark_test_suite!($PALLET, $CONSTRUCT, $RUNTIME);
+      }
+      
+  weight_info_trait:
+    description: "Update WeightInfo trait usage"
+    pattern: 'T::WeightInfo::$FUNC()'
+    replacement: '<T as Config>::WeightInfo::$FUNC()'
+
+# XCM Migrations
+xcm_migrations:
+  xcm_executor_traits:
+    description: "Update XCM executor implementations for new API"
+    error_pattern: "trait `XcmExecutor` has required methods"
+    fix: "Implement all new required methods in XcmExecutor trait"
+    note: "Check for new fields in XCM messages and version negotiation"
+    
+  xcm_version_hardcoding:
+    description: "Remove hardcoded XCM versions"
+    pattern: 'XcmVersion::V2'
+    replacement: 'XcmVersion::latest()'
+    ast_grep_cmd: |
+      ast-grep --pattern 'XcmVersion::V$_' --rewrite 'XcmVersion::latest()'
+      
+  xcm_weight_trader:
+    description: "Update WeightTrader implementations"
+    pattern: 'impl WeightTrader for $TYPE'
+    note: "Check for new required methods in WeightTrader trait"
+    
+  xcm_message_handler:
+    description: "Update custom XCM message handlers"
+    changes:
+      - pattern: 'fn handle_xcm($MSG: Xcm<()>)'
+        replacement: 'fn handle_xcm($MSG: Xcm<RuntimeCall>)'
+
+# Consensus & Collator Updates
+consensus_migrations:
+  aura_trait_bounds:
+    description: "Update Aura consensus trait bounds"
+    pattern: 'impl<T: Config> FindAuthor<T::AccountId> for Pallet<T>'
+    replacement: 'impl<T: Config + Send + Sync> FindAuthor<T::AccountId> for Pallet<T>'
+    
+  collator_protocol:
+    description: "Update collator protocol imports"
+    changes:
+      - pattern: 'use cumulus_client_consensus_common::'
+        replacement: 'use cumulus_client_consensus_common::{self as consensus_common}'
+
+# Runtime Upgrade Patterns
+runtime_upgrade_migrations:
+  storage_version_update:
+    description: "Update storage version after migration"
+    pattern: 'StorageVersion::new($OLD_VERSION)'
+    replacement: 'StorageVersion::new($NEW_VERSION)'
+    example: |
+      #[pallet::hooks]
+      impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
+        fn on_runtime_upgrade() -> Weight {
+          migrations::v2::migrate::<T>()
+        }
+      }
+      
+  migration_weight_calculation:
+    description: "Calculate accurate migration weights"
+    pattern: 'Weight::zero()'
+    replacement: 'T::DbWeight::get().reads_writes(reads, writes)'
+    note: "Count actual storage reads/writes in migration"
+
+# Feature Flag Updates
+feature_migrations:
+  runtime_benchmarks:
+    description: "Update runtime-benchmarks feature dependencies"
+    pattern: 'runtime-benchmarks = ["frame-benchmarking"]'
+    replacement: 'runtime-benchmarks = ["frame-benchmarking/runtime-benchmarks", "sp-runtime/runtime-benchmarks"]'
+    
+  try_runtime:
+    description: "Update try-runtime feature flags"
+    pattern: 'try-runtime = ["frame-executive/try-runtime"]'
+    replacement: 'try-runtime = ["frame-executive/try-runtime", "frame-system/try-runtime", "frame-support/try-runtime"]'
+
+# Dependency Management
+dependency_migrations:
+  polkadot_sdk_umbrella:
+    description: "Switch to umbrella crate (recommended for stable2503+)"
+    note: "Consider using polkadot-sdk umbrella crate instead of individual dependencies"
+    tool: "Use psvm (Polkadot SDK Version Manager) for automated updates"
+    
+  transitive_features:
+    description: "Fix transitive feature conflicts"
+    error_pattern: "feature `.*` is required"
+    fix: "Ensure all crates use same feature set, especially std/no_std"
+
+# Common Runtime Panics
+runtime_panic_fixes:
+  storage_decode_panic:
+    description: "Fix storage decoding panics after upgrade"
+    error_pattern: "panicked at 'scale codec error: Could not decode'"
+    fix: "Implement proper storage migration before runtime upgrade"
+    example: |
+      pub mod v2 {
+        use super::*;
+        pub fn migrate<T: Config>() -> Weight {
+          // Migrate old storage format to new
+          let old_value = v1::OldStorage::<T>::get();
+          NewStorage::<T>::put(transform(old_value));
+          T::DbWeight::get().reads_writes(1, 1)
+        }
+      }
+      
+  missing_runtime_api:
+    description: "Fix missing runtime API implementations"
+    error_pattern: "the trait `.*Api<Block>` is not implemented"
+    fix: "Implement all required runtime APIs in runtime/src/lib.rs"
+
+# Usage Instructions
+usage:
+  ast_grep_batch: |
+    # Apply all weight migrations
+    for pattern in weight_v1_to_v2 weight_constants; do
+      ast-grep --pattern "$pattern" --rewrite "$replacement"
+    done
+    
+  error_diagnosis: |
+    # When you encounter an error, search this file:
+    grep -A5 "error_pattern:.*trait bound" common_migrations.yaml
+    
+  import_tool: |
+    # Use with ast-grep to find missing imports
+    ast-grep --pattern 'use $_::{$$$};' | grep -v "fungible"
+    
+  psvm_usage: |
+    # Use Polkadot SDK Version Manager for dependency updates
+    psvm install stable2409
+    psvm use stable2409
+    
+  migration_checklist: |
+    1. Update dependencies with psvm
+    2. Fix compilation errors using patterns above
+    3. Regenerate all benchmarks
+    4. Implement storage migrations
+    5. Test runtime upgrade on local/testnet
+    6. Audit XCM handlers and version negotiation

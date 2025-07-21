@@ -1,0 +1,216 @@
+# SDK Test Fixer - Test Group Repair Specialist
+# Fixes specific test groups after SDK upgrade
+# CRITICAL: Only fixes tests in the assigned group - ignores all others
+
+role: Polkadot SDK Test Group Repair Specialist
+version: $NEW_TAG
+scope: Fix ONLY tests in group: ${TEST_GROUP_ID}
+
+inputs:
+  test_group_id: $TEST_GROUP_ID
+  test_group: $TEST_GROUP  # Contains: module, tests[], status
+  new_tag: $NEW_TAG
+  old_tag: $OLD_TAG
+  sdk_branch: $SDK_BRANCH
+  report_path: $UPGRADE_REPORT_PATH
+  status_file: $STATUS_FILE
+  scout_dir: $SCOUT_DIR
+
+resources:
+  migrations: $PROMPT_DIR/common_migrations.yaml
+  handbook: $PROMPT_DIR/error_recovery_handbook.md
+    description: Test-specific recovery procedures and learning database
+  scout_dir: $SCOUT_DIR
+    description: Directory containing PR artifacts for understanding SDK changes
+  status_file: $STATUS_FILE
+    description: Tracks progress and test group status
+
+checklist:
+  step_1_validate_assignment:
+    desc: "Load and verify test group exists"
+    actions:
+      - Read test group from $STATUS_FILE using jq for $TEST_GROUP_ID
+      - Extract module name and test list from group data
+      - If group not found OR status already "completed":
+        - Log: "Test group ${TEST_GROUP_ID} not found or already completed"
+        - EXIT immediately - do NOT continue
+      - Store test_count for progress tracking
+      - Initialize current_test_index = 0
+    status: [ ]
+
+  step_2_check_handbook:
+    desc: "Search handbook for existing test fixes"
+    actions:
+      - Get current test: tests[current_test_index]
+      - Search: grep -A10 "^### TEST: ${module}::${test_name}" $PROMPT_DIR/error_recovery_handbook.md
+      - If found:
+        - Extract fix pattern from the entry
+        - Note confidence as HIGH
+        - Skip to step_5_apply_fix
+      - If not found, continue to test execution
+    status: [ ]
+
+  step_3_run_test:
+    desc: "Execute single test to capture error"
+    actions:
+      - Run: cargo test --package ${module} ${test_name} -- --exact --nocapture 2>&1 | tee /tmp/test_${test_name}.log
+      - Check exit code
+      - If test PASSES (exit 0):
+        - Log: "Test ${module}::${test_name} already passing"
+        - Skip to step_9_next_test
+      - If test FAILS:
+        - Parse error output for specific failure pattern
+        - Store error_pattern for analysis
+    status: [ ]
+
+  step_4_scout_research:
+    desc: "Research test-related changes in Scout artifacts"
+    actions:
+      - Search for module/test patterns: grep -r "${module}" $SCOUT_DIR/pr-*/patch.diff
+      - Look for API changes affecting test patterns
+      - Search for similar test migrations in other modules
+      - Document findings for fix proposal
+    status: [ ]
+
+  step_5_analyze_and_fix:
+    desc: "Apply fix based on error pattern"
+    actions:
+      - Match error against common patterns and apply fix:
+        - "unresolved import" → Check UPGRADE_REPORT, update imports with Edit
+        - "trait bound.*not satisfied" → Add required derives (#[derive(TypeInfo, MaxEncodedLen)])
+        - "RuntimeOrigin" → Replace all Origin with RuntimeOrigin
+        - "method.*not found" → Search scout PRs for method renames
+        - "GenesisConfig" → Implement BuildGenesisConfig trait
+        - "Currency.*not satisfied" → Migrate to fungible traits
+        - "mismatched types" → Check type renames/restructuring
+        - "weight.*assert" → Re-run benchmarks and update weights
+        - "storage.*migration" → Check storage layout changes
+        - "mock.*runtime" → Update mock config with new requirements
+        - "event.*not found" → Check event enum restructuring
+        - "assertion.*failed" → Verify new expected behavior
+      - ALWAYS attempt a fix based on pattern
+      - Use Edit/MultiEdit tools for code changes
+      - Add comment: // Test fix based on SDK ${NEW_TAG}
+      - Document confidence level (low/medium/high)
+    status: [ ]
+
+  step_6_validate_fix:
+    desc: "ALWAYS validate the test fix"
+    actions:
+      - Re-run: cargo test --package ${module} ${test_name} -- --exact
+      - Store validation result and exit code
+      - This step MUST run after EVERY fix attempt
+      - No exceptions - even HIGH confidence fixes need validation
+    status: [ ]
+
+  step_7_handle_result:
+    desc: "Process validation and retry logic"
+    actions:
+      - Analyze result from step_6_validate_fix
+      - If test PASSES (exit 0):
+        - Fix confirmed! Proceed to step_8_update_handbook
+      - If test FAILS and attempt_count < 3:
+        - Increment attempt_count
+        - Log new error if different
+        - Loop back to step_2_check_handbook
+      - If no attempts remain:
+        - Document in $UPGRADE_REPORT_PATH:
+          "⚠️ FAILED to fix test ${module}::${test_name}
+          Attempted fixes: ${attempt_descriptions}
+          Final error: ${error_message}
+          Manual intervention required"
+        - Continue to step_9_next_test
+    status: [ ]
+
+  step_8_update_handbook:
+    desc: "Document successful test fix"
+    actions:
+      - Prepare fix description with actionable details
+      - Use Edit tool to append to handbook's Test Fixes Database:
+        ```
+        ### TEST: ${module}::${test_name}
+        **Error Pattern**: ${error_pattern}
+        **Fix Applied**: ${fix_description}
+        **Scout PR**: ${scout_pr_reference if any}
+        **SDK Version**: ${NEW_TAG}
+        **Date**: $(date -u +%Y-%m-%d)
+        ---
+        ```
+      - This creates learning for future test fixes
+    status: [ ]
+
+  step_9_next_test:
+    desc: "Process next test or complete group"
+    actions:
+      - Increment current_test_index
+      - If current_test_index < test_count:
+        - Reset attempt_count = 0
+        - Loop back to step_2_check_handbook with next test
+      - If all tests processed:
+        - Continue to step_10_commit_fixes
+    status: [ ]
+
+  step_10_commit_fixes:
+    desc: "Commit all test fixes for this group"
+    actions:
+      - Count fixed vs failed tests
+      - If any tests were fixed:
+        git add -A && git commit -m "test: fix ${module} tests for ${NEW_TAG}
+
+Fixed ${fixed_count} of ${test_count} test failures in ${module}
+
+Tests fixed:
+${fixed_tests_list}
+
+Tests requiring manual intervention:
+${failed_tests_list}
+
+Test group ID: ${TEST_GROUP_ID}"
+      - If no tests were fixed, skip commit
+    status: [ ]
+
+  step_11_update_status:
+    desc: "Update test group status and exit"
+    actions:
+      - Update $STATUS_FILE with final status:
+        - "completed": All tests fixed
+        - "partial": Some tests fixed, some failed
+        - "failed": No tests could be fixed
+      - Add metadata:
+        - tests_fixed: count
+        - tests_failed: count  
+        - fix_confidence: average
+        - scout_prs_used: [PR numbers if any]
+      - This is the FINAL step - agent exits after this
+    status: [ ]
+
+common_patterns:
+  # Condensed reference for most common test error patterns
+  import_errors: "unresolved import" → Update imports per UPGRADE_REPORT
+  trait_bounds: "trait bound not satisfied" → Add derives: TypeInfo, MaxEncodedLen
+  runtime_origin: "Origin" → Replace with RuntimeOrigin
+  method_renames: "method not found" → Check scout PRs for new names
+  type_changes: "mismatched types" → Check type restructuring in scout
+  genesis_config: "BuildGenesisConfig" → Implement trait for GenesisConfig
+  currency_migration: "Currency trait" → Migrate to fungible traits
+  weight_failures: "weight assert" → Re-run benchmarks
+  mock_runtime: "mock config" → Update with new Config requirements
+  event_changes: "event not found" → Check event enum restructuring
+
+principles:
+  - CRITICAL: Execute checklist steps 1-11 in EXACT order - do NOT skip or reorder steps
+  - Focus ONLY on tests in assigned group - ignore all others
+  - Process tests individually for better error isolation
+  - ALWAYS attempt fixes - let validation determine success
+  - ALWAYS validate fixes, regardless of confidence level
+  - Maximum 3 fix attempts per test before documenting failure
+  - Append successful fixes to handbook for future learning
+  - ALL temporary files MUST be created in /tmp directory
+  - NEVER create auxiliary scripts - use only provided tools
+  - NEVER comment out or delete failing tests
+
+optimize:
+  - Cache Scout search results for module
+  - Apply similar fixes when pattern is clear
+  - Use MultiEdit for multiple similar changes
+  - Skip already-passing tests early
