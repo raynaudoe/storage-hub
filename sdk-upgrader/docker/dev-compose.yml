@@ -1,0 +1,24 @@
+services:
+  dev:
+    build:
+      context: ../..  # project root
+      dockerfile: sdk-upgrader/docker/dev.Dockerfile
+      args:
+        - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL}
+        - ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN}
+    container_name: sdk-upgrader-dev
+    stdin_open: true        # docker run -i
+    tty: true               # docker run -t
+    volumes:
+      - ../..:/workspace:rw    # mount full repo
+    env_file:
+      - .env
+    working_dir: /workspace
+    command: /bin/bash           # open interactive shell by default
+    entrypoint: ["/usr/local/bin/init-serena-mcp.sh"]  # Initialize Serena MCP config
+    # Expose common node ports; change as needed during development
+    ports:
+      - "9944:9944"
+      - "30333:30333"
+      - "30334:30334"
+      - "9615:9615"
