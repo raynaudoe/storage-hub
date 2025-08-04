@@ -173,8 +173,14 @@ if [ -d "$RELEASE_DIR" ]; then
   if [ "$FORCE" = true ]; then
     rm -rf "$RELEASE_DIR"
   else
-    echo "Error: directory $RELEASE_DIR already exists. Use --force to overwrite."
-    exit 1
+    # Check if directory is not empty
+    if [ -n "$(ls -A "$RELEASE_DIR" 2>/dev/null)" ]; then
+      echo "Directory $RELEASE_DIR already exists and is not empty. Exiting successfully."
+      exit 0
+    else
+      echo "Error: directory $RELEASE_DIR already exists. Use --force to overwrite."
+      exit 1
+    fi
   fi
 fi
 mkdir -p "$RELEASE_DIR"

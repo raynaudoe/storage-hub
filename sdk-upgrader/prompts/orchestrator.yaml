@@ -15,31 +15,26 @@ context:
   report_path: $UPGRADE_REPORT_PATH
   test_report_path: $TEST_REPORT_PATH
   output_dir: $OUTPUT_DIR
-  max_iterations: 10  # Prevent infinite loops
+  max_iterations: 40  # Prevent infinite loops
 
 resources:
   migrations: $PROMPT_DIR/common_migrations.yaml
   handbook: $PROMPT_DIR/error_recovery_handbook.md
-  error_grouper: $PROJECT_ROOT/sdk-upgrader/tools/cargo_error_grouper.py
-  test_grouper: $PROJECT_ROOT/sdk-upgrader/tools/tests_error_grouper.py
+  error_grouper: $PROJECT_ROOT/sdk-upgrader/tools/unified_error_grouper.py
 
 # State Machine Definition
 states:
   INIT:
-    desc: Initialize upgrade process
+    desc: Initialize upgrade process - check if resuming or starting fresh
     actions:
       - check_status: |
-          Read($STATUS_FILE)
-          If status file doesn't exist:
-            - Update root Cargo.toml to use branch = "$SDK_BRANCH"
-            - Remove old tag/rev fields
-            - Create initial status file with iteration = 0
+          Check if $STATUS_FILE exists (do not create it)
     conditions:
       - status_exists: CHECK_ERRORS
       - no_status: UPDATE_DEPS
     
   UPDATE_DEPS:
-    desc: Update root Cargo.toml dependencies
+    desc: Update root Cargo.toml dependencies and create initial status
     actions:
       - update_root: |
           Update $PROJECT_ROOT/Cargo.toml:
@@ -70,7 +65,7 @@ states:
       - run_check: |
           cargo check --workspace --message-format=json > /tmp/cargo_errors.json 2>&1
       - parse_errors: |
-          python3 $error_grouper parse < /tmp/cargo_errors.json
+          python3 $error_grouper check --max-per-group 5 < /tmp/cargo_errors.json
           Returns: error count and grouped errors
     conditions:
       - has_errors: GROUP_ERRORS
@@ -81,11 +76,8 @@ states:
     desc: Group errors by symbol and create work units
     actions:
       - group_by_symbol: |
-          python3 $error_grouper group --max-per-group 5
-          Create error groups with:
-          - Primary symbol
-          - Related errors (max 5)
-          - Affected files
+          # Grouping is handled by the state machine via group_errors_state.py
+          # which calls unified_error_grouper.py with proper parameters
       - update_status: |
           Update $STATUS_FILE with new error_groups
           Reset completed_groups to 0
@@ -139,24 +131,64 @@ states:
     next: EXECUTE
 
   FINAL_CHECK:
-    desc: Verify workspace builds successfully
+    desc: Verify workspace builds successfully and retry if needed
     actions:
       - build: |
-          cargo build --workspace
+          echo "=== FINAL BUILD CHECK ==="
+          current_iter=$(jq '.build_iteration' "$STATUS_FILE")
+          echo "Build iterations completed: $current_iter of $max_iterations"
+          
+          # Try to build
+          cargo build --workspace --message-format=json 2>&1 | \
+            jq -r 'select(.reason == "compiler-message") | select(.message.level == "error")' > /tmp/final_errors.json
+      - analyze_result: |
+          # Count remaining errors
+          if [ -s /tmp/final_errors.json ]; then
+            error_count=$(python3 $error_grouper parse < /tmp/final_errors.json | grep "Total errors:" | cut -d: -f2 | tr -d ' ')
+            echo "Build failed with $error_count errors"
+            
+            # Save state for decision
+            jq --arg count "$error_count" --arg iter "$current_iter" \
+              '.final_check = {"error_count": ($count|tonumber), "iteration": ($iter|tonumber), "can_retry": (($iter|tonumber) < '$max_iterations')}' \
+              "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
+          else
+            echo "Build succeeded!"
+            jq '.final_check = {"error_count": 0, "iteration": '$current_iter', "can_retry": false}' \
+              "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
+          fi
     conditions:
-      - success: TEST_WORKSPACE
-      - failure: DIAGNOSE_FINAL
+      - success: TEST_WORKSPACE  # error_count == 0
+      - can_retry: CHECK_ERRORS  # errors exist AND iteration < max
+      - cannot_retry: DIAGNOSE_FINAL  # errors exist AND iteration >= max
 
   DIAGNOSE_FINAL:
-    desc: Handle final build failures
+    desc: Analyze final build failures and decide next steps
     actions:
-      - Identify any remaining issues
-      - Check if they're in upgraded crates
-      - Document unfixable problems
-    next: ERROR_REPORT
+      - analyze_errors: |
+          echo "Analyzing remaining errors..."
+          
+          # Check if errors are in target crates
+          target_errors=$(grep -cE "(pallets/|runtime/)" /tmp/final_errors.json || echo 0)
+          total_errors=$(jq '.final_error_count // 0' "$STATUS_FILE")
+          
+          echo "Total remaining errors: $total_errors"
+          echo "Errors in target crates (pallets/runtime): $target_errors"
+          
+          # Store the analysis result for conditions
+          if [ "$target_errors" -eq 0 ] && [ "$total_errors" -gt 0 ]; then
+            echo "All remaining errors are in non-target crates (node/, etc.)"
+            echo "Proceeding to tests despite non-critical errors"
+            jq '.diagnose_result = "non_target_errors"' "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
+          else
+            echo "Critical errors remain in target crates"
+            jq '.diagnose_result = "target_errors"' "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
+          fi
+    conditions:
+      - non_target_errors: TEST_WORKSPACE  # Proceed to tests if only non-target errors
+      - target_errors: ERROR_REPORT  # Stop if target crate errors remain
 
   TEST_WORKSPACE:
-    desc: Start test-fixing phase
+    desc: Start test-fixing phase (MANDATORY - never skip this phase)
     actions:
       - log_phase: |
           Log "Starting test-fixing phase..."
@@ -179,7 +211,7 @@ states:
           cargo test --workspace --no-fail-fast -- --test-threads=1 --nocapture > /tmp/test_output.txt 2>&1
       - count_failures: |
           # Parse to count failures
-          failure_count=$(python3 $test_grouper parse < /tmp/test_output.txt | jq '.failure_count')
+          failure_count=$(python3 $error_grouper test < /tmp/test_output.txt | jq '.failure_count')
           Log "Found $failure_count test failures"
     conditions:
       - has_failures: GROUP_TESTS
@@ -190,8 +222,8 @@ states:
     desc: Group test failures by module/crate
     actions:
       - parse_and_group: |
-          # Use tests_error_grouper.py to parse and group failures
-          python3 $test_grouper parse < /tmp/test_output.txt | python3 $test_grouper group --status-file "$STATUS_FILE"
+          # Grouping is handled by the state machine via group_tests_state.py
+          # which calls unified_error_grouper.py with proper parameters
       - log_summary: |
           failure_count=$(jq '.test_phase.total_failures' "$STATUS_FILE")
           group_count=$(jq '.test_phase.test_groups | length' "$STATUS_FILE")
@@ -220,6 +252,8 @@ states:
           NEW_TAG: $NEW_TAG,
           OLD_TAG: $OLD_TAG,
           SDK_BRANCH: $SDK_BRANCH,
+          UPGRADE_REPORT_PATH: $UPGRADE_REPORT_PATH,
+          TEST_REPORT_PATH: $TEST_REPORT_PATH,
           STATUS_FILE: $STATUS_FILE,
           SCOUT_DIR: $SCOUT_DIR,
           PROJECT_ROOT: $PROJECT_ROOT
@@ -243,32 +277,35 @@ states:
   TEST_ERROR_REPORT:
     desc: Generate test error report after max iterations
     actions:
-      - Create $OUTPUT_DIR/test_error_summary_$NEW_TAG.md with:
+      - Update or create $OUTPUT_DIR/test_error_summary_$NEW_TAG.md with:
         - Number of test iterations completed
         - Tests that couldn't be fixed
         - Test groups that failed
         - Recommended manual fixes
+        - NOTE: Always UPDATE existing file if it exists, never create duplicate files
     next: ERROR_REPORT
 
   ERROR_REPORT:
     desc: Generate comprehensive error report
     actions:
-      - Create $OUTPUT_DIR/error_summary_$NEW_TAG.md with:
+      - Update or create $OUTPUT_DIR/error_summary_$NEW_TAG.md with:
         - Number of iterations completed
         - Errors that couldn't be fixed
         - Groups that failed
         - Recommended manual fixes
+        - NOTE: Always UPDATE existing file if it exists, never create duplicate files
     next: END
 
   COMPLETE:
     desc: All tasks done including test fixes
     actions:
       - final_summary: |
-          Generate upgrade summary with:
+          Update $UPGRADE_REPORT_PATH with final summary:
           - Total iterations required
           - Total errors fixed
           - Time taken
           - Test results
+          - NOTE: Always APPEND to existing report file, never create new files
     next: END
 
 # Operational Rules
@@ -283,6 +320,11 @@ rules:
   - ALL temporary files (logs, artifacts, intermediate outputs) MUST be created in /tmp directory
   - NEVER create auxiliary scripts or tools - use only provided tools
   - If you need a script/tool that doesn't exist, document it in the ERROR_REPORT only
+  - IMPORTANT: Always UPDATE existing summary/report files - NEVER create new files with timestamps or suffixes
+  - When writing reports: Check if file exists first, then UPDATE or APPEND to it
+  - CRITICAL: ALWAYS attempt the test phase - even if build has non-critical errors
+  - NEVER skip tests due to time concerns - test fixing is a mandatory part of the upgrade
+  - The workflow MUST progress through all phases: build-fix → test-fix → complete
 
 # Optimization Guidelines
 optimization:

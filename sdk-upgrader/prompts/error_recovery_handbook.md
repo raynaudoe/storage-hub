@@ -2,10 +2,34 @@
 
 This handbook provides step-by-step recovery procedures for common errors encountered during Polkadot SDK upgrades.
 
+## 📋 SYMBOL Indexing System
+
+**IMPORTANT**: This handbook uses SYMBOL indexing for automated agent searches.
+
+### How Agents Search
+- Build workers search: `grep -A5 "^### SYMBOL: ${error_group.symbol}"`
+- Test workers search: `grep -A10 "^### TEST: ${module}::${test_name}"`
+
+### Adding New Entries
+When documenting a new error fix, always add SYMBOL index lines:
+```
+### SYMBOL: generic_error_type
+### SYMBOL: specific_error_variant
+### Error: "actual error message"
+```
+
+For test fixes:
+```
+### TEST: pallet_name::test_function_name
+### Test Error: description
+```
+
 ## 🚨 MANDATORY VERSION FIXES - CHECK FIRST!
 
 **⚠️ IMPORTANT: Always check this section BEFORE attempting any other error recovery procedures.**
 
+### SYMBOL: rust_version
+### SYMBOL: rust_version_incompatibility
 ### base64ct Dependency Version Lock
 
 **MANDATORY**: If encountering ANY errors with the `base64ct` dependency during upgrade:
@@ -29,32 +53,12 @@ grep "base64ct.*1.7.3" Cargo.lock
 
 ---
 
-## Quick Reference
 
-| Error Type | Tool | Section |
-|------------|------|---------|
-| Trait not found | rust-analyzer | [Trait Errors](#trait-errors) |
-| Method not found | rust-analyzer + ast-grep | [Method Errors](#method-errors) |
-| Type mismatch | rust-analyzer | [Type Errors](#type-errors) |
-| Import errors | ast-grep | [Import Errors](#import-errors) |
-| Breaking changes | cargo-semver-checks | [Breaking Changes](#breaking-changes) |
-
-## Pre-Flight Checks
-
-Before starting error recovery:
-```bash
-# 1. Ensure tools are available
-which rust-analyzer ast-grep cargo-semver-checks
-
-# 2. Create recovery checkpoint
-git stash push -m "upgrade_checkpoint_$(date +%s)"
-
-# 3. Check breaking changes
-cargo semver-checks check-release --baseline-rev old-tag > breaking_changes.log
-```
 
 ## Trait Errors
 
+### SYMBOL: trait_not_found
+### SYMBOL: Currency_not_found
 ### Error: "trait `Currency` not found"
 ```bash
 # 1. Diagnose with rust-analyzer
@@ -75,10 +79,11 @@ ast-grep --pattern 'use frame_support::traits::Currency;' \
          --rewrite 'use frame_support::traits::fungible::{Inspect, Mutate};'
 ```
 
+### SYMBOL: trait_bound_not_satisfied
 ### Error: "trait bound not satisfied"
 ```bash
 # 1. Identify missing bounds
-cargo check -p pallet-name 2>&1 | grep "trait bound"
+cargo check -p pallet-name --message-format=json 2>&1 | jq -r 'select(.reason == "compiler-message") | select(.message.message | contains("trait bound")) | .message.rendered'
 
 # 2. Common fix: Add Send + Sync
 ast-grep --pattern 'impl<T: Config> $TYPE<T>' \
@@ -91,6 +96,8 @@ ast-grep --pattern 'async fn $NAME($$$) -> $RET' \
 
 ## Method Errors
 
+### SYMBOL: method_not_found
+### SYMBOL: set_balance_not_found
 ### Error: "method `set_balance` not found"
 ```bash
 # 1. Find method signature in old version
@@ -111,6 +118,8 @@ ast-grep --pattern 'T::Currency::set_balance($WHO, $AMOUNT, $$$)' \
 })?'
 ```
 
+### SYMBOL: wrong_number_of_arguments
+### SYMBOL: transfer_wrong_arguments
 ### Error: "method `transfer` has wrong number of arguments"
 ```bash
 # 1. Check new signature
@@ -123,6 +132,8 @@ ast-grep --pattern '::transfer($FROM, $TO, $AMOUNT, $_)' \
 
 ## Type Errors
 
+### SYMBOL: type_mismatch
+### SYMBOL: Weight_type_mismatch
 ### Error: "expected `Weight`, found `u64`"
 ```bash
 # 1. Find all Weight constructions
@@ -138,6 +149,7 @@ ast-grep --pattern 'const $NAME: Weight = $_' --json | \
   sed -i 's/from_ref_time/from_parts/g' {}
 ```
 
+### SYMBOL: storage_type_mismatch
 ### Error: "type mismatch in storage"
 ```bash
 # 1. Find storage definitions
@@ -152,6 +164,8 @@ ast-grep --pattern 'StorageValue<_, $TYPE>' \
 
 ## Import Errors
 
+### SYMBOL: unresolved_import
+### SYMBOL: import_error
 ### Error: "unresolved import"
 ```bash
 # 1. Find all imports
@@ -166,162 +180,26 @@ rust-analyzer find-all-refs --position import_location
 sed -i 's/traits::Currency/traits::fungible::{Inspect, Mutate}/g' src/**/*.rs
 ```
 
-## Breaking Changes
 
-### Using cargo-semver-checks
+
+
+
+
+## Test-Specific Errors
+
+### TEST: pallet_template::tests::it_works_for_default_value
+### Test Error: Currency trait not available in mock runtime
 ```bash
-# 1. Generate full report
-cargo semver-checks check-release \
-  --baseline-rev stable2407 \
-  --current-rev stable2409 \
-  --verbose > full_report.md
-
-# 2. Extract relevant changes for your crates
-grep -A10 "BREAKING" full_report.md | grep -E "(pallet-|frame-)"
-
-# 3. Create fix checklist
-cat full_report.md | \
-  awk '/BREAKING/{print "- [ ] " $0}' > breaking_fixes.md
-```
-
-## Recovery Patterns
-
-### Pattern 1: Systematic Fix Application
-```bash
-#!/bin/bash
-# save as fix_pattern.sh
-
-PATTERN=$1
-REPLACEMENT=$2
-LOG_FILE="fixes_applied.log"
-
-# Find all occurrences
-echo "Searching for pattern: $PATTERN" | tee -a $LOG_FILE
-ast-grep --pattern "$PATTERN" --json > matches.json
-
-# Review matches
-MATCH_COUNT=$(jq '.matches | length' matches.json)
-echo "Found $MATCH_COUNT matches" | tee -a $LOG_FILE
-
-# Apply fixes
-ast-grep --pattern "$PATTERN" --rewrite "$REPLACEMENT"
-
-# Verify
-cargo check -p affected-crate 2>&1 | tee -a $LOG_FILE
-```
-
-### Pattern 2: Incremental Migration
-```bash
-# For large codebases, migrate one module at a time
-for module in pallets/*; do
-  echo "Migrating $module"
-  
-  # Apply common fixes
-  cd $module
-  ast-grep --pattern 'Weight::from_ref_time($_)' \
-           --rewrite 'Weight::from_parts($_, 0)'
-  
-  # Check compilation
-  if cargo check -p $(basename $module); then
-    echo "✅ $module migrated successfully"
-    git add -A && git commit -m "migrate: $module to new SDK"
-  else
-    echo "❌ $module needs manual intervention"
-    echo $module >> needs_manual_fix.log
-  fi
-  cd ../..
-done
-```
-
-### Pattern 3: Error Categorization
-```bash
-# Categorize errors for batch fixing
-cargo check --workspace 2>&1 | \
-  grep -E "(error|warning)" | \
-  awk -F: '{print $5}' | \
-  sort | uniq -c | sort -rn > error_categories.txt
-
-# Process by frequency
-while read count error; do
-  echo "Fixing $count instances of: $error"
-  # Apply appropriate fix based on error type
-done < error_categories.txt
-```
-
-## Emergency Procedures
-
-### Rollback
-```bash
-# If upgrade fails catastrophically
-git stash pop  # Restore checkpoint
-git checkout -b failed-upgrade-analysis
-git diff > failed_upgrade.patch
-```
-
-### Partial Success
-```bash
-# Commit working crates, isolate problematic ones
-for crate in pallets/*; do
-  if cargo check -p $(basename $crate) &>/dev/null; then
-    git add $crate
-  fi
-done
-git commit -m "partial upgrade: working crates"
-```
-
-### Request Help
-When escalating to manual intervention:
-```markdown
-## Upgrade Blocker Report
-
-**Crate**: pallet-example
-**Error**: trait bound `T::AccountId: Decode` not satisfied
-**Attempted Fixes**:
-1. Added Decode bound to Config - failed
-2. Checked scout artifacts - no relevant PR
-3. rust-analyzer suggests missing import
-
-**Scout Artifacts Checked**: 
-- PR #1234: Currency trait deprecation
-- PR #5678: Weight system v2
-
-**Current Status**: Blocked, needs manual review
-```
-
-## Common Gotchas
-
-1. **Cascading Errors**: Fix imports first, then traits, then methods
-2. **Hidden Dependencies**: Check Cargo.toml features after fixing code
-3. **Test Mocks**: Update test configurations after fixing runtime
-4. **Benchmarks**: May need separate migration from runtime code
-
-## Tool Output Reference
-
-### rust-analyzer useful commands
-```bash
-rust-analyzer symbols          # List all symbols
-rust-analyzer diagnostics      # Get all errors with context  
-rust-analyzer ssr             # Structured search and replace
-```
-
-### ast-grep patterns
-```bash
-# Match any trait implementation
-'impl$_<$_> $_ for $_ { $$$ }'
-
-# Match any function with specific return type
-'fn $NAME($$$) -> Result<$_, $_> { $$$ }'
-
-# Match attribute macros
-'#[$ATTR($$$)]'
-```
-
-### Verification Commands
-```bash
-# After fixes, verify:
-cargo check --workspace --all-features
-cargo test --workspace --all-features
-cargo clippy --workspace -- -D warnings
+# Fix: Update mock runtime to use new traits
+ast-grep --pattern 'impl pallet_balances::Config for Test {
+    type Currency = $_;
+    $$$
+}' \
+--rewrite 'impl pallet_balances::Config for Test {
+    type ExistentialDeposit = ConstU64<1>;
+    type AccountStore = System;
+    $$$
+}'
 ```
 
 ## Fixed Errors Database
@@ -331,3 +209,109 @@ cargo clippy --workspace -- -D warnings
 This section contains a searchable database of all errors that have been successfully fixed by the SDK upgrade agents. Each entry follows a strict format for LLM parsing.
 
 ---
+
+
+### SYMBOL: type_mismatch  
+### SYMBOL: xcm_v4_to_v5_migration  
+### Error: "mismatched types: expected `staging_xcm::v5::Location`, found `staging_xcm::v4::Location`"
+
+**Problem**  
+SDK 2409 → 2412 bumps XCM enums to V5; any `Versioned*::V4` usage, old imports, or V3 error types now yield E0308/E0277.
+
+**Agent-Recovery Steps (Compiler-Driven Approach)**
+
+1. **Update XCM imports globally**
+   ```bash
+   # Update explicit version imports
+   mcp__serena__replace_regex(
+     regex="use\\s+(.*?)xcm::(v3|v4)",
+     repl ="use $1xcm::v5",
+     allow_multiple_occurrences=true,
+     relative_path="."
+   )
+   # Change generic imports to latest
+   mcp__serena__replace_regex(
+     regex="use\\s+xcm::prelude::\\*",
+     repl ="use xcm::latest::prelude::*",
+     allow_multiple_occurrences=true,
+     relative_path="."
+   )
+   ```
+
+2. **Create migration tracking**
+   ```json
+   TodoWrite([
+     { "id":"v4-imports", "status":"completed", "priority":"high", "content":"Update XCM imports to V5" },
+     { "id":"v4-compile", "status":"in_progress", "priority":"high", "content":"Use compiler to find all V4/V3 usage" },
+     { "id":"v4-convert", "status":"pending", "priority":"high", "content":"Apply conversions using TryFrom/Into" },
+     { "id":"v4-verify", "status":"pending", "priority":"high", "content":"Verify tests pass" }
+   ])
+   ```
+
+3. **Use compiler as guide (iterative fix)**
+   ```bash
+   # Run cargo check to get comprehensive error list
+   cargo check --all-targets --message-format=json 2>&1 | jq -r 'select(.reason == "compiler-message") | select(.message.rendered | test("(V4|V3|xcm)")) | .message.rendered' > xcm_errors.txt
+   
+   # For each error type:
+   # a) V3 Error types → V5
+   mcp__serena__replace_regex(
+     regex="xcm::v3::Error",
+     repl ="xcm::v5::Error",
+     allow_multiple_occurrences=true,
+     relative_path="."
+   )
+   
+   # b) For simple enum variants, use conversion functions
+   # Find instantiation sites
+   Grep(pattern="VersionedLocation::V4\\(", glob="**/*.rs", output_mode="content", -n=true)
+   ```
+
+4. **Apply idiomatic conversions (preferred over direct replacement)**
+   ```rust
+   // Instead of: VersionedLocation::V4(location) → VersionedLocation::V5(location)
+   // Use conversion where V4 objects exist:
+   
+   // Example pattern to apply:
+   mcp__serena__edit_pattern(
+     pattern="Box::new(VersionedLocation::V4($LOC))",
+     replacement="Box::new(VersionedLocation::V4($LOC).try_into().expect(\"V4 to V5 conversion\"))",
+     description="Use TryFrom for safe version conversion"
+   )
+   ```
+
+5. **Handle all usage patterns**
+   ```bash
+   # Search for ALL V4 references including types and patterns
+   Grep(pattern="::V4|xcm::v4", glob="**/*.rs", output_mode="content")
+   
+   # Check match statements separately
+   Grep(pattern="VersionedAssets::V4|VersionedLocation::V4|VersionedXcm::V4", glob="**/*.rs", -B=2, -A=5)
+   ```
+
+6. **Compile and test iteratively**
+   ```bash
+   # Keep running until clean
+   while cargo check --all-targets --message-format=json 2>&1 | jq -e 'select(.reason == "compiler-message") | select(.message.rendered | test("(V4|V3|xcm)"))' > /dev/null; do
+     echo "Fix remaining XCM version issues"
+     # Apply fixes based on compiler errors
+   done
+   
+   # Run tests
+   cargo test --all-targets
+   ```
+
+7. **Final verification**
+   ```bash
+   # Ensure no old versions remain
+   Grep(pattern="::V4|::V3|xcm::v4|xcm::v3", glob="**/*.rs", output_mode="count")  # expect 0
+   
+   # Check for warnings
+   cargo check --all-targets --message-format=json 2>&1 | jq -r 'select(.reason == "compiler-message") | select(.message.rendered | test("deprecated"; "i")) | .message.rendered'
+   ```
+
+**Key Principles:**
+- Use compiler errors as your checklist
+- Prefer `TryFrom`/`Into` conversions over manual reconstruction
+- Update imports before fixing types
+- Test thoroughly - XCM changes can have runtime effects

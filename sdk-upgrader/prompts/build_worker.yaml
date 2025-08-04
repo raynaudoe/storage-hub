@@ -25,9 +25,9 @@ resources:
   status_file: $STATUS_FILE
     description: Tracks progress and error group status
 
-rust_mcp_tools:
-  description: "Specialized Rust MCP tools for enhanced code analysis"
-  priority: "ALWAYS prefer MCP tools over bash/grep for Rust analysis"
+serena_mcp_tools:
+  description: "Serena MCP tools for code analysis, symbol search, file reading, and replacements"
+  priority: "ALWAYS use Serena MCP tools instead of bash/grep for code tasks"
 
 checklist:
   step_1_validate_assignment:
@@ -202,6 +202,8 @@ principles:
   - Append successful fixes to handbook for future learning
   - ALL temporary files MUST be created in /tmp directory
   - NEVER create auxiliary scripts - use only provided tools
+  - IMPORTANT: Always APPEND to existing report files ($UPGRADE_REPORT_PATH) - NEVER create new files
+  - When writing reports: Check if file exists first, then APPEND to it
 
 optimize:
   - Cache Scout search results for symbol

@@ -9,6 +9,10 @@ COMPOSE_FILE := ./docker/dev-compose.yml
 docker-build:
 	docker compose -f $(COMPOSE_FILE) build --build-arg PROJECT_NAME=$(PROJECT_NAME)
 
+# Rebuild the Docker image
+docker-rebuild:
+	docker compose -f $(COMPOSE_FILE) build --no-cache --build-arg PROJECT_NAME=$(PROJECT_NAME)
+
 # Run the container in detached mode and exec into it
 docker-run:
 	docker compose -f $(COMPOSE_FILE) up -d
@@ -41,4 +45,4 @@ docker-logs:
 
 docker-restart: docker-down docker-run
 
-.PHONY: docker-build docker-run docker-stop docker-down docker-logs docker-restart
+.PHONY: docker-build docker-run docker-stop docker-down docker-logs docker-rebuild docker-restart

@@ -13,9 +13,11 @@ services:
       - ../..:/workspace:rw    # mount full repo
     env_file:
       - .env
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
     working_dir: /workspace
     command: /bin/bash           # open interactive shell by default
-    entrypoint: ["/usr/local/bin/init-serena-mcp.sh"]  # Initialize Serena MCP config
+    entrypoint: ["/usr/local/bin/init-mcp.sh"]  # Initialize unified MCP config
     # Expose common node ports; change as needed during development
     ports:
       - "9944:9944"

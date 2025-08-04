@@ -44,3 +44,7 @@ config.toml
 .idea/
 .cursorignore
 .worktrees/
+
+# SDK Upgrader specific ignores
+memory/
+.serena/

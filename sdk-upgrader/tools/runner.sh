@@ -82,14 +82,47 @@ touch "$UPGRADE_REPORT_PATH"
 ####################################
 # Define inline formatting function #
 ####################################
+
+# ANSI color codes - work in Docker with proper TERM env
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+DIM='\033[2m'
+RESET='\033[0m'
+
+# Unicode box drawing characters
+BOX_TOP='─'
+BOX_VERTICAL='│'
+BOX_CORNER='└'
+
+# Helper function to format JSON nicely but compact
+format_json_compact() {
+  local json="$1"
+  # Try to extract key info from common patterns
+  if echo "$json" | grep -q "compiler-message"; then
+    local level=$(echo "$json" | jq -r '.message.level // "unknown"' 2>/dev/null)
+    local msg=$(echo "$json" | jq -r '.message.message // ""' 2>/dev/null | head -n1)
+    echo "[${level}] $(echo "$msg" | head -c 80)${msg:80:1}…"
+  else
+    echo "$json" | head -c 100
+  fi
+}
+
 format_claude_output() {
+  # Ensure UTF-8 locale for emojis in Docker
+  export LC_ALL=C.UTF-8 2>/dev/null || export LC_ALL=en_US.UTF-8 2>/dev/null || true
+  
   while IFS= read -r line; do
     # Skip empty lines
     [[ -z "$line" ]] && continue
 
     # Try to parse as JSON; on failure, just echo raw
     if ! echo "$line" | jq . >/dev/null 2>&1; then
-      echo "$line"
+      echo "${DIM}$line${RESET}"
       continue
     fi
 
@@ -101,27 +134,30 @@ format_claude_output() {
       system)
         case "$subtype" in
           init)
-            echo "🚀 Initialising Claude session…"
+            echo -e "\n${GREEN}${BOLD}🚀 Initializing Claude session${RESET}"
+            echo -e "${DIM}──────────${RESET}\n"
             ;;
           *)
-            echo "🔧 System: $subtype"
+            echo -e "${YELLOW}⚙️  System: ${subtype}${RESET}"
             ;;
         esac
         ;;
 
       assistant)
+        # Extract text content - try multiple paths
         content=$(echo "$line" | \
           jq -r '.message.content[0].text // .content[0].text // empty' 2>/dev/null)
         if [[ -n "$content" ]]; then
-          # Claude streams one token per JSON line, so do not add newline unless token ends 
-          # with it
-          printf "%s" "$content"
+          # Claude streams one token per JSON line, so do not add newline unless token ends with it
+          printf "${CYAN}%s${RESET}" "$content"
         fi
 
+        # Extract tool uses
         tool_uses=$(echo "$line" | \
           jq -r '.message.content[]? | select(.type == "tool_use") | .name' 2>/dev/null)
         if [[ -n "$tool_uses" ]]; then
-          echo -e "\n🔧 Using tool: $tool_uses"
+          echo -e "\n\n${BLUE}${BOLD}🔧 Tool Call: ${tool_uses}${RESET}"
+          echo -e "${DIM}────────${RESET}"
         fi
         ;;
 
@@ -129,26 +165,52 @@ format_claude_output() {
         tool_result=$(echo "$line" | \
           jq -r '.message.content[]? | select(.type == "tool_result") | .content' 2>/dev/null)
         if [[ -n "$tool_result" ]]; then
-          if (( ${#tool_result} > 200 )); then
-            echo -e "\n📋 Tool output: ${tool_result:0:200}…"
+          echo -e "\n${GREEN}📤 Tool Output:${RESET}"
+          # Format based on content type
+          if echo "$tool_result" | jq . >/dev/null 2>&1; then
+            # It's JSON - format it nicely but compact
+            formatted=$(format_json_compact "$tool_result")
+            echo -e "${DIM}│ ${formatted}${RESET}"
           else
-            echo -e "\n📋 Tool output: $tool_result"
+            # Regular text - truncate if needed
+            truncated=$(echo "$tool_result" | head -c 200)
+            echo -e "${DIM}│ ${truncated}${RESET}"
           fi
+          echo -e "${DIM}└────${RESET}\n"
         fi
         ;;
 
       thinking)
-        echo -e "\n🤔 Claude is thinking…"
+        echo -e "\n${PURPLE}🤔 Thinking...${RESET}"
         ;;
 
       error)
         error_msg=$(echo "$line" | jq -r '.error // .message // "unknown error"' 2>/dev/null)
-        echo -e "\n❌ Error: $error_msg"
+        echo -e "\n${RED}${BOLD}❌ Error: ${error_msg}${RESET}\n"
+        ;;
+
+      message_start)
+        # Silently skip - don't show model info
+        ;;
+
+      message_delta)
+        delta_type=$(echo "$line" | jq -r '.delta.type // empty' 2>/dev/null)
+        if [[ "$delta_type" == "message_stop" ]]; then
+          # Add newline after streaming completes
+          echo ""
+        fi
+        ;;
+
+      ping)
+        # Just a keepalive, don't print anything
         ;;
 
       *)
-        preview=$(echo "$line" | jq -r '. | tostring' | head -c 80)
-        echo -e "\n🔍 [$type] $preview…"
+        # Other message types - show briefly
+        if [[ -n "$type" ]]; then
+          preview=$(format_json_compact "$line")
+          echo -e "\n${DIM}ℹ️  [${type}] ${preview}${RESET}"
+        fi
         ;;
     esac
   done
@@ -185,19 +247,93 @@ export MCP_TOOL_TIMEOUT="900000"         # 15 minutes for MCP tools
 # Process template file with environment variable substitution
 PROMPT=$(envsubst < "$PROMPT_TEMPLATE_FILE")
 
+# Ensure terminal supports colors and UTF-8 in Docker
+export TERM=${TERM:-xterm-256color}
+export LANG=${LANG:-C.UTF-8}
+export LC_ALL=${LC_ALL:-C.UTF-8}
+
+####################################
+# Check if Claude completed tasks   #
+####################################
+check_claude_completed() {
+  local status_file="$1"
+  
+  # If status file doesn't exist, return false (needs to run)
+  if [[ ! -f "$status_file" ]]; then
+    return 1
+  fi
+  
+  # Check for pending error groups
+  local pending_error_groups=$(jq -r '.error_groups[]? | select(.status == "pending") | .id' "$status_file" 2>/dev/null | wc -l)
+  
+  # Check for pending test groups
+  local pending_test_groups=$(jq -r '.test_phase.test_groups[]? | select(.status == "pending") | .id' "$status_file" 2>/dev/null | wc -l)
+  
+  # If any groups are pending, return false (not completed)
+  if [[ $pending_error_groups -gt 0 || $pending_test_groups -gt 0 ]]; then
+    echo "⏳ Found $pending_error_groups pending error groups and $pending_test_groups pending test groups"
+    return 1
+  fi
+  
+  # Check if the upgrade has started at all (status file should have error_groups or test_phase)
+  local has_error_groups=$(jq -e '.error_groups' "$status_file" 2>/dev/null && echo "yes" || echo "no")
+  local has_test_phase=$(jq -e '.test_phase' "$status_file" 2>/dev/null && echo "yes" || echo "no")
+  
+  if [[ "$has_error_groups" == "no" && "$has_test_phase" == "no" ]]; then
+    # Status file exists but upgrade hasn't really started
+    return 1
+  fi
+  
+  # All groups completed
+  return 0
+}
+
+####################################
+# Run Claude with retry logic       #
+####################################
+run_claude_upgrade() {
+  local attempt=1
+  local max_attempts=10  # Prevent infinite loops
+  
+  while true; do
+    echo ""
+    echo "🤖  Calling Claude Code to execute upgrade (attempt $attempt)..."
+    
+    claude -p "$PROMPT" \
+           --model claude-opus-4-20250514 \
+           --output-format stream-json \
+           --verbose \
+           --dangerously-skip-permissions \
+       | format_claude_output
+    
+    echo ""
+    
+    # Check if Claude completed all tasks
+    if check_claude_completed "$STATUS_FILE"; then
+      echo "✅ Claude completed all tasks successfully!"
+      break
+    fi
+    
+    # Check if we've exceeded max attempts
+    if [[ $attempt -ge $max_attempts ]]; then
+      echo "⚠️  Maximum attempts ($max_attempts) reached. Check status.json for pending tasks."
+      break
+    fi
+    
+    echo "🔄 Claude didn't complete all tasks. Retrying..."
+    ((attempt++))
+    
+    # Brief pause before retry
+    sleep 2
+  done
+}
+
 ###################################
 # 3. Invoke Claude with streaming  #
 ###################################
 
 # Provide project root so Claude Code can read files (already resolved above)
 
-echo "🤖  Calling Claude Code to execute upgrade..."
-
-claude -p "$PROMPT" \
-       --model claude-opus-4-20250514 \
-       --output-format stream-json \
-       --verbose \
-       --allowedTools "Task" "Read" "Write" "Edit" "MultiEdit" "Bash" "Grep" "Glob" "LS" "TodoWrite" "mcp__cursor_rust_tools__cargo_check" "mcp__cursor_rust_tools__cargo_test" "mcp__cursor_rust_tools__symbol_references" "mcp__cursor_rust_tools__symbol_docs" "mcp__cursor_rust_tools__symbol_impl" \
-   | format_claude_output
+run_claude_upgrade
 
 echo ""

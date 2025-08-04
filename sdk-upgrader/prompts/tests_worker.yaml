@@ -12,7 +12,8 @@ inputs:
   new_tag: $NEW_TAG
   old_tag: $OLD_TAG
   sdk_branch: $SDK_BRANCH
-  report_path: $UPGRADE_REPORT_PATH
+  upgrade_report_path: $UPGRADE_REPORT_PATH
+  test_report_path: $TEST_REPORT_PATH
   status_file: $STATUS_FILE
   scout_dir: $SCOUT_DIR
 
@@ -114,7 +115,7 @@ checklist:
         - Log new error if different
         - Loop back to step_2_check_handbook
       - If no attempts remain:
-        - Document in $UPGRADE_REPORT_PATH:
+        - Document in $TEST_REPORT_PATH:
           "⚠️ FAILED to fix test ${module}::${test_name}
           Attempted fixes: ${attempt_descriptions}
           Final error: ${error_message}
@@ -153,9 +154,10 @@ checklist:
   step_10_commit_fixes:
     desc: "Commit all test fixes for this group"
     actions:
-      - Count fixed vs failed tests
-      - If any tests were fixed:
-        git add -A && git commit -m "test: fix ${module} tests for ${NEW_TAG}
+      - Count fixed vs failed tests from tracked results
+      - If any tests were fixed (fixed_count > 0):
+        - git add -A
+        - git commit -m "test: fix ${module} tests for ${NEW_TAG}
 
 Fixed ${fixed_count} of ${test_count} test failures in ${module}
 
@@ -166,7 +168,9 @@ Tests requiring manual intervention:
 ${failed_tests_list}
 
 Test group ID: ${TEST_GROUP_ID}"
-      - If no tests were fixed, skip commit
+      - If no tests were fixed:
+        - Log: "No tests were successfully fixed in ${module}"
+        - Skip commit
     status: [ ]
 
   step_11_update_status:
@@ -201,13 +205,18 @@ principles:
   - CRITICAL: Execute checklist steps 1-11 in EXACT order - do NOT skip or reorder steps
   - Focus ONLY on tests in assigned group - ignore all others
   - Process tests individually for better error isolation
+  - **MANDATORY FIX VALIDATION:**
+    1. After every code modification, you **MUST** run `cargo test` to validate your fix
+    2. A fix is **NEVER** considered correct or complete until `cargo test` passes successfully
+    3. This rule has **NO EXCEPTIONS**
   - ALWAYS attempt fixes - let validation determine success
-  - ALWAYS validate fixes, regardless of confidence level
   - Maximum 3 fix attempts per test before documenting failure
   - Append successful fixes to handbook for future learning
   - ALL temporary files MUST be created in /tmp directory
   - NEVER create auxiliary scripts - use only provided tools
   - NEVER comment out or delete failing tests
+  - IMPORTANT: Always APPEND to existing report files ($TEST_REPORT_PATH) - NEVER create new files
+  - When writing reports: Check if file exists first, then APPEND to it
 
 optimize:
   - Cache Scout search results for module
