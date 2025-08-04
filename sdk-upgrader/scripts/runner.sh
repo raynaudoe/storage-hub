@@ -3,7 +3,7 @@
 # runner.sh — SDK Upgrade Runner for v2
 #
 # Usage:
-#   ./sdk-upgrader/v2/runner.sh <OLD_SDK_TAG> <NEW_SDK_TAG>
+#   make run-upgrade OLD_TAG=polkadot-stable2407 NEW_TAG=polkadot-stable2410
 #
 set -euo pipefail
 
@@ -21,12 +21,12 @@ SDK_BRANCH="${NEW_TAG#polkadot-}"
 PROJECT_ROOT=$(git -C "$(pwd)" rev-parse --show-toplevel 2>/dev/null || pwd)
 cd "$PROJECT_ROOT"
 
-PROMPT_DIR="${PROJECT_ROOT}/sdk-upgrader/v2"
+PROMPT_DIR="${PROJECT_ROOT}/sdk-upgrader"
 OUTPUT_DIR="${PROJECT_ROOT}/sdk-upgrader/output"
 RESOURCES_DIR="${PROJECT_ROOT}/sdk-upgrader/resources"
-SCOUT_DIR="${RESOURCES_DIR}/polkadot-sdk-${NEW_TAG}"
-PROMPT_FILE="${PROJECT_ROOT}/sdk-upgrader/v2/orchestrator.yaml"
-ERROR_GROUPER_PATH="${PROJECT_ROOT}/sdk-upgrader/v2/scripts/error_grouper.py"
+SCOUT_DIR="${RESOURCES_DIR}/scout/polkadot-sdk-${NEW_TAG}"
+PROMPT_FILE="${PROJECT_ROOT}/sdk-upgrader/prompts/orchestrator.yaml"
+ERROR_GROUPER_PATH="${PROJECT_ROOT}/sdk-upgrader/scripts/error_grouper.py"
 
 # Check prerequisites
 command -v claude >/dev/null 2>&1 || { echo "error: claude CLI not found" >&2; exit 1; }

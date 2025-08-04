@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Install agents script for SDK Upgrader v2
-# Copies all agents from v2/agents/ to project's .claude/agents/
+# Install agents script for SDK Upgrader
+# Copies all agents from agents/ to project's .claude/agents/
 
 set -e  # Exit on error
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-AGENTS_SOURCE_DIR="${SCRIPT_DIR}/agents"
+AGENTS_SOURCE_DIR="$(dirname "${SCRIPT_DIR}")/agents"
 
 # Find the project root (traverse up until we find .git or reach root)
 find_project_root() {
@@ -25,7 +25,7 @@ find_project_root() {
 
 # Main execution
 main() {
-    echo "🚀 Installing SDK Upgrader v2 agents..."
+    echo "🚀 Installing SDK Upgrader agents..."
     
     # Find project root
     PROJECT_ROOT=$(find_project_root)

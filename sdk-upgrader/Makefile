@@ -45,4 +45,18 @@ docker-logs:
 
 docker-restart: docker-down docker-run
 
-.PHONY: docker-build docker-run docker-stop docker-down docker-logs docker-rebuild docker-restart
+# Install agents to project's .claude/agents/ directory
+install-agents:
+	./scripts/install_agents.sh
+
+# Run SDK upgrade
+# Usage: make run-upgrade OLD_TAG=polkadot-stable2407 NEW_TAG=polkadot-stable2410
+run-upgrade:
+	@if [ -z "$(OLD_TAG)" ] || [ -z "$(NEW_TAG)" ]; then \
+		echo "Usage: make run-upgrade OLD_TAG=<old-tag> NEW_TAG=<new-tag>"; \
+		echo "Example: make run-upgrade OLD_TAG=polkadot-stable2407 NEW_TAG=polkadot-stable2410"; \
+		exit 1; \
+	fi
+	./scripts/runner.sh $(OLD_TAG) $(NEW_TAG)
+
+.PHONY: docker-build docker-run docker-stop docker-down docker-logs docker-rebuild docker-restart install-agents run-upgrade

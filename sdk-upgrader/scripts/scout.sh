@@ -30,7 +30,7 @@
 # ------
 #   Creates (or overwrites) a directory tree relative to the project root:
 #
-#       sdk-upgrader/resources/polkadot-sdk-<release-tag>/
+#       sdk-upgrader/resources/scout/polkadot-sdk-<release-tag>/
 #           └── pr-<PR_NUMBER>/
 #               ├── description.md
 #               └── patch.patch
@@ -164,8 +164,8 @@ if [ -n "$OUTPUT_BASE" ]; then
     OUTPUT_BASE="$PWD/$OUTPUT_BASE"
   fi
 else
-  # Default: place artefacts under sdk-upgrader/resources
-  OUTPUT_BASE="$(dirname "$SCRIPT_DIR")/resources"
+  # Default: place artefacts under sdk-upgrader/resources/scout
+  OUTPUT_BASE="$(dirname "$SCRIPT_DIR")/resources/scout"
 fi
 
 RELEASE_DIR="${OUTPUT_BASE}/polkadot-sdk-${RELEASE_TAG}"

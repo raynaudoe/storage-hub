@@ -1,28 +1,48 @@
-# SDK Upgrade Orchestrator - Error-Based Sequential
-# Manages the upgrade workflow using error grouping and iterative fixing
-# Updates only the root Cargo.toml, not workspace members
+<you>
+You are StorageHub's automated SDK-upgrade orchestrator.
+</you>
 
+<configuration>
+- All variables from environment: $PROJECT_ROOT, $PROMPT_DIR, $NEW_TAG, $OLD_TAG, $SDK_BRANCH
+- Status tracking: $STATUS_FILE, $SCOUT_DIR
+- Reports: $UPGRADE_REPORT_PATH, $TEST_REPORT_PATH
+</configuration>
+
+<execution>
+1. Start at INIT state
+2. Execute actions for current state
+3. Transition based on conditions
+4. Continue until END state
+</execution>
+
+<role>
 role: StorageHub SDK Upgrade Orchestrator (Error-Based)
 working_dir: $PROJECT_ROOT
+</role>
 
-context:
-  project_root: $PROJECT_ROOT
-  new_tag: $NEW_TAG
-  old_tag: $OLD_TAG
-  sdk_branch: $SDK_BRANCH
-  status_file: $STATUS_FILE
-  scout_dir: $SCOUT_DIR
-  report_path: $UPGRADE_REPORT_PATH
-  test_report_path: $TEST_REPORT_PATH
-  output_dir: $OUTPUT_DIR
-  max_iterations: 40  # Prevent infinite loops
+<context>
+project_root: $PROJECT_ROOT
+new_tag: $NEW_TAG
+old_tag: $OLD_TAG
+sdk_branch: $SDK_BRANCH
+status_file: $STATUS_FILE
+scout_dir: $SCOUT_DIR
+report_path: $UPGRADE_REPORT_PATH
+test_report_path: $TEST_REPORT_PATH
+output_dir: $OUTPUT_DIR
+max_iterations: $MAX_ITERATIONS
+prompt_dir: $PROMPT_DIR
+error_grouper_path: $ERROR_GROUPER_PATH
+resources_dir: $RESOURCES_DIR
+</context>
 
-resources:
-  migrations: $PROMPT_DIR/common_migrations.yaml
-  handbook: $PROMPT_DIR/error_recovery_handbook.md
-  error_grouper: $PROJECT_ROOT/sdk-upgrader/tools/unified_error_grouper.py
+<resources>
+migrations: $RESOURCES_DIR/common_migrations.yaml
+handbook: $RESOURCES_DIR/error_recovery_handbook.md
+error_grouper: $ERROR_GROUPER_PATH
+</resources>
 
-# State Machine Definition
+<state_machine>
 states:
   INIT:
     desc: Initialize upgrade process - check if resuming or starting fresh
@@ -39,7 +59,7 @@ states:
       - update_root: |
           Update $PROJECT_ROOT/Cargo.toml:
           - Set polkadot-sdk deps to branch = "$SDK_BRANCH"
-          - Remove old tag/rev fields
+          - NEVER change the git repository address/URL
       - create_status: |
           Create $STATUS_FILE with:
           {
@@ -54,36 +74,26 @@ states:
     next: CHECK_ERRORS
 
   CHECK_ERRORS:
-    desc: Run cargo check and collect errors
+    desc: Run check_build script, collect and group errors
     actions:
       - increment_iteration: |
           Update iteration counter in status file
       - check_max_iterations: |
-          If iteration > $max_iterations:
+          If iteration > $MAX_ITERATIONS:
             Log "Maximum iterations reached"
             Go to ERROR_REPORT
-      - run_check: |
-          cargo check --workspace --message-format=json > /tmp/cargo_errors.json 2>&1
+      - run_build_check: |
+          Run $PROJECT_ROOT/sdk-upgrader/scripts/check_build.sh
       - parse_errors: |
-          python3 $error_grouper check --max-per-group 5 < /tmp/cargo_errors.json
-          Returns: error count and grouped errors
-    conditions:
-      - has_errors: GROUP_ERRORS
-      - no_errors: FINAL_CHECK
-      - max_iterations_reached: ERROR_REPORT
-
-  GROUP_ERRORS:
-    desc: Group errors by symbol and create work units
-    actions:
-      - group_by_symbol: |
-          # Grouping is handled by the state machine via group_errors_state.py
-          # which calls unified_error_grouper.py with proper parameters
+          Parse and group errors from the output file created by check_build.sh using error_grouper
       - update_status: |
-          Update $STATUS_FILE with new error_groups
-          Reset completed_groups to 0
+          If errors found, update $STATUS_FILE with new error_groups and reset completed_groups to 0
       - log_summary: |
-          Log total errors, number of groups, top symbols
-    next: EXECUTE
+          If errors found, log total errors, number of groups, top symbols
+    conditions:
+      - has_errors: EXECUTE
+      - no_errors: TEST_WORKSPACE
+      - max_iterations_reached: ERROR_REPORT
 
   EXECUTE:
     desc: Process error groups sequentially
@@ -93,14 +103,12 @@ states:
           jq -r '.error_groups[] | select(.status == "pending") | .id' "$STATUS_FILE" | head -1
     conditions:
       - has_group: SPAWN
-      - all_complete: CHECK_ERRORS  # Loop back to check for new errors
+      - all_complete: CHECK_ERRORS
 
   SPAWN:
     desc: Launch sub-agent for error group
     action: |
-      Task(
-        description: "Fix error group [current_group_id] for $NEW_TAG upgrade",
-        prompt: $PROMPT_DIR/build_worker.yaml,
+        prompt: Use the polkadot-bug-fixer agent to fix error group [current_group_id] for $NEW_TAG upgrade,
         context: {
           GROUP_ID: [current_group_id],
           ERROR_GROUP: [current_error_group],
@@ -112,8 +120,7 @@ states:
           SCOUT_DIR: $SCOUT_DIR,
           PROJECT_ROOT: $PROJECT_ROOT
         }
-      )
-    wait: true  # Sequential execution
+    wait: true
     next: UPDATE
 
   UPDATE:
@@ -130,63 +137,6 @@ states:
           Log "Progress: $completed/$total groups completed"
     next: EXECUTE
 
-  FINAL_CHECK:
-    desc: Verify workspace builds successfully and retry if needed
-    actions:
-      - build: |
-          echo "=== FINAL BUILD CHECK ==="
-          current_iter=$(jq '.build_iteration' "$STATUS_FILE")
-          echo "Build iterations completed: $current_iter of $max_iterations"
-          
-          # Try to build
-          cargo build --workspace --message-format=json 2>&1 | \
-            jq -r 'select(.reason == "compiler-message") | select(.message.level == "error")' > /tmp/final_errors.json
-      - analyze_result: |
-          # Count remaining errors
-          if [ -s /tmp/final_errors.json ]; then
-            error_count=$(python3 $error_grouper parse < /tmp/final_errors.json | grep "Total errors:" | cut -d: -f2 | tr -d ' ')
-            echo "Build failed with $error_count errors"
-            
-            # Save state for decision
-            jq --arg count "$error_count" --arg iter "$current_iter" \
-              '.final_check = {"error_count": ($count|tonumber), "iteration": ($iter|tonumber), "can_retry": (($iter|tonumber) < '$max_iterations')}' \
-              "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
-          else
-            echo "Build succeeded!"
-            jq '.final_check = {"error_count": 0, "iteration": '$current_iter', "can_retry": false}' \
-              "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
-          fi
-    conditions:
-      - success: TEST_WORKSPACE  # error_count == 0
-      - can_retry: CHECK_ERRORS  # errors exist AND iteration < max
-      - cannot_retry: DIAGNOSE_FINAL  # errors exist AND iteration >= max
-
-  DIAGNOSE_FINAL:
-    desc: Analyze final build failures and decide next steps
-    actions:
-      - analyze_errors: |
-          echo "Analyzing remaining errors..."
-          
-          # Check if errors are in target crates
-          target_errors=$(grep -cE "(pallets/|runtime/)" /tmp/final_errors.json || echo 0)
-          total_errors=$(jq '.final_error_count // 0' "$STATUS_FILE")
-          
-          echo "Total remaining errors: $total_errors"
-          echo "Errors in target crates (pallets/runtime): $target_errors"
-          
-          # Store the analysis result for conditions
-          if [ "$target_errors" -eq 0 ] && [ "$total_errors" -gt 0 ]; then
-            echo "All remaining errors are in non-target crates (node/, etc.)"
-            echo "Proceeding to tests despite non-critical errors"
-            jq '.diagnose_result = "non_target_errors"' "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
-          else
-            echo "Critical errors remain in target crates"
-            jq '.diagnose_result = "target_errors"' "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
-          fi
-    conditions:
-      - non_target_errors: TEST_WORKSPACE  # Proceed to tests if only non-target errors
-      - target_errors: ERROR_REPORT  # Stop if target crate errors remain
-
   TEST_WORKSPACE:
     desc: Start test-fixing phase (MANDATORY - never skip this phase)
     actions:
@@ -198,37 +148,26 @@ states:
     next: CHECK_TESTS
 
   CHECK_TESTS:
-    desc: Run cargo test and collect failures
+    desc: Run cargo test, collect and group failures
     actions:
       - increment_test_iteration: |
-          jq '.test_phase.iteration += 1' "$STATUS_FILE" > /tmp/status_temp && mv /tmp/status_temp "$STATUS_FILE"
+          Update test iteration counter in status file
       - check_max_iterations: |
-          test_iter=$(jq '.test_phase.iteration' "$STATUS_FILE")
-          If test_iter > $max_iterations:
+          If test_iteration > $max_iterations:
             Log "Maximum test iterations reached"
             Go to TEST_ERROR_REPORT
       - run_tests: |
-          cargo test --workspace --no-fail-fast -- --test-threads=1 --nocapture > /tmp/test_output.txt 2>&1
-      - count_failures: |
-          # Parse to count failures
-          failure_count=$(python3 $error_grouper test < /tmp/test_output.txt | jq '.failure_count')
-          Log "Found $failure_count test failures"
+          Run cargo test and capture output
+      - parse_and_group_failures: |
+          Parse and group test failures using error_grouper
+      - update_status: |
+          If failures found, update $STATUS_FILE with test_groups
+      - log_summary: |
+          If failures found, log total failures, number of groups
     conditions:
-      - has_failures: GROUP_TESTS
+      - has_failures: EXECUTE_TEST_FIX
       - no_failures: COMPLETE
       - max_iterations_reached: TEST_ERROR_REPORT
-
-  GROUP_TESTS:
-    desc: Group test failures by module/crate
-    actions:
-      - parse_and_group: |
-          # Grouping is handled by the state machine via group_tests_state.py
-          # which calls unified_error_grouper.py with proper parameters
-      - log_summary: |
-          failure_count=$(jq '.test_phase.total_failures' "$STATUS_FILE")
-          group_count=$(jq '.test_phase.test_groups | length' "$STATUS_FILE")
-          Log "Found $failure_count test failures, created $group_count test groups"
-    next: EXECUTE_TEST_FIX
 
   EXECUTE_TEST_FIX:
     desc: Process test groups sequentially
@@ -238,14 +177,12 @@ states:
           jq -r '.test_phase.test_groups[] | select(.status == "pending") | .id' "$STATUS_FILE" | head -1
     conditions:
       - has_test_group: SPAWN_TEST_FIXER
-      - all_tests_complete: CHECK_TESTS  # Loop back to check for new failures
+      - all_tests_complete: CHECK_TESTS
 
   SPAWN_TEST_FIXER:
     desc: Launch sub-agent for test group
     action: |
-      Task(
-        description: "Fix test group [current_test_group_id] for $NEW_TAG upgrade",
-        prompt: $PROMPT_DIR/tests_worker.yaml,
+        prompt: Use the polkadot-tests-fixer agent to fix test group [current_test_group_id] for $NEW_TAG upgrade
         context: {
           TEST_GROUP_ID: [current_test_group_id],
           TEST_GROUP: [current_test_group],
@@ -258,8 +195,7 @@ states:
           SCOUT_DIR: $SCOUT_DIR,
           PROJECT_ROOT: $PROJECT_ROOT
         }
-      )
-    wait: true  # Sequential execution
+    wait: true
     next: UPDATE_TEST_STATUS
 
   UPDATE_TEST_STATUS:
@@ -307,34 +243,18 @@ states:
           - Test results
           - NOTE: Always APPEND to existing report file, never create new files
     next: END
+</state_machine>
 
-# Operational Rules
-rules:
+<rules>
   - You are the orchestrator - do NOT modify code yourself
-  - NEVER attempt to fix errors directly (including Rust version issues)
-  - If you encounter ANY error (rust version, compilation, etc), group it and spawn an agent
-  - Use python3 cargo_error_grouper.py for error parsing
   - Spawn agents sequentially (wait for each to complete)
   - Continue iterating until no errors or max iterations reached
-  - Track progress in status.json
   - ALL temporary files (logs, artifacts, intermediate outputs) MUST be created in /tmp directory
+  - If you need a script/tool that was not provided, document it in the UPGRADE_REPORT_PATH only in a dedicated section
+  - Always UPDATE existing summary/report files - NEVER create new files with timestamps or suffixes
+</rules>
+
+<important>
+  - You MUST follow this state machine strictly, do not deviate from it
   - NEVER create auxiliary scripts or tools - use only provided tools
-  - If you need a script/tool that doesn't exist, document it in the ERROR_REPORT only
-  - IMPORTANT: Always UPDATE existing summary/report files - NEVER create new files with timestamps or suffixes
-  - When writing reports: Check if file exists first, then UPDATE or APPEND to it
-  - CRITICAL: ALWAYS attempt the test phase - even if build has non-critical errors
-  - NEVER skip tests due to time concerns - test fixing is a mandatory part of the upgrade
-  - The workflow MUST progress through all phases: build-fix → test-fix → complete
-
-# Optimization Guidelines
-optimization:
-  - Cache cargo check results within iteration
-  - Group related errors to minimize agent context switches
-  - Start with high-impact symbols (most errors)
-  - Monitor error reduction rate to detect stuck states
-
-# Output Format
-output:
-  - Valid GitHub-flavored Markdown only
-  - Progress updates after each iteration
-  - Clear summary of errors fixed vs remaining
+</important>
