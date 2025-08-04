@@ -12,35 +12,50 @@ This directory contains Docker configuration for running the SDK upgrader in a c
 
 1. Copy the example environment file and add your credentials:
    ```bash
-   cp env.example .env
-   # Edit .env with your actual credentials
+   cp docker/env.example docker/.env
+   # Edit docker/.env with your actual credentials
    ```
 
 2. Build and run the container:
    ```bash
-   docker-compose -f dev-compose.yml up -d
+   make docker-build
+   make docker-run
    ```
+   This will build the image, start the container, and automatically exec into it.
 
-3. Enter the container:
-   ```bash
-   docker-compose -f dev-compose.yml exec dev /bin/bash
-   ```
-
-4. Configure GitHub CLI inside the container:
+3. Configure GitHub CLI inside the container:
    ```bash
    gh auth login
    ```
 
-5. Navigate to the SDK upgrader and run:
+4. Navigate to the SDK upgrader and run:
    ```bash
    cd sdk-upgrader
-   ./run.sh polkadot-stable2407 polkadot-stable2410
+   ./scripts/runner.sh polkadot-stable2407 polkadot-stable2410
    ```
+
+## Docker Management Commands
+
+All Docker operations can be managed through the Makefile from the `sdk-upgrader` directory:
+
+### Building
+- `make docker-build` - Build the Docker image with caching
+- `make docker-rebuild` - Rebuild the image from scratch (no cache)
+
+### Running
+- `make docker-run` - Start container and automatically exec into it
+- `make docker-stop` - Stop the running container
+- `make docker-down` - Stop and remove the container
+- `make docker-restart` - Restart the container (down + run)
+
+### Debugging
+- `make docker-logs` - Follow container logs in real-time
+- `docker compose -f docker/dev-compose.yml exec dev /bin/bash` - Manually enter a running container
 
 ## What's Included
 
 The Docker image includes all necessary dependencies:
-- Rust toolchain (1.81)
+- Rust toolchain (1.83)
 - Cargo and related tools (cargo-nextest, cargo-audit, etc.)
 - Python 3 for error parsing scripts
 - GitHub CLI for fetching PR data
@@ -48,6 +63,7 @@ The Docker image includes all necessary dependencies:
 - Node.js 20 LTS
 - All system dependencies (git, jq, curl, etc.)
 - **Serena MCP server** for semantic code understanding
+- **rust-docs-mcp** for Rust documentation access
 
 ## Serena Integration
 
@@ -65,7 +81,7 @@ To use Serena within the container:
 claude code "Find the definition of trait XYZ"
 ```
 
-**Note**: The container automatically creates a `.mcp.json` configuration file in your workspace root on first run. This file configures Claude Code to use Serena as an MCP server. You can check this file into version control to share the configuration with your team.
+**Note**: The container automatically registers Serena as an MCP server with Claude CLI using `claude mcp add`. This configuration is stored in the user's Claude settings, not in a `.mcp.json` file.
 
 ## Volume Mounts
 
