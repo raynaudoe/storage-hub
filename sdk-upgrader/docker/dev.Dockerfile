@@ -1,10 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ########################  Builder + Dev Stage  ########################
-FROM rust:1.83-slim-bookworm AS dev
-
-LABEL maintainer="Storage Hub Devs <devs@storagehub.local>"
-LABEL description="SDK Upgrader development image with Rust, Node, Python, GitHub CLI, and Claude"
+FROM rust:1.81-bookworm AS dev
 
 ENV DEBIAN_FRONTEND=noninteractive \
     RUST_BACKTRACE=1 \
@@ -68,36 +65,18 @@ ENV PATH="/home/upgrader/.npm-global/bin:/home/upgrader/.local/bin:/home/upgrade
     CARGO_HOME="/home/upgrader/.cargo" \
     RUSTUP_HOME="/home/upgrader/.rustup"
 
-# Install Rust toolchain as user
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
-    . "$HOME/.cargo/env" && \
-    rustup component add rust-analyzer rust-src && \
-    # Install additional Rust utilities
-    # ast-grep currently relies on unstable Rust features; install via nightly toolchain.
-    # cargo-semver-checks v0.39.0 remains compatible with Rust 1.81.
-    rustup toolchain install nightly && \
-    cargo +nightly install --locked ast-grep && \
-    cargo install --locked --version 0.39.0 cargo-semver-checks
-
 # Install npm global packages as user
 RUN npm config set prefix "/home/upgrader/.npm-global" && \
     mkdir -p /home/upgrader/.npm-global && \
     export PATH="/home/upgrader/.npm-global/bin:$PATH" && \
     npm install -g pnpm @anthropic-ai/claude-code
 
-# Install Python tools as user
+# Install Python tools as user (uv for potential future Python tools)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     echo 'export PATH="/home/upgrader/.local/bin:$PATH"' >> ~/.bashrc
 
-# Clone and setup Serena MCP server as user
-RUN git clone https://github.com/oraios/serena /home/upgrader/serena && \
-    cd /home/upgrader/serena && \
-    /home/upgrader/.local/bin/uv venv && \
-    /home/upgrader/.local/bin/uv pip install -e .
-
 # Set envs for the workspace
-ENV API_TIMEOUT_MS=180000 \
-    DISABLE_NON_ESSENTIAL_MODEL_CALLS=1
+ENV DISABLE_NON_ESSENTIAL_MODEL_CALLS=1
 
 # Accept build args for Anthropic config
 ARG ANTHROPIC_BASE_URL
