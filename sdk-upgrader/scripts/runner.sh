@@ -137,7 +137,7 @@ cd "$PROJECT_ROOT"
 # Run Claude directly with the orchestrator prompt
 echo "🤖 Starting SDK upgrade from $OLD_TAG to $NEW_TAG..."
 claude -p "$PROMPT_CONTENT" \
-       --model claude-opus-4-20250514 \
+       --model claude-opus-4-1-20250805 \
        --output-format stream-json \
        --verbose \
        --dangerously-skip-permissions \
